@@ -1,0 +1,23 @@
+[package]
+name = "pin-project-lite"
+version = "0.1.0"
+authors = ["Taiki Endo <te316e89@gmail.com>"]
+edition = "2018"
+license = "Apache-2.0/MIT"
+repository = "https://github.com/taiki-e/pin-project-lite"
+documentation = "https://docs.rs/pin-project-lite"
+keywords = ["pin", "macros"]
+categories = ["no-std", "rust-patterns"]
+readme = "README.md"
+description = """
+A lightweight version of pin-project written with declarative macros.
+"""
+
+[workspace]
+members = ["tests/doc"]
+
+[dependencies]
+
+[dev-dependencies]
+rustversion = "1.0"
+trybuild = "1.0"
