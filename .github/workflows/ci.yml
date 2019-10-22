@@ -18,7 +18,7 @@ jobs:
       RUSTFLAGS: -Dwarnings
     strategy:
       matrix:
-        build:
+        rust:
           # This is the minimum supported Rust version of this crate.
           # When updating this, the reminder to update the minimum supported
           # Rust version in README.md.
