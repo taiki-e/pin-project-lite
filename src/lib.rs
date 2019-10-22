@@ -41,7 +41,7 @@
 //!
 //! ### Different: No useful error messages
 //!
-//! This macro does not handle any invalid input. So error messages are not to be useful in most cases. If you do need useful error messages, then upon error you can pass the same input to [pin-project] to receive a line, column, and helpful description of the compile error.
+//! This macro does not handle any invalid input. So error messages are not to be useful in most cases. If you do need useful error messages, then upon error you can pass the same input to [pin-project] to receive a helpful description of the compile error.
 //!
 //! ### Different: Structs only
 //!
