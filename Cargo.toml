@@ -16,8 +16,6 @@ A lightweight version of pin-project written with declarative macros.
 [workspace]
 members = ["tests/doc"]
 
-[dependencies]
-
 [dev-dependencies]
 rustversion = "1.0"
 trybuild = "1.0"

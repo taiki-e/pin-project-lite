@@ -212,6 +212,26 @@ fn lifetime_project_elided() {
     }
 }
 
+mod visibility {
+    use pin_project_lite::pin_project;
+
+    pin_project! {
+        pub(crate) struct A {
+            pub b: u8,
+        }
+    }
+}
+
+#[test]
+fn visibility() {
+    let mut x = visibility::A { b: 0 };
+    let x = Pin::new(&mut x);
+    let y = x.as_ref().project_ref();
+    let _: &u8 = y.b;
+    let y = x.project();
+    let _: &mut u8 = y.b;
+}
+
 #[test]
 fn trivial_bounds() {
     pin_project! {
