@@ -95,6 +95,10 @@
 /// # }
 /// ```
 ///
+/// The visibility of the projected type and projection method is based on the
+/// original type. However, if the visibility of the original type is `pub`,
+/// the visibility of the projected type and the projection method is `pub(crate)`.
+///
 /// If you want to call the `project` method multiple times or later use the
 /// original Pin type, it needs to use [`.as_mut()`][`Pin::as_mut`] to avoid
 /// consuming the `Pin`.
@@ -137,26 +141,98 @@
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
 #[macro_export]
 macro_rules! pin_project {
+    // determine_visibility
     (
+        $(#[$attrs:meta])*
+        pub struct $ident:ident
+            $(<
+                $( $lifetime:lifetime ),* $(,)?
+                $( $generics:ident $(: $generics_bound:path)? ),* $(,)?
+            >)?
+            $(where
+                $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
+            )?
+        {
+            $(
+                $(#[$pin:ident])?
+                $field_vis:vis $field:ident: $field_ty:ty
+            ),+ $(,)?
+        }
+    ) => {
+        $crate::pin_project! {@internal (pub(crate))
+            $(#[$attrs])*
+            pub struct $ident
+                $(<
+                    $( $lifetime ),*
+                    $( $generics $(: $generics_bound)? ),*
+                >)?
+                $(where
+                    $($where_clause_ty : $where_clause_bound),*
+                )?
+            {
+                $(
+                    $(#[$pin])?
+                    $field_vis $field: $field_ty
+                ),+
+            }
+        }
+    };
+    (
+        $(#[$attrs:meta])*
+        $vis:vis struct $ident:ident
+            $(<
+                $( $lifetime:lifetime ),* $(,)?
+                $( $generics:ident $(: $generics_bound:path)? ),* $(,)?
+            >)?
+            $(where
+                $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
+            )?
+        {
+            $(
+                $(#[$pin:ident])?
+                $field_vis:vis $field:ident: $field_ty:ty
+            ),+ $(,)?
+        }
+    ) => {
+        $crate::pin_project! {@internal ($vis)
+            $(#[$attrs])*
+            $vis struct $ident
+                $(<
+                    $( $lifetime ),*
+                    $( $generics $(: $generics_bound)? ),*
+                >)?
+                $(where
+                    $($where_clause_ty : $where_clause_bound),*
+                )?
+            {
+                $(
+                    $(#[$pin])?
+                    $field_vis $field: $field_ty
+                ),+
+            }
+        }
+    };
+
+    (@internal ($proj_vis:vis)
         // limitation: does not support tuple structs and enums (wontfix)
         // limitation: no projection helper (wontfix)
         $(#[$attrs:meta])*
         $vis:vis struct $ident:ident
             $(<
-                $( $lifetime:lifetime ),* $(,)?
+                $( $lifetime:lifetime ),*
                 // limitation: does not support multiple bounds and ? bounds.
-                $( $generics:ident $(: $generics_bound:path)? ),* $(,)?
+                $( $generics:ident $(: $generics_bound:path)? ),*
             >)?
             $(where
                 // limitation: does not support multiple bounds and ? bounds.
-                $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
+                $($where_clause_ty:ty : $where_clause_bound:path),*
             )?
         {
             $(
                 // limitation: cannot interoperate with other attributes.
                 $(#[$pin:ident])?
                 $field_vis:vis $field:ident: $field_ty:ty
-            ),+ $(,)?
+            ),+
         }
     ) => {
         $(#[$attrs])*
@@ -175,25 +251,25 @@ macro_rules! pin_project {
         const _: () = {
             #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`.
             #[allow(dead_code)] // This lint warns unused fields/variants.
-            struct Projection
+            $proj_vis struct Projection
                 <'__pin $(, $($lifetime,)* $($generics $(: $generics_bound)? ),* )?>
                 $(where
                     $($where_clause_ty: $where_clause_bound),*
                 )*
             {
                 $(
-                    $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty; mut)
+                    $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty; mut)
                 ),+
             }
             #[allow(dead_code)] // This lint warns unused fields/variants.
-            struct ProjectionRef
+            $proj_vis struct ProjectionRef
                 <'__pin $(, $($lifetime,)* $($generics $(: $generics_bound)? ),* )?>
                 $(where
                     $($where_clause_ty: $where_clause_bound),*
                 )*
             {
                 $(
-                    $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty;)
+                    $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty;)
                 ),+
             }
 
@@ -203,8 +279,7 @@ macro_rules! pin_project {
                     $($where_clause_ty: $where_clause_bound),*
                 )*
             {
-                // limitation: does not support pub(crate) fn project (wontfix)
-                fn project<'__pin>(
+                $proj_vis fn project<'__pin>(
                     self: ::core::pin::Pin<&'__pin mut Self>,
                 ) -> Projection<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
@@ -216,7 +291,7 @@ macro_rules! pin_project {
                         }
                     }
                 }
-                fn project_ref<'__pin>(
+                $proj_vis fn project_ref<'__pin>(
                     self: ::core::pin::Pin<&'__pin Self>,
                 ) -> ProjectionRef<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
