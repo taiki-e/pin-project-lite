@@ -147,7 +147,7 @@ macro_rules! pin_project {
         pub struct $ident:ident
             $(<
                 $( $lifetime:lifetime ),* $(,)?
-                $( $generics:ident $(: $generics_bound:path)? ),* $(,)?
+                $( $generics:ident $(: $generics_bound:path)? $(= $generics_default:ty)? ),* $(,)?
             >)?
             $(where
                 $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
@@ -164,7 +164,7 @@ macro_rules! pin_project {
             pub struct $ident
                 $(<
                     $( $lifetime ),*
-                    $( $generics $(: $generics_bound)? ),*
+                    $( $generics $(: $generics_bound)? $(= $generics_default)? ),*
                 >)?
                 $(where
                     $($where_clause_ty : $where_clause_bound),*
@@ -182,7 +182,7 @@ macro_rules! pin_project {
         $vis:vis struct $ident:ident
             $(<
                 $( $lifetime:lifetime ),* $(,)?
-                $( $generics:ident $(: $generics_bound:path)? ),* $(,)?
+                $( $generics:ident $(: $generics_bound:path)? $(= $generics_default:ty)? ),* $(,)?
             >)?
             $(where
                 $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
@@ -199,7 +199,7 @@ macro_rules! pin_project {
             $vis struct $ident
                 $(<
                     $( $lifetime ),*
-                    $( $generics $(: $generics_bound)? ),*
+                    $( $generics $(: $generics_bound)? $(= $generics_default)? ),*
                 >)?
                 $(where
                     $($where_clause_ty : $where_clause_bound),*
@@ -221,7 +221,7 @@ macro_rules! pin_project {
             $(<
                 $( $lifetime:lifetime ),*
                 // limitation: does not support multiple bounds and ? bounds.
-                $( $generics:ident $(: $generics_bound:path)? ),*
+                $( $generics:ident $(: $generics_bound:path)? $(= $generics_default:ty)? ),*
             >)?
             $(where
                 // limitation: does not support multiple bounds and ? bounds.
@@ -237,7 +237,7 @@ macro_rules! pin_project {
     ) => {
         $(#[$attrs])*
         $vis struct $ident
-            $(< $( $lifetime ,)* $( $generics $(: $generics_bound)? ,)* >)?
+            $(< $( $lifetime ,)* $( $generics $(: $generics_bound)? $(= $generics_default)? ,)* >)?
             $(where
                 $($where_clause_ty: $where_clause_bound),*
             )*
