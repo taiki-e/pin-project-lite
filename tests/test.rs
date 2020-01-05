@@ -124,6 +124,14 @@ fn trait_bounds_on_type_generics() {
     //         field: &'a mut T,
     //     }
     // }
+
+    pin_project! {
+        pub struct Struct6<'a, T: core::fmt::Debug = [u8; 16]> {
+            field: &'a mut T,
+        }
+    }
+
+    let _: Struct6<'_> = Struct6 { field: &mut [0u8; 16] };
 }
 
 #[test]
