@@ -63,6 +63,21 @@ fn where_clause_and_associated_type_fields() {
             field2: J,
         }
     }
+
+    // TODO(#7): where clause does not support yet.
+
+    // pin_project! {
+    //     pub struct Struct3<T>
+    //     where
+    //         T: 'static,
+    //     {
+    //         field: T,
+    //     }
+    // }
+
+    // trait Static: 'static {}
+
+    // impl<T> Static for Struct3<T> {}
 }
 
 #[test]
@@ -132,6 +147,23 @@ fn trait_bounds_on_type_generics() {
     }
 
     let _: Struct6<'_> = Struct6 { field: &mut [0u8; 16] };
+
+    pin_project! {
+        pub struct Struct7<T: 'static> {
+            field: T,
+        }
+    }
+
+    trait Static: 'static {}
+
+    impl<T> Static for Struct7<T> {}
+
+    pin_project! {
+        pub struct Struct8<'a, 'b: 'a> {
+            field1: &'a u8,
+            field2: &'b u8,
+        }
+    }
 }
 
 #[test]
