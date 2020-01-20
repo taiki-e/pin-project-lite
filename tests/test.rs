@@ -80,6 +80,20 @@ fn where_clause_and_associated_type_fields() {
     // impl<T> Static for Struct3<T> {}
 }
 
+// #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
+// #[test]
+// fn unsized_in_where_clause() {
+//     pin_project! {
+//         struct Struct<I>
+//         where
+//             I: ?Sized,
+//         {
+//             #[pin]
+//             field: I,
+//         }
+//     }
+// }
+
 #[test]
 fn derive_copy() {
     pin_project! {
@@ -110,11 +124,11 @@ fn move_out() {
 
 #[test]
 fn trait_bounds_on_type_generics() {
-    // pin_project! {
-    //     pub struct Struct1<'a, T: ?Sized> {
-    //         field: &'a mut T,
-    //     }
-    // }
+    pin_project! {
+        pub struct Struct1<'a, T: ?Sized> {
+            field: &'a mut T,
+        }
+    }
 
     pin_project! {
         pub struct Struct2<'a, T: ::core::fmt::Debug> {
@@ -282,21 +296,23 @@ fn trivial_bounds() {
     }
 }
 
-// #[test]
-// fn dst() {
-//     pin_project! {
-//         pub struct A<T: ?Sized> {
-//             x: T,
-//         }
-//     }
+#[test]
+fn dst() {
+    pin_project! {
+        pub struct A<T: ?Sized> {
+            x: T,
+        }
+    }
 
-//     pin_project! {
-//         pub struct B<T: ?Sized> {
-//             #[pin]
-//             x: T,
-//         }
-//     }
-// }
+    let _: &mut A<dyn core::fmt::Debug> = &mut A { x: 0u8 } as _;
+
+    pin_project! {
+        pub struct B<T: ?Sized> {
+            #[pin]
+            x: T,
+        }
+    }
+}
 
 #[test]
 fn dyn_type() {
