@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.1.5] - 2020-05-07
+
+* [Support overwriting the name of core crate.][14]
+
+[14]: https://github.com/taiki-e/pin-project-lite/pull/14
+
 ## [0.1.4] - 2020-01-20
 
 * [Support ?Sized bounds in generic parameters.][9]
@@ -34,7 +40,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.1...v0.1.2
