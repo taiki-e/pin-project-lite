@@ -6,41 +6,50 @@ use core::{marker::PhantomPinned, pin::Pin};
 use pin_project_lite::pin_project;
 
 #[test]
-fn test_pin_project() {
+fn projection() {
     pin_project! {
-        struct Foo<T, U> {
+        struct Struct<T, U> {
             #[pin]
             field1: T,
             field2: U,
         }
     }
 
-    let mut foo = Foo { field1: 1, field2: 2 };
+    let mut s = Struct { field1: 1, field2: 2 };
+    let mut s_orig = Pin::new(&mut s);
+    let s = s_orig.as_mut().project();
 
-    let mut foo_orig = Pin::new(&mut foo);
-    let foo = foo_orig.as_mut().project();
-
-    let x: Pin<&mut i32> = foo.field1;
+    let x: Pin<&mut i32> = s.field1;
     assert_eq!(*x, 1);
 
-    let y: &mut i32 = foo.field2;
+    let y: &mut i32 = s.field2;
     assert_eq!(*y, 2);
 
-    assert_eq!(foo_orig.as_ref().field1, 1);
-    assert_eq!(foo_orig.as_ref().field2, 2);
+    assert_eq!(s_orig.as_ref().field1, 1);
+    assert_eq!(s_orig.as_ref().field2, 2);
 
-    let mut foo = Foo { field1: 1, field2: 2 };
+    let mut s = Struct { field1: 1, field2: 2 };
 
-    let foo = Pin::new(&mut foo).project();
+    let s = Pin::new(&mut s).project();
 
-    let field1 = foo.field1;
-    let field2 = foo.field2;
-    let _: Pin<&mut i32> = field1;
-    let _: &mut i32 = field2;
+    let _: Pin<&mut i32> = s.field1;
+    let _: &mut i32 = s.field2;
 }
 
 #[test]
-fn where_clause_and_associated_type_fields() {
+fn where_clause() {
+    pin_project! {
+        struct Struct<T>
+        where
+            T: Copy,
+        {
+            field: T,
+        }
+    }
+}
+
+#[test]
+fn where_clause_and_associated_type_field() {
     pin_project! {
         struct Struct1<I>
         where
@@ -79,20 +88,6 @@ fn where_clause_and_associated_type_fields() {
     // impl<T> Static for Struct3<T> {}
 }
 
-// #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
-// #[test]
-// fn unsized_in_where_clause() {
-//     pin_project! {
-//         struct Struct<I>
-//         where
-//             I: ?Sized,
-//         {
-//             #[pin]
-//             field: I,
-//         }
-//     }
-// }
-
 #[test]
 fn derive_copy() {
     pin_project! {
@@ -117,8 +112,8 @@ fn move_out() {
         }
     }
 
-    let foo = Struct { val: NotCopy };
-    let _val: NotCopy = foo.val;
+    let x = Struct { val: NotCopy };
+    let _val: NotCopy = x.val;
 }
 
 #[test]
@@ -298,33 +293,60 @@ fn trivial_bounds() {
 #[test]
 fn dst() {
     pin_project! {
-        pub struct A<T: ?Sized> {
+        pub struct Struct1<T: ?Sized> {
             x: T,
         }
     }
 
-    let _: &mut A<dyn core::fmt::Debug> = &mut A { x: 0u8 } as _;
+    let mut x = Struct1 { x: 0_u8 };
+    let x: Pin<&mut Struct1<dyn core::fmt::Debug>> = Pin::new(&mut x as _);
+    let _y: &mut (dyn core::fmt::Debug) = x.project().x;
 
     pin_project! {
-        pub struct B<T: ?Sized> {
+        pub struct Struct2<T: ?Sized> {
             #[pin]
             x: T,
         }
     }
+
+    let mut x = Struct2 { x: 0_u8 };
+    let x: Pin<&mut Struct2<dyn core::fmt::Debug + Unpin>> = Pin::new(&mut x as _);
+    let _y: Pin<&mut (dyn core::fmt::Debug + Unpin)> = x.project().x;
 }
+
+// #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
+// #[test]
+// fn unsized_in_where_clause() {
+//     pin_project! {
+//         struct Struct3<T>
+//         where
+//             I: ?Sized,
+//         {
+//             x: T,
+//         }
+//     }
+
+//     pin_project! {
+//         struct Struct4<T>
+//         where
+//             I: ?Sized,
+//         {
+//             #[pin]
+//             x: T,
+//         }
+//     }
+// }
 
 #[test]
 fn dyn_type() {
     pin_project! {
         struct Struct1 {
-            a: i32,
             f: dyn core::fmt::Debug,
         }
     }
 
     pin_project! {
         struct Struct2 {
-            a: i32,
             #[pin]
             f: dyn core::fmt::Debug,
         }
@@ -332,16 +354,33 @@ fn dyn_type() {
 
     pin_project! {
         struct Struct3 {
-            a: i32,
             f: dyn core::fmt::Debug + Send,
         }
     }
 
     pin_project! {
         struct Struct4 {
-            a: i32,
             #[pin]
             f: dyn core::fmt::Debug + Send,
         }
     }
 }
+
+// #[test]
+// fn no_infer_outlives() {
+//     trait Bar<X> {
+//         type Y;
+//     }
+
+//     struct Example<A>(A);
+
+//     impl<X, T> Bar<X> for Example<T> {
+//         type Y = Option<T>;
+//     }
+
+//     pin_project! {
+//         struct Foo<A, B> {
+//             _x: <Example<A> as Bar<B>>::Y,
+//         }
+//     }
+// }
