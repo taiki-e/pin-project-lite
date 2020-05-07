@@ -282,7 +282,7 @@ macro_rules! pin_project {
                 )*
             {
                 $proj_vis fn project<'__pin>(
-                    self: ::core::pin::Pin<&'__pin mut Self>,
+                    self: $crate::__reexport::pin::Pin<&'__pin mut Self>,
                 ) -> Projection<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
                         let this = self.get_unchecked_mut();
@@ -294,7 +294,7 @@ macro_rules! pin_project {
                     }
                 }
                 $proj_vis fn project_ref<'__pin>(
-                    self: ::core::pin::Pin<&'__pin Self>,
+                    self: $crate::__reexport::pin::Pin<&'__pin Self>,
                 ) -> ProjectionRef<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
                         let this = self.get_ref();
@@ -338,15 +338,15 @@ macro_rules! pin_project {
                     $($where_clause_ty: $where_clause_bound),*
                 )*
             {
-                __dummy_lifetime: ::core::marker::PhantomData<&'__pin ()>,
+                __dummy_lifetime: $crate::__reexport::marker::PhantomData<&'__pin ()>,
                 $(
                     $field: $crate::pin_project!(@make_unpin_bound $(#[$pin])? $field_ty)
                 ),+
             }
-            impl <'__pin $(, $( $lifetime $(: $lifetime_bound)? ,)* $($generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* )?> ::core::marker::Unpin
-                for $ident $(< $($lifetime,)* $($generics),* >)?
+            impl <'__pin $(, $( $lifetime $(: $lifetime_bound)? ,)* $($generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* )?>
+                $crate::__reexport::marker::Unpin for $ident $(< $($lifetime,)* $($generics),* >)?
             where
-                __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>: ::core::marker::Unpin
+                __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>: $crate::__reexport::marker::Unpin
                 $(,
                     $($where_clause_ty: $where_clause_bound),*
                 )*
@@ -364,10 +364,10 @@ macro_rules! pin_project {
             // This will result in a compilation error, which is exactly what we want.
             trait MustNotImplDrop {}
             #[allow(clippy::drop_bounds)]
-            impl<T: ::core::ops::Drop> MustNotImplDrop for T {}
+            impl<T: $crate::__reexport::ops::Drop> MustNotImplDrop for T {}
             #[allow(single_use_lifetimes)]
-            impl $(< $( $lifetime $(: $lifetime_bound)? ,)* $($generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*>)? MustNotImplDrop
-                for $ident $(< $($lifetime,)* $($generics),* >)?
+            impl $(< $( $lifetime $(: $lifetime_bound)? ,)* $($generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*>)?
+                MustNotImplDrop for $ident $(< $($lifetime,)* $($generics),* >)?
                 $(where
                     $($where_clause_ty: $where_clause_bound),*
                 )*
@@ -425,7 +425,7 @@ macro_rules! pin_project {
         $field:ident;
         $($mut:ident)?
     ) => {
-        ::core::pin::Pin::new_unchecked(&$($mut)? $this.$field)
+        $crate::__reexport::pin::Pin::new_unchecked(&$($mut)? $this.$field)
     };
     (@make_unsafe_field_proj
         $this:ident;
@@ -441,7 +441,7 @@ macro_rules! pin_project {
         $field_ty:ty;
         $($mut:ident)?
     ) => {
-        ::core::pin::Pin<&'__pin $($mut)? ($field_ty)>
+        $crate::__reexport::pin::Pin<&'__pin $($mut)? ($field_ty)>
     };
     (@make_proj_field
         $field_ty:ty;
@@ -463,4 +463,12 @@ pub mod __private {
     pub struct AlwaysUnpin<T: ?Sized>(PhantomData<T>);
 
     impl<T: ?Sized> Unpin for AlwaysUnpin<T> {}
+}
+
+// Not public API.
+// See tests/overwriting_core_crate.rs for more.
+#[doc(hidden)]
+pub mod __reexport {
+    #[doc(hidden)]
+    pub use core::{marker, ops, pin};
 }
