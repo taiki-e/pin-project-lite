@@ -146,14 +146,13 @@ macro_rules! pin_project {
     // determine_visibility
     (
         $(#[$attrs:meta])*
-        pub struct $ident:ident
-            $(<
-                $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
-                $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),* $(,)?
-            >)?
-            $(where
-                $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
-            )?
+        pub struct $ident:ident $(<
+            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
+            $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),* $(,)?
+        >)?
+        $(where
+            $( $where_clause_ty:ty: $where_clause_bound:path ),* $(,)?
+        )?
         {
             $(
                 $(#[$pin:ident])?
@@ -163,14 +162,13 @@ macro_rules! pin_project {
     ) => {
         $crate::pin_project! {@internal (pub(crate))
             $(#[$attrs])*
-            pub struct $ident
-                $(<
-                    $( $lifetime $(: $lifetime_bound)? ),*
-                    $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ),*
-                >)?
-                $(where
-                    $($where_clause_ty : $where_clause_bound),*
-                )?
+            pub struct $ident $(<
+                $( $lifetime $(: $lifetime_bound)? ),*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ),*
+            >)?
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )?
             {
                 $(
                     $(#[$pin])?
@@ -181,14 +179,13 @@ macro_rules! pin_project {
     };
     (
         $(#[$attrs:meta])*
-        $vis:vis struct $ident:ident
-            $(<
-                $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
-                $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),* $(,)?
-            >)?
-            $(where
-                $($where_clause_ty:ty : $where_clause_bound:path),* $(,)?
-            )?
+        $vis:vis struct $ident:ident $(<
+            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
+            $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),* $(,)?
+        >)?
+        $(where
+            $( $where_clause_ty:ty: $where_clause_bound:path ),* $(,)?
+        )?
         {
             $(
                 $(#[$pin:ident])?
@@ -198,14 +195,13 @@ macro_rules! pin_project {
     ) => {
         $crate::pin_project! {@internal ($vis)
             $(#[$attrs])*
-            $vis struct $ident
-                $(<
-                    $( $lifetime $(: $lifetime_bound)? ),*
-                    $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ),*
-                >)?
-                $(where
-                    $($where_clause_ty : $where_clause_bound),*
-                )?
+            $vis struct $ident $(<
+                $( $lifetime $(: $lifetime_bound)? ),*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ),*
+            >)?
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )?
             {
                 $(
                     $(#[$pin])?
@@ -219,16 +215,15 @@ macro_rules! pin_project {
         // limitation: does not support tuple structs and enums (wontfix)
         // limitation: no projection helper (wontfix)
         $(#[$attrs:meta])*
-        $vis:vis struct $ident:ident
-            $(<
-                $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),*
-                // limitation: does not support multiple trait/lifetime bounds and ? trait bounds.
-                $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),*
-            >)?
-            $(where
-                // limitation: does not support multiple trait/lifetime bounds and ? trait bounds.
-                $($where_clause_ty:ty : $where_clause_bound:path),*
-            )?
+        $vis:vis struct $ident:ident $(<
+            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),*
+            // limitation: does not support multiple trait/lifetime bounds and ? trait bounds.
+            $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),*
+        >)?
+        $(where
+            // limitation: does not support multiple trait/lifetime bounds and ? trait bounds.
+            $( $where_clause_ty:ty: $where_clause_bound:path ),*
+        )?
         {
             $(
                 // limitation: cannot interoperate with other attributes.
@@ -238,48 +233,57 @@ macro_rules! pin_project {
         }
     ) => {
         $(#[$attrs])*
-        $vis struct $ident
-            $(< $( $lifetime $(: $lifetime_bound)? ,)* $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ,)* >)?
-            $(where
-                $($where_clause_ty: $where_clause_bound),*
-            )*
+        $vis struct $ident $(<
+            $( $lifetime $(: $lifetime_bound)? ,)*
+            $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ,)*
+        >)?
+        $(where
+            $( $where_clause_ty: $where_clause_bound ),*
+        )*
         {
             $(
                 $field_vis $field: $field_ty
             ),+
         }
 
-        // limitation: underscore_const_names requires rust 1.37+ (wontfix)
+        #[allow(single_use_lifetimes)]
         const _: () = {
             #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`.
             #[allow(dead_code)] // This lint warns unused fields/variants.
-            $proj_vis struct Projection
-                <'__pin $(, $( $lifetime $(: $lifetime_bound)? ,)* $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* )?>
-                $(where
-                    $($where_clause_ty: $where_clause_bound),*
-                )*
+            $proj_vis struct Projection <'__pin $(,
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            )?>
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )*
             {
                 $(
                     $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty; mut)
                 ),+
             }
             #[allow(dead_code)] // This lint warns unused fields/variants.
-            $proj_vis struct ProjectionRef
-                <'__pin $(, $( $lifetime $(: $lifetime_bound)? ,)* $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* )?>
-                $(where
-                    $($where_clause_ty: $where_clause_bound),*
-                )*
+            $proj_vis struct ProjectionRef <'__pin $(,
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ? $generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            )?>
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )*
             {
                 $(
                     $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty;)
                 ),+
             }
 
-            impl $(< $( $lifetime $(: $lifetime_bound)? ,)* $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* >)?
+            impl $(<
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            >)?
                 $ident $(< $($lifetime,)* $($generics),* >)?
-                $(where
-                    $($where_clause_ty: $where_clause_bound),*
-                )*
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )*
             {
                 $proj_vis fn project<'__pin>(
                     self: $crate::__reexport::pin::Pin<&'__pin mut Self>,
@@ -332,23 +336,28 @@ macro_rules! pin_project {
             // regardless of the privacy of the types of their fields.
             //
             // See also https://github.com/taiki-e/pin-project/pull/53.
-            $vis struct __Origin
-                <'__pin $(, $( $lifetime $(: $lifetime_bound)? ,)* $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* )?>
-                $(where
-                    $($where_clause_ty: $where_clause_bound),*
-                )*
+            $vis struct __Origin <'__pin $(,
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            )?>
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )*
             {
                 __dummy_lifetime: $crate::__reexport::marker::PhantomData<&'__pin ()>,
                 $(
                     $field: $crate::pin_project!(@make_unpin_bound $(#[$pin])? $field_ty)
                 ),+
             }
-            impl <'__pin $(, $( $lifetime $(: $lifetime_bound)? ,)* $($generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* )?>
+            impl <'__pin $(,
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            )?>
                 $crate::__reexport::marker::Unpin for $ident $(< $($lifetime,)* $($generics),* >)?
             where
                 __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>: $crate::__reexport::marker::Unpin
                 $(,
-                    $($where_clause_ty: $where_clause_bound),*
+                    $( $where_clause_ty: $where_clause_bound ),*
                 )*
             {
             }
@@ -365,13 +374,16 @@ macro_rules! pin_project {
             trait MustNotImplDrop {}
             #[allow(clippy::drop_bounds)]
             impl<T: $crate::__reexport::ops::Drop> MustNotImplDrop for T {}
-            #[allow(single_use_lifetimes)]
-            impl $(< $( $lifetime $(: $lifetime_bound)? ,)* $($generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*>)?
+            impl $(<
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            >)?
                 MustNotImplDrop for $ident $(< $($lifetime,)* $($generics),* >)?
-                $(where
-                    $($where_clause_ty: $where_clause_bound),*
-                )*
-            {}
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )*
+            {
+            }
 
             // Ensure that it's impossible to use pin projections on a #[repr(packed)] struct.
             //
@@ -386,17 +398,17 @@ macro_rules! pin_project {
             // a much nicer error above.
             //
             // See https://github.com/taiki-e/pin-project/pull/34 for more details.
-            #[allow(single_use_lifetimes)]
-            #[allow(non_snake_case)]
             #[deny(safe_packed_borrows)]
-            fn __assert_not_repr_packed
-                $(< $($lifetime $(: $lifetime_bound)? ,)* $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),* >)?
+            fn __assert_not_repr_packed $(<
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
+            >)?
             (
                 this: &$ident $(< $($lifetime,)* $($generics),* >)?
             )
-                $(where
-                    $($where_clause_ty: $where_clause_bound),*
-                )*
+            $(where
+                $( $where_clause_ty: $where_clause_bound ),*
+            )*
             {
                 $(
                     &this.$field;
