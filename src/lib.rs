@@ -151,7 +151,7 @@ macro_rules! pin_project {
             $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),* $(,)?
         >)?
         $(where
-            $( $where_clause_ty:ty: $where_clause_bound:path ),* $(,)?
+            $( $where_clause_ty:ty: $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)? ),* $(,)?
         )?
         {
             $(
@@ -167,7 +167,7 @@ macro_rules! pin_project {
                 $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ),*
             >)?
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
             )?
             {
                 $(
@@ -184,7 +184,7 @@ macro_rules! pin_project {
             $( $generics:ident $(: $generics_bound:path)? $(: ?$generics_unsized_bound:path)? $(: $generics_lifetime_bound:lifetime)? $(= $generics_default:ty)? ),* $(,)?
         >)?
         $(where
-            $( $where_clause_ty:ty: $where_clause_bound:path ),* $(,)?
+            $( $where_clause_ty:ty: $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)? ),* $(,)?
         )?
         {
             $(
@@ -200,7 +200,7 @@ macro_rules! pin_project {
                 $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ),*
             >)?
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
             )?
             {
                 $(
@@ -222,7 +222,7 @@ macro_rules! pin_project {
         >)?
         $(where
             // limitation: does not support multiple trait/lifetime bounds and ? trait bounds.
-            $( $where_clause_ty:ty: $where_clause_bound:path ),*
+            $( $where_clause_ty:ty: $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)? ),* $(,)?
         )?
         {
             $(
@@ -238,8 +238,8 @@ macro_rules! pin_project {
             $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? $(= $generics_default)? ,)*
         >)?
         $(where
-            $( $where_clause_ty: $where_clause_bound ),*
-        )*
+            $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+        )?
         {
             $(
                 $field_vis $field: $field_ty
@@ -255,8 +255,8 @@ macro_rules! pin_project {
                 $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
             )?>
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
-            )*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+            )?
             {
                 $(
                     $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty; mut)
@@ -268,8 +268,8 @@ macro_rules! pin_project {
                 $( $generics $(: $generics_bound)? $(: ? $generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
             )?>
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
-            )*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+            )?
             {
                 $(
                     $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty;)
@@ -282,8 +282,8 @@ macro_rules! pin_project {
             >)?
                 $ident $(< $($lifetime,)* $($generics),* >)?
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
-            )*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+            )?
             {
                 $proj_vis fn project<'__pin>(
                     self: $crate::__reexport::pin::Pin<&'__pin mut Self>,
@@ -341,8 +341,8 @@ macro_rules! pin_project {
                 $( $generics $(: $generics_bound)? $(: ?$generics_unsized_bound)? $(: $generics_lifetime_bound)? ),*
             )?>
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
-            )*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+            )?
             {
                 __dummy_lifetime: $crate::__reexport::marker::PhantomData<&'__pin ()>,
                 $(
@@ -357,8 +357,8 @@ macro_rules! pin_project {
             where
                 __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>: $crate::__reexport::marker::Unpin
                 $(,
-                    $( $where_clause_ty: $where_clause_bound ),*
-                )*
+                    $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+                )?
             {
             }
 
@@ -380,8 +380,8 @@ macro_rules! pin_project {
             >)?
                 MustNotImplDrop for $ident $(< $($lifetime,)* $($generics),* >)?
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
-            )*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+            )?
             {
             }
 
@@ -407,8 +407,8 @@ macro_rules! pin_project {
                 this: &$ident $(< $($lifetime,)* $($generics),* >)?
             )
             $(where
-                $( $where_clause_ty: $where_clause_bound ),*
-            )*
+                $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
+            )?
             {
                 $(
                     &this.$field;

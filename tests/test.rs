@@ -72,20 +72,18 @@ fn where_clause_and_associated_type_field() {
         }
     }
 
-    // TODO(#7): where clause does not support yet.
+    pin_project! {
+        pub struct Struct3<T>
+        where
+            T: 'static,
+        {
+            field: T,
+        }
+    }
 
-    // pin_project! {
-    //     pub struct Struct3<T>
-    //     where
-    //         T: 'static,
-    //     {
-    //         field: T,
-    //     }
-    // }
+    trait Static: 'static {}
 
-    // trait Static: 'static {}
-
-    // impl<T> Static for Struct3<T> {}
+    impl<T> Static for Struct3<T> {}
 }
 
 #[test]
