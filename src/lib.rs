@@ -143,6 +143,15 @@
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
 #[macro_export]
 macro_rules! pin_project {
+    ($($tt:tt)*) => {
+        $crate::__pin_project_internal! { $($tt)* }
+    };
+}
+
+// Not public API.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __pin_project_internal {
     // determine_visibility
     (
         $(#[$attrs:meta])*
@@ -160,7 +169,7 @@ macro_rules! pin_project {
             ),+ $(,)?
         }
     ) => {
-        $crate::pin_project! {@internal (pub(crate))
+        $crate::__pin_project_internal! { @internal (pub(crate))
             $(#[$attrs])*
             pub struct $ident $(<
                 $( $lifetime $(: $lifetime_bound)? ),*
@@ -193,7 +202,7 @@ macro_rules! pin_project {
             ),+ $(,)?
         }
     ) => {
-        $crate::pin_project! {@internal ($vis)
+        $crate::__pin_project_internal! { @internal ($vis)
             $(#[$attrs])*
             $vis struct $ident $(<
                 $( $lifetime $(: $lifetime_bound)? ),*
@@ -259,7 +268,7 @@ macro_rules! pin_project {
             )?
             {
                 $(
-                    $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty; mut)
+                    $field_vis $field: $crate::__pin_project_internal!(@make_proj_field $(#[$pin])? $field_ty; mut)
                 ),+
             }
             #[allow(dead_code)] // This lint warns unused fields/variants.
@@ -272,7 +281,7 @@ macro_rules! pin_project {
             )?
             {
                 $(
-                    $field_vis $field: $crate::pin_project!(@make_proj_field $(#[$pin])? $field_ty;)
+                    $field_vis $field: $crate::__pin_project_internal!(@make_proj_field $(#[$pin])? $field_ty;)
                 ),+
             }
 
@@ -292,7 +301,7 @@ macro_rules! pin_project {
                         let this = self.get_unchecked_mut();
                         Projection {
                             $(
-                                $field: $crate::pin_project!(@make_unsafe_field_proj this; $(#[$pin])? $field; mut)
+                                $field: $crate::__pin_project_internal!(@make_unsafe_field_proj this; $(#[$pin])? $field; mut)
                             ),+
                         }
                     }
@@ -304,7 +313,7 @@ macro_rules! pin_project {
                         let this = self.get_ref();
                         ProjectionRef {
                             $(
-                                $field: $crate::pin_project!(@make_unsafe_field_proj this; $(#[$pin])? $field;)
+                                $field: $crate::__pin_project_internal!(@make_unsafe_field_proj this; $(#[$pin])? $field;)
                             ),+
                         }
                     }
@@ -346,7 +355,7 @@ macro_rules! pin_project {
             {
                 __dummy_lifetime: $crate::__reexport::marker::PhantomData<&'__pin ()>,
                 $(
-                    $field: $crate::pin_project!(@make_unpin_bound $(#[$pin])? $field_ty)
+                    $field: $crate::__pin_project_internal!(@make_unpin_bound $(#[$pin])? $field_ty)
                 ),+
             }
             impl <'__pin $(,
