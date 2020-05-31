@@ -2,6 +2,8 @@
 //!
 //! ## Examples
 //!
+//! [`pin_project!`] macro creates a projection type covering all the fields of struct.
+//!
 //! ```rust
 //! use pin_project_lite::pin_project;
 //! use std::pin::Pin;
@@ -15,7 +17,7 @@
 //! }
 //!
 //! impl<T, U> Struct<T, U> {
-//!     fn foo(self: Pin<&mut Self>) {
+//!     fn method(self: Pin<&mut Self>) {
 //!         let this = self.project();
 //!         let _: Pin<&mut T> = this.pinned; // Pinned reference to the field
 //!         let _: &mut U = this.unpinned; // Normal reference to the field
@@ -77,15 +79,14 @@
 // mem::take and #[non_exhaustive] requires Rust 1.40
 #![allow(clippy::mem_replace_with_default, clippy::manual_non_exhaustive)]
 
-/// A macro that creates a projection struct covering all the fields.
+/// A macro that creates a projection type covering all the fields of struct.
 ///
-/// This macro creates a projection struct according to the following rules:
+/// This macro creates a projection type according to the following rules:
 ///
-/// - For the field that uses `#[pin]` attribute, makes the pinned reference to
-/// the field.
-/// - For the other fields, makes the unpinned reference to the field.
+/// * For the field that uses `#[pin]` attribute, makes the pinned reference to the field.
+/// * For the other fields, makes the unpinned reference to the field.
 ///
-/// The following methods are implemented on the original type:
+/// And the following methods are implemented on the original type:
 ///
 /// ```
 /// # use std::pin::Pin;
@@ -100,10 +101,6 @@
 /// The visibility of the projected type and projection method is based on the
 /// original type. However, if the visibility of the original type is `pub`,
 /// the visibility of the projected type and the projection method is `pub(crate)`.
-///
-/// If you want to call the `project` method multiple times or later use the
-/// original Pin type, it needs to use [`.as_mut()`][`Pin::as_mut`] to avoid
-/// consuming the `Pin`.
 ///
 /// ## Safety
 ///
@@ -127,7 +124,7 @@
 /// }
 ///
 /// impl<T, U> Struct<T, U> {
-///     fn foo(self: Pin<&mut Self>) {
+///     fn method(self: Pin<&mut Self>) {
 ///         let this = self.project();
 ///         let _: Pin<&mut T> = this.pinned; // Pinned reference to the field
 ///         let _: &mut U = this.unpinned; // Normal reference to the field
@@ -135,12 +132,13 @@
 /// }
 /// ```
 ///
-/// Note that borrowing the field where `#[pin]` attribute is used multiple
-/// times requires using [`.as_mut()`][`Pin::as_mut`] to avoid
-/// consuming the `Pin`.
+/// If you want to call the `project()` method multiple times or later use the
+/// original [`Pin`] type, it needs to use [`.as_mut()`][`Pin::as_mut`] to avoid
+/// consuming the [`Pin`].
 ///
-/// [pin-project]: https://github.com/taiki-e/pin-project
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
+/// [`Pin`]: core::pin::Pin
+/// [pin-project]: https://github.com/taiki-e/pin-project
 #[macro_export]
 macro_rules! pin_project {
     ($($tt:tt)*) => {

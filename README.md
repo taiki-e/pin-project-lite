@@ -29,6 +29,8 @@ The current pin-project-lite requires Rust 1.37 or later.
 
 ## Examples
 
+[`pin_project!`] macro creates a projection type covering all the fields of struct.
+
 ```rust
 use pin_project_lite::pin_project;
 use std::pin::Pin;
@@ -42,7 +44,7 @@ pin_project! {
 }
 
 impl<T, U> Struct<T, U> {
-    fn foo(self: Pin<&mut Self>) {
+    fn method(self: Pin<&mut Self>) {
         let this = self.project();
         let _: Pin<&mut T> = this.pinned; // Pinned reference to the field
         let _: &mut U = this.unpinned; // Normal reference to the field
@@ -90,6 +92,7 @@ pin-project-lite will refuse anything other than a braced struct with named fiel
 [pinned-drop]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#pinned_drop
 [unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/trait.UnsafeUnpin.html
 [projection-helper]: https://docs.rs/pin-project/0.4/pin_project/attr.project.html#let-bindings
+[`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
 
 ## License
 
