@@ -347,7 +347,7 @@ macro_rules! __pin_project_internal {
             )?
             {
                 $proj_vis fn project<'__pin>(
-                    self: $crate::__reexport::pin::Pin<&'__pin mut Self>,
+                    self: $crate::__private::Pin<&'__pin mut Self>,
                 ) -> Projection<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
                         let this = self.get_unchecked_mut();
@@ -361,7 +361,7 @@ macro_rules! __pin_project_internal {
                     }
                 }
                 $proj_vis fn project_ref<'__pin>(
-                    self: $crate::__reexport::pin::Pin<&'__pin Self>,
+                    self: $crate::__private::Pin<&'__pin Self>,
                 ) -> ProjectionRef<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
                         let this = self.get_ref();
@@ -413,7 +413,7 @@ macro_rules! __pin_project_internal {
                 $( $where_clause_ty: $($where_clause_lifetime_bound)? $($where_clause_bound)? ),*
             )?
             {
-                __dummy_lifetime: $crate::__reexport::marker::PhantomData<&'__pin ()>,
+                __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
                 $(
                     $field: $crate::__pin_project_internal!(@make_unpin_bound $(#[$pin])? $field_ty)
                 ),+
@@ -426,10 +426,9 @@ macro_rules! __pin_project_internal {
                     $(: $generics_lifetime_bound)?
                 ),*
             )?>
-                $crate::__reexport::marker::Unpin for $ident $(< $($lifetime,)* $($generics),* >)?
+                $crate::__private::Unpin for $ident $(< $($lifetime,)* $($generics),* >)?
             where
-                __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>:
-                    $crate::__reexport::marker::Unpin
+                __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>: $crate::__private::Unpin
                 $(,
                     $( $where_clause_ty:
                         $($where_clause_lifetime_bound)? $($where_clause_bound)?
@@ -449,7 +448,7 @@ macro_rules! __pin_project_internal {
             // This will result in a compilation error, which is exactly what we want.
             trait MustNotImplDrop {}
             #[allow(clippy::drop_bounds)]
-            impl<T: $crate::__reexport::ops::Drop> MustNotImplDrop for T {}
+            impl<T: $crate::__private::Drop> MustNotImplDrop for T {}
             impl $(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
@@ -521,7 +520,7 @@ macro_rules! __pin_project_internal {
         $field:ident;
         $($mut:ident)?
     ) => {
-        $crate::__reexport::pin::Pin::new_unchecked(&$($mut)? $this.$field)
+        $crate::__private::Pin::new_unchecked(&$($mut)? $this.$field)
     };
     (@make_unsafe_field_proj
         $this:ident;
@@ -537,7 +536,7 @@ macro_rules! __pin_project_internal {
         $field_ty:ty;
         $($mut:ident)?
     ) => {
-        $crate::__reexport::pin::Pin<&'__pin $($mut)? ($field_ty)>
+        $crate::__private::Pin<&'__pin $($mut)? ($field_ty)>
     };
     (@make_proj_field
         $field_ty:ty;
@@ -552,19 +551,16 @@ macro_rules! __pin_project_internal {
 // Not public API.
 #[doc(hidden)]
 pub mod __private {
-    use core::marker::PhantomData;
+    #[doc(hidden)]
+    pub use core::{
+        marker::{PhantomData, Unpin},
+        ops::Drop,
+        pin::Pin,
+    };
 
     // This is an internal helper struct used by `pin_project!`.
     #[doc(hidden)]
     pub struct AlwaysUnpin<T: ?Sized>(PhantomData<T>);
 
     impl<T: ?Sized> Unpin for AlwaysUnpin<T> {}
-}
-
-// Not public API.
-// See tests/overwriting_core_crate.rs for more.
-#[doc(hidden)]
-pub mod __reexport {
-    #[doc(hidden)]
-    pub use core::{marker, ops, pin};
 }
