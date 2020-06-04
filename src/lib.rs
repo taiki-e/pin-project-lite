@@ -173,8 +173,10 @@ macro_rules! __pin_project_internal {
             ),* $(,)?
         >)?
         $(where
-            $( $where_clause_ty:ty:
-                $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)?
+            $( $where_clause_ty:ty
+                $(: $where_clause_bound:path)?
+                $(: ?$where_clause_unsized_bound:path)?
+                $(: $where_clause_lifetime_bound:lifetime)?
             ),* $(,)?
         )?
         {
@@ -196,8 +198,10 @@ macro_rules! __pin_project_internal {
                 ),*
             >)?
             $(where
-                $( $where_clause_ty:
-                    $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                $( $where_clause_ty
+                    $(: $where_clause_bound)?
+                    $(: ?$where_clause_unsized_bound)?
+                    $(: $where_clause_lifetime_bound)?
                 ),*
             )?
             {
@@ -220,8 +224,10 @@ macro_rules! __pin_project_internal {
             ),* $(,)?
         >)?
         $(where
-            $( $where_clause_ty:ty:
-                $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)?
+            $( $where_clause_ty:ty
+                $(: $where_clause_bound:path)?
+                $(: ?$where_clause_unsized_bound:path)?
+                $(: $where_clause_lifetime_bound:lifetime)?
             ),* $(,)?
         )?
         {
@@ -243,8 +249,10 @@ macro_rules! __pin_project_internal {
                 ),*
             >)?
             $(where
-                $( $where_clause_ty:
-                    $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                $( $where_clause_ty
+                    $(: $where_clause_bound)?
+                    $(: ?$where_clause_unsized_bound)?
+                    $(: $where_clause_lifetime_bound)?
                 ),*
             )?
             {
@@ -268,8 +276,10 @@ macro_rules! __pin_project_internal {
             ),*
         >)?
         $(where
-            $( $where_clause_ty:ty:
-                $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)?
+            $( $where_clause_ty:ty
+                $(: $where_clause_bound:path)?
+                $(: ?$where_clause_unsized_bound:path)?
+                $(: $where_clause_lifetime_bound:lifetime)?
             ),*
         )?
         {
@@ -290,8 +300,10 @@ macro_rules! __pin_project_internal {
             ),*
         >)?
         $(where
-            $( $where_clause_ty:
-                $($where_clause_lifetime_bound)? $($where_clause_bound)?
+            $( $where_clause_ty
+                $(: $where_clause_bound)?
+                $(: ?$where_clause_unsized_bound)?
+                $(: $where_clause_lifetime_bound)?
             ),*
         )?
         {
@@ -314,8 +326,10 @@ macro_rules! __pin_project_internal {
                     ),*
                 >)?
                 $(where
-                    $( $where_clause_ty:
-                        $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                    $( $where_clause_ty
+                        $(: $where_clause_bound)?
+                        $(: ?$where_clause_unsized_bound)?
+                        $(: $where_clause_lifetime_bound)?
                     ),*
                 )?
                 {
@@ -336,8 +350,10 @@ macro_rules! __pin_project_internal {
             >)?
                 $ident $(< $($lifetime,)* $($generics),* >)?
             $(where
-                $( $where_clause_ty:
-                    $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                $( $where_clause_ty
+                    $(: $where_clause_bound)?
+                    $(: ?$where_clause_unsized_bound)?
+                    $(: $where_clause_lifetime_bound)?
                 ),*
             )?
             {
@@ -405,8 +421,10 @@ macro_rules! __pin_project_internal {
                 ),*
             )?>
             $(where
-                $( $where_clause_ty:
-                    $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                $( $where_clause_ty
+                    $(: $where_clause_bound)?
+                    $(: ?$where_clause_unsized_bound)?
+                    $(: $where_clause_lifetime_bound)?
                 ),*
             )?
             {
@@ -429,8 +447,10 @@ macro_rules! __pin_project_internal {
             where
                 __Origin <'__pin $(, $($lifetime,)* $($generics),* )?>: $crate::__private::Unpin
                 $(,
-                    $( $where_clause_ty:
-                        $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                    $( $where_clause_ty
+                        $(: $where_clause_bound)?
+                        $(: ?$where_clause_unsized_bound)?
+                        $(: $where_clause_lifetime_bound)?
                     ),*
                 )?
             {
@@ -458,8 +478,10 @@ macro_rules! __pin_project_internal {
             >)?
                 MustNotImplDrop for $ident $(< $($lifetime,)* $($generics),* >)?
             $(where
-                $( $where_clause_ty:
-                    $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                $( $where_clause_ty
+                    $(: $where_clause_bound)?
+                    $(: ?$where_clause_unsized_bound)?
+                    $(: $where_clause_lifetime_bound)?
                 ),*
             )?
             {
@@ -491,8 +513,10 @@ macro_rules! __pin_project_internal {
                 this: &$ident $(< $($lifetime,)* $($generics),* >)?
             )
             $(where
-                $( $where_clause_ty:
-                    $($where_clause_lifetime_bound)? $($where_clause_bound)?
+                $( $where_clause_ty
+                    $(: $where_clause_bound)?
+                    $(: ?$where_clause_unsized_bound)?
+                    $(: $where_clause_lifetime_bound)?
                 ),*
             )?
             {
@@ -515,8 +539,10 @@ macro_rules! __pin_project_internal {
             ),*
         >)?
         where
-            $( $where_clause_ty:ty:
-                $($where_clause_lifetime_bound:lifetime)? $($where_clause_bound:path)?
+            $( $where_clause_ty:ty
+                $(: $where_clause_bound:path)?
+                $(: ?$where_clause_unsized_bound:path)?
+                $(: $where_clause_lifetime_bound:lifetime)?
             ),*
         {
             $(
@@ -538,8 +564,10 @@ macro_rules! __pin_project_internal {
         )?>
         where
             $ident $(< $($lifetime,)* $($generics),* >)?: '__pin,
-            $( $where_clause_ty:
-                $($where_clause_lifetime_bound)? $($where_clause_bound)?
+            $( $where_clause_ty
+                $(: $where_clause_bound)?
+                $(: ?$where_clause_unsized_bound)?
+                $(: $where_clause_lifetime_bound)?
             ),*
         {
             $(
@@ -560,8 +588,10 @@ macro_rules! __pin_project_internal {
         )?>
         where
             $ident $(< $($lifetime,)* $($generics),* >)?: '__pin,
-            $( $where_clause_ty:
-                $($where_clause_lifetime_bound)? $($where_clause_bound)?
+            $( $where_clause_ty
+                $(: $where_clause_bound)?
+                $(: ?$where_clause_unsized_bound)?
+                $(: $where_clause_lifetime_bound)?
             ),*
         {
             $(

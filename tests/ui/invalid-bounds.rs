@@ -1,13 +1,13 @@
 use pin_project_lite::pin_project;
 
 pin_project! {
-    struct Generics1<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
+    struct Generics1<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
         field: T,
     }
 }
 
 pin_project! {
-    struct Generics2<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
+    struct Generics2<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
         field: T,
     }
 }
@@ -39,7 +39,7 @@ pin_project! {
 pin_project! {
     struct WhereClause1<T>
     where
-        T: 'static Sized //~ ERROR expected `where`, or `{` after struct name, found `Sized`
+        T: 'static : Sized //~ ERROR no rules expected the token `:`
     {
         field: T,
     }
@@ -48,7 +48,43 @@ pin_project! {
 pin_project! {
     struct WhereClause2<T>
     where
-        T: Sized 'static //~ ERROR no rules expected the token `'static`
+        T: 'static : ?Sized //~ ERROR no rules expected the token `:`
+    {
+        field: T,
+    }
+}
+
+pin_project! {
+    struct WhereClause3<T>
+    where
+        T: Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
+    {
+        field: T,
+    }
+}
+
+pin_project! {
+    struct WhereClause4<T>
+    where
+        T: ?Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
+    {
+        field: T,
+    }
+}
+
+pin_project! {
+    struct WhereClause5<T>
+    where
+        T: Sized : ?Sized //~ ERROR expected `where`, or `{` after struct name, found `:`
+    {
+        field: T,
+    }
+}
+
+pin_project! {
+    struct WhereClause6<T>
+    where
+        T: ?Sized : Sized //~ ERROR no rules expected the token `Sized`
     {
         field: T,
     }

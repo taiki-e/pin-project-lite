@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+* Support ?Sized bounds in where clauses.
+
 * Fix lifetime inference error when an associated type is used in fields.
 
 * Suppress `clippy::used_underscore_binding` lint in generated code.

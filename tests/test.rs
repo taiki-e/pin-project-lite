@@ -312,28 +312,28 @@ fn dst() {
     let _y: Pin<&mut (dyn core::fmt::Debug + Unpin)> = x.project().x;
 }
 
-// #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
-// #[test]
-// fn unsized_in_where_clause() {
-//     pin_project! {
-//         struct Struct3<T>
-//         where
-//             I: ?Sized,
-//         {
-//             x: T,
-//         }
-//     }
+#[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
+#[test]
+fn unsized_in_where_clause() {
+    pin_project! {
+        struct Struct3<T>
+        where
+            T: ?Sized,
+        {
+            x: T,
+        }
+    }
 
-//     pin_project! {
-//         struct Struct4<T>
-//         where
-//             I: ?Sized,
-//         {
-//             #[pin]
-//             x: T,
-//         }
-//     }
-// }
+    pin_project! {
+        struct Struct4<T>
+        where
+            T: ?Sized,
+        {
+            #[pin]
+            x: T,
+        }
+    }
+}
 
 #[test]
 fn dyn_type() {

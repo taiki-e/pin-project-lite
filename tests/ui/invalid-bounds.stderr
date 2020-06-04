@@ -1,13 +1,13 @@
 error: no rules expected the token `:`
  --> $DIR/invalid-bounds.rs:4:33
   |
-4 |     struct Generics1<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
+4 |     struct Generics1<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
   |                                 ^ no rules expected this token in macro call
 
 error: no rules expected the token `:`
   --> $DIR/invalid-bounds.rs:10:33
    |
-10 |     struct Generics2<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
+10 |     struct Generics2<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
    |                                 ^ no rules expected this token in macro call
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
@@ -64,16 +64,28 @@ error: no rules expected the token `Sized`
 34 |     struct Generics6<T: ?Sized : Sized> { //~ ERROR no rules expected the token `Sized`
    |                                  ^^^^^ no rules expected this token in macro call
 
-error: expected `where`, or `{` after struct name, found `Sized`
-  --> $DIR/invalid-bounds.rs:39:1
+error: no rules expected the token `:`
+  --> $DIR/invalid-bounds.rs:42:20
    |
-39 | / pin_project! {
-40 | |     struct WhereClause1<T>
-41 | |     where
-42 | |         T: 'static Sized //~ ERROR expected `where`, or `{` after struct name, found `Sized`
+42 |         T: 'static : Sized //~ ERROR no rules expected the token `:`
+   |                    ^ no rules expected this token in macro call
+
+error: no rules expected the token `:`
+  --> $DIR/invalid-bounds.rs:51:20
+   |
+51 |         T: 'static : ?Sized //~ ERROR no rules expected the token `:`
+   |                    ^ no rules expected this token in macro call
+
+error: expected `where`, or `{` after struct name, found `:`
+  --> $DIR/invalid-bounds.rs:57:1
+   |
+57 | / pin_project! {
+58 | |     struct WhereClause3<T>
+59 | |     where
+60 | |         T: Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-45 | |     }
-46 | | }
+63 | |     }
+64 | | }
    | | ^
    | | |
    | |_expected `where`, or `{` after struct name
@@ -81,8 +93,42 @@ error: expected `where`, or `{` after struct name, found `Sized`
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `'static`
-  --> $DIR/invalid-bounds.rs:51:18
+error: expected `where`, or `{` after struct name, found `:`
+  --> $DIR/invalid-bounds.rs:66:1
    |
-51 |         T: Sized 'static //~ ERROR no rules expected the token `'static`
-   |                  ^^^^^^^ no rules expected this token in macro call
+66 | / pin_project! {
+67 | |     struct WhereClause4<T>
+68 | |     where
+69 | |         T: ?Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
+...  |
+72 | |     }
+73 | | }
+   | | ^
+   | | |
+   | |_expected `where`, or `{` after struct name
+   |   in this macro invocation
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected `where`, or `{` after struct name, found `:`
+  --> $DIR/invalid-bounds.rs:75:1
+   |
+75 | / pin_project! {
+76 | |     struct WhereClause5<T>
+77 | |     where
+78 | |         T: Sized : ?Sized //~ ERROR expected `where`, or `{` after struct name, found `:`
+...  |
+81 | |     }
+82 | | }
+   | | ^
+   | | |
+   | |_expected `where`, or `{` after struct name
+   |   in this macro invocation
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: no rules expected the token `Sized`
+  --> $DIR/invalid-bounds.rs:87:21
+   |
+87 |         T: ?Sized : Sized //~ ERROR no rules expected the token `Sized`
+   |                     ^^^^^ no rules expected this token in macro call
