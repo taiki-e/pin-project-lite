@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+* Fix lifetime inference error when an associated type is used in fields.
+
 ## [0.1.6] - 2020-05-31
 
 * [Support lifetime bounds in where clauses.][18]

@@ -17,6 +17,3 @@ pin_project! {
         unpinned: U,
     }
 }
-
-#[test]
-fn test() {}
