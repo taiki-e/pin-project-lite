@@ -301,6 +301,7 @@ macro_rules! __pin_project_internal {
         }
 
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
+        #[allow(clippy::used_underscore_binding)]
         const _: () = {
             $crate::__pin_project_internal! { @make_proj_ty ($proj_vis)
                 $vis struct $ident $(<
