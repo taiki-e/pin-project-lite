@@ -9,7 +9,7 @@
 [crates-url]: https://crates.io/crates/pin-project-lite
 [docs-badge]: https://docs.rs/pin-project-lite/badge.svg
 [docs-url]: https://docs.rs/pin-project-lite
-[license-badge]: https://img.shields.io/crates/l/pin-project-lite.svg
+[license-badge]: https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg
 [license]: #license
 [rustc-badge]: https://img.shields.io/badge/rustc-1.37+-lightgray.svg
 [rustc-url]: https://blog.rust-lang.org/2019/08/15/Rust-1.37.0.html
@@ -78,21 +78,22 @@ pin-project-lite will refuse anything other than a braced struct with named fiel
 
 ### Different: No support for custom Drop implementation
 
-[pin-project supports this.][pinned-drop]
+pin-project supports this by [`#[pinned_drop]`][pinned-drop].
 
 ### Different: No support for custom Unpin implementation
 
-[pin-project supports this.][unsafe-unpin]
+pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-unpin].
 
 ### Different: No support for pattern matching and destructing
 
-[pin-project supports this.][projection-helper]
+[pin-project supports this.][naming]
 
+[`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
+[naming]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html
+[not-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unpin
 [pin-project]: https://github.com/taiki-e/pin-project
 [pinned-drop]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#pinned_drop
-[unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/trait.UnsafeUnpin.html
-[projection-helper]: https://docs.rs/pin-project/0.4/pin_project/attr.project.html#let-bindings
-[`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
+[unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unsafeunpin
 
 ## License
 

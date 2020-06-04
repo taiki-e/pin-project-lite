@@ -51,20 +51,22 @@
 //!
 //! ### Different: No support for custom Drop implementation
 //!
-//! [pin-project supports this.][pinned-drop]
+//! pin-project supports this by [`#[pinned_drop]`][pinned-drop].
 //!
 //! ### Different: No support for custom Unpin implementation
 //!
-//! [pin-project supports this.][unsafe-unpin]
+//! pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-unpin].
 //!
 //! ### Different: No support for pattern matching and destructing
 //!
-//! [pin-project supports this.][projection-helper]
+//! [pin-project supports this.][naming]
 //!
+//! [`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
+//! [naming]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html
+//! [not-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unpin
 //! [pin-project]: https://github.com/taiki-e/pin-project
 //! [pinned-drop]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#pinned_drop
-//! [unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/trait.UnsafeUnpin.html
-//! [projection-helper]: https://docs.rs/pin-project/0.4/pin_project/attr.project.html#let-bindings
+//! [unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unsafeunpin
 
 #![no_std]
 #![recursion_limit = "256"]
@@ -136,6 +138,25 @@
 /// original [`Pin`] type, it needs to use [`.as_mut()`][`Pin::as_mut`] to avoid
 /// consuming the [`Pin`].
 ///
+/// If you want to ensure that [`Unpin`] is not implemented, use `#[pin]`
+/// attribute for a [`PhantomPinned`] field.
+///
+/// ```rust
+/// use pin_project_lite::pin_project;
+/// use std::marker::PhantomPinned;
+///
+/// pin_project! {
+///     struct Struct<T> {
+///         field: T,
+///         #[pin]
+///         _pin: PhantomPinned,
+///     }
+/// }
+/// ```
+///
+/// Note that using [`PhantomPinned`] without `#[pin]` attribute has no effect.
+///
+/// [`PhantomPinned`]: core::marker::PhantomPinned
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
 /// [`Pin`]: core::pin::Pin
 /// [pin-project]: https://github.com/taiki-e/pin-project
@@ -150,10 +171,9 @@ macro_rules! pin_project {
 // * no support for tuple structs and enums.
 // * no support for naming the projection types.
 // * no support for multiple trait/lifetime bounds.
-// * no support for ? trait bounds in where clauses.
 // * no support for `Self` in where clauses.
-// * no interoperability with other attributes.
 // * no support for overlapping lifetime names.
+// * no interoperability with other field attributes.
 // etc...
 
 // Not public API.
