@@ -6,13 +6,18 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
-* Support `?Sized` bounds in where clauses.
+## [0.1.7] - 2020-06-04
 
-* Fix lifetime inference error when an associated type is used in fields.
+* [Support `?Sized` bounds in where clauses.][22]
+
+* [Fix lifetime inference error when an associated type is used in fields.][20]
 
 * Suppress `clippy::used_underscore_binding` lint in generated code.
 
 * Documentation improvements.
+
+[20]: https://github.com/taiki-e/pin-project-lite/pull/20
+[22]: https://github.com/taiki-e/pin-project-lite/pull/22
 
 ## [0.1.6] - 2020-05-31
 
@@ -56,7 +61,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.6...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.7...HEAD
+[0.1.7]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.3...v0.1.4
