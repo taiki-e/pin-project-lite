@@ -40,9 +40,17 @@ jobs:
         if: matrix.rust == 'nightly'
         run: |
           cargo install cargo-hack
+      - name: Add targets
+        if: matrix.rust == 'nightly'
+        run: |
+          rustup target add thumbv7m-none-eabi
       - name: cargo test
         run: |
           cargo test --all
+      - name: cargo check (no-std)
+        if: matrix.rust == 'nightly'
+        run: |
+          cargo check --target thumbv7m-none-eabi --manifest-path tests/no-std/Cargo.toml
       - name: cargo check (minimal versions)
         if: matrix.rust == 'nightly'
         run: |
