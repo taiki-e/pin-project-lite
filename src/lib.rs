@@ -69,7 +69,6 @@
 //! [unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unsafeunpin
 
 #![no_std]
-#![recursion_limit = "256"]
 #![doc(html_root_url = "https://docs.rs/pin-project-lite/0.1.7")]
 #![doc(test(
     no_crate_inject,
