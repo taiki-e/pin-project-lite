@@ -1,6 +1,6 @@
 //! A lightweight version of [pin-project] written with declarative macros.
 //!
-//! ## Examples
+//! # Examples
 //!
 //! [`pin_project!`] macro creates a projection type covering all the fields of struct.
 //!
@@ -25,39 +25,39 @@
 //! }
 //! ```
 //!
-//! ## [pin-project] vs pin-project-lite
+//! # [pin-project] vs pin-project-lite
 //!
 //! Here are some similarities and differences compared to [pin-project].
 //!
-//! ### Similar: Safety
+//! ## Similar: Safety
 //!
 //! pin-project-lite guarantees safety in much the same way as [pin-project]. Both are completely safe unless you write other unsafe code.
 //!
-//! ### Different: Minimal design
+//! ## Different: Minimal design
 //!
 //! This library does not tackle as expansive of a range of use cases as [pin-project] does. If your use case is not already covered, please use [pin-project].
 //!
-//! ### Different: No proc-macro related dependencies
+//! ## Different: No proc-macro related dependencies
 //!
 //! This is the **only** reason to use this crate. However, **if you already have proc-macro related dependencies in your crate's dependency graph, there is no benefit from using this crate.** (Note: There is almost no difference in the amount of code generated between [pin-project] and pin-project-lite.)
 //!
-//! ### Different: No useful error messages
+//! ## Different: No useful error messages
 //!
 //! This macro does not handle any invalid input. So error messages are not to be useful in most cases. If you do need useful error messages, then upon error you can pass the same input to [pin-project] to receive a helpful description of the compile error.
 //!
-//! ### Different: Structs only
+//! ## Different: Structs only
 //!
 //! pin-project-lite will refuse anything other than a braced struct with named fields. Enums and tuple structs are not supported.
 //!
-//! ### Different: No support for custom Drop implementation
+//! ## Different: No support for custom Drop implementation
 //!
 //! pin-project supports this by [`#[pinned_drop]`][pinned-drop].
 //!
-//! ### Different: No support for custom Unpin implementation
+//! ## Different: No support for custom Unpin implementation
 //!
 //! pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-unpin].
 //!
-//! ### Different: No support for pattern matching and destructing
+//! ## Different: No support for pattern matching and destructing
 //!
 //! [pin-project supports this.][naming]
 //!
@@ -103,14 +103,14 @@
 /// original type. However, if the visibility of the original type is `pub`,
 /// the visibility of the projected type and the projection method is `pub(crate)`.
 ///
-/// ## Safety
+/// # Safety
 ///
 /// `pin_project!` macro guarantees safety in much the same way as [pin-project] crate.
 /// Both are completely safe unless you write other unsafe code.
 ///
 /// See [pin-project] crate for more details.
 ///
-/// ## Examples
+/// # Examples
 ///
 /// ```rust
 /// use pin_project_lite::pin_project;
