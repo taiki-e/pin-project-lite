@@ -46,7 +46,7 @@ jobs:
           rustup target add thumbv7m-none-eabi
       - name: cargo test
         run: |
-          cargo test --all
+          cargo test --all --exclude expandtest
       - name: cargo check (no-std)
         if: matrix.rust == 'nightly'
         run: |
@@ -55,6 +55,24 @@ jobs:
         if: matrix.rust == 'nightly'
         run: |
           . ./ci/check-minimal-versions.sh
+
+  expandtest:
+    name: expandtest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust
+        run: |
+          . ./ci/install-rust.sh
+      - name: Install rustfmt
+        run: |
+          . ./ci/install-component.sh rustfmt
+      - name: Install cargo-expand
+        run: |
+          cargo install cargo-expand
+      - name: cargo test (expandtest)
+        run: |
+          cargo test --manifest-path tests/expand/Cargo.toml
 
   clippy:
     name: clippy
@@ -114,6 +132,7 @@ jobs:
       - clippy
       - rustfmt
       - rustdoc
+      - expandtest
     runs-on: ubuntu-latest
     steps:
       - name: Mark the job as a success
@@ -126,6 +145,7 @@ jobs:
       - clippy
       - rustfmt
       - rustdoc
+      - expandtest
     runs-on: ubuntu-latest
     steps:
       - name: Mark the job as a failure
