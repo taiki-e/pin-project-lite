@@ -403,7 +403,7 @@ macro_rules! __pin_project_internal {
         // which will then comflict with the explicit MustNotImplDrop impl below.
         // This will result in a compilation error, which is exactly what we want.
         trait MustNotImplDrop {}
-        #[allow(clippy::drop_bounds)]
+        #[allow(clippy::drop_bounds, drop_bounds)]
         impl<T: $crate::__private::Drop> MustNotImplDrop for T {}
         impl <$($impl_generics)*> MustNotImplDrop for $ident <$($ty_generics)*>
         $(where
