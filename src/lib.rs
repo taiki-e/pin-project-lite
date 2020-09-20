@@ -446,29 +446,16 @@ macro_rules! __pin_project_internal {
             {
             }
 
-            // Ensure that struct does not implement `Drop`.
-            //
-            // There are two possible cases:
-            // 1. The user type does not implement Drop. In this case,
-            // the first blanked impl will not apply to it. This code
-            // will compile, as there is only one impl of MustNotImplDrop for the user type
-            // 2. The user type does impl Drop. This will make the blanket impl applicable,
-            // which will then comflict with the explicit MustNotImplDrop impl below.
-            // This will result in a compilation error, which is exactly what we want.
-            trait MustNotImplDrop {}
-            #[allow(clippy::drop_bounds)]
-            impl<T: $crate::__private::Drop> MustNotImplDrop for T {}
-            impl $(<
-                $( $generics
-                    $(: $generics_bound)?
-                    $(: ?$generics_unsized_bound)?
-                    $(: $generics_lifetime_bound)?
-                ),*
-            >)?
-                MustNotImplDrop for $ident $(< $($generics),* >)?
-            $(where
-                $( $where_clause )* )?
-            {
+            $crate::__pin_project_internal! { @make_drop_impl;
+                [$ident $(<
+                    $( $generics
+                        $(: $generics_bound)?
+                        $(: ?$generics_unsized_bound)?
+                        $(: $generics_lifetime_bound)?
+                    ),*
+                >)?]
+                [$(where
+                    $( $where_clause )* )?]
             }
 
             // Ensure that it's impossible to use pin projections on a #[repr(packed)] struct.
@@ -564,6 +551,45 @@ macro_rules! __pin_project_internal {
                     $(#[$pin])? $field_ty;
                 )
             ),+
+        }
+    };
+
+    // =============================================================================================
+    // make_drop_impl
+    (@make_drop_impl;
+        [$ident:ident $(<
+            $( $generics:tt
+                $(: $generics_bound:path)?
+                $(: ?$generics_unsized_bound:path)?
+                $(: $generics_lifetime_bound:lifetime)?
+            ),*
+        >)?]
+        [$(where
+            $( $where_clause:tt )* )?]
+    ) => {
+        // Ensure that struct does not implement `Drop`.
+        //
+        // There are two possible cases:
+        // 1. The user type does not implement Drop. In this case,
+        // the first blanked impl will not apply to it. This code
+        // will compile, as there is only one impl of MustNotImplDrop for the user type
+        // 2. The user type does impl Drop. This will make the blanket impl applicable,
+        // which will then comflict with the explicit MustNotImplDrop impl below.
+        // This will result in a compilation error, which is exactly what we want.
+        trait MustNotImplDrop {}
+        #[allow(clippy::drop_bounds)]
+        impl<T: $crate::__private::Drop> MustNotImplDrop for T {}
+        impl $(<
+            $( $generics
+                $(: $generics_bound)?
+                $(: ?$generics_unsized_bound)?
+                $(: $generics_lifetime_bound)?
+            ),*
+        >)?
+            MustNotImplDrop for $ident $(< $($generics),* >)?
+        $(where
+            $( $where_clause )* )?
+        {
         }
     };
 
