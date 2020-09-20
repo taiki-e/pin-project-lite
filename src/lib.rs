@@ -174,16 +174,18 @@ macro_rules! pin_project {
 // * no support for tuple structs and enums.
 // * no support for naming the projection types.
 // * no support for multiple trait/lifetime bounds.
-// * no support for `Self` in where clauses.
-// * no support for overlapping lifetime names.
+// * no support for `Self` in where clauses. (wontfix)
+// * no support for overlapping lifetime names. (wontfix)
 // * no interoperability with other field attributes.
+// * no useful error messages. (wontfix)
 // etc...
 
 // Not public API.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __pin_project_internal {
-    // determine_visibility
+    // =============================================================================================
+    // determine_visibility: struct
     (
         $(#[$attrs:meta])*
         pub struct $ident:ident $(<
@@ -283,7 +285,8 @@ macro_rules! __pin_project_internal {
         }
     };
 
-    // struct
+    // =============================================================================================
+    // main: struct
     (@struct_internal; ($proj_vis:vis)
         $(#[$attrs:meta])*
         $vis:vis struct $ident:ident $(<
@@ -333,7 +336,7 @@ macro_rules! __pin_project_internal {
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
-            $crate::__pin_project_internal! { @make_proj_ty; ($proj_vis)
+            $crate::__pin_project_internal! { @make_proj_ty_struct; ($proj_vis)
                 $vis struct $ident $(<
                     $( $generics
                         $(: $generics_bound)?
@@ -539,8 +542,9 @@ macro_rules! __pin_project_internal {
         };
     };
 
-    // make_proj_ty
-    (@make_proj_ty; ($proj_vis:vis)
+    // =============================================================================================
+    // make_proj_ty: struct
+    (@make_proj_ty_struct; ($proj_vis:vis)
         $vis:vis struct $ident:ident $(<
             $( $generics:tt
                 $(: $generics_bound:path)?
@@ -616,6 +620,7 @@ macro_rules! __pin_project_internal {
         }
     };
 
+    // =============================================================================================
     // make_unpin_bound
     (@make_unpin_bound;
         #[pin]
@@ -629,6 +634,7 @@ macro_rules! __pin_project_internal {
         $crate::__private::AlwaysUnpin<$field_ty>
     };
 
+    // =============================================================================================
     // make_unsafe_field_proj
     (@make_unsafe_field_proj;
         #[pin]
@@ -642,6 +648,7 @@ macro_rules! __pin_project_internal {
         $field
     };
 
+    // =============================================================================================
     // make_proj_field
     (@make_proj_field;
         #[pin]
@@ -656,8 +663,6 @@ macro_rules! __pin_project_internal {
     ) => {
         &'__pin $($mut)? ($field_ty)
     };
-
-    // limitation: no useful error messages (wontfix)
 }
 
 // Not public API.
