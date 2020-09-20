@@ -210,8 +210,9 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         }
     ) => {
-        $crate::__pin_project_internal! { @struct_internal; (pub(crate))
-            $(#[$attrs])*
+        $crate::__pin_project_internal! { @struct_internal;
+            [pub(crate)]
+            [$(#[$attrs])*
             pub struct $ident $(<
                 $( $generics
                     $(: $generics_bound)?
@@ -219,14 +220,14 @@ macro_rules! __pin_project_internal {
                     $(: $generics_lifetime_bound)?
                     $(= $generics_default)?
                 ),*
-            >)?
-            $(where
+            >)?]
+            [$(where
                 $( $where_clause_ty
                     $(: $where_clause_bound)?
                     $(: ?$where_clause_unsized_bound)?
                     $(: $where_clause_lifetime_bound)?
                 ),*
-            )?
+            )?]
             {
                 $(
                     $(#[$pin])?
@@ -259,8 +260,9 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         }
     ) => {
-        $crate::__pin_project_internal! { @struct_internal; ($vis)
-            $(#[$attrs])*
+        $crate::__pin_project_internal! { @struct_internal;
+            [$vis]
+            [$(#[$attrs])*
             $vis struct $ident $(<
                 $( $generics
                     $(: $generics_bound)?
@@ -268,14 +270,14 @@ macro_rules! __pin_project_internal {
                     $(: $generics_lifetime_bound)?
                     $(= $generics_default)?
                 ),*
-            >)?
-            $(where
+            >)?]
+            [$(where
                 $( $where_clause_ty
                     $(: $where_clause_bound)?
                     $(: ?$where_clause_unsized_bound)?
                     $(: $where_clause_lifetime_bound)?
                 ),*
-            )?
+            )?]
             {
                 $(
                     $(#[$pin])?
@@ -287,8 +289,9 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     // main: struct
-    (@struct_internal; ($proj_vis:vis)
-        $(#[$attrs:meta])*
+    (@struct_internal;
+        [$proj_vis:vis]
+        [$(#[$attrs:meta])*
         $vis:vis struct $ident:ident $(<
             $( $generics:tt
                 $(: $generics_bound:path)?
@@ -296,14 +299,9 @@ macro_rules! __pin_project_internal {
                 $(: $generics_lifetime_bound:lifetime)?
                 $(= $generics_default:ty)?
             ),*
-        >)?
-        $(where
-            $( $where_clause_ty:ty
-                $(: $where_clause_bound:path)?
-                $(: ?$where_clause_unsized_bound:path)?
-                $(: $where_clause_lifetime_bound:lifetime)?
-            ),*
-        )?
+        >)?]
+        [$(where
+            $( $where_clause:tt )* )?]
         {
             $(
                 $(#[$pin:ident])?
@@ -321,12 +319,7 @@ macro_rules! __pin_project_internal {
             ),*
         >)?
         $(where
-            $( $where_clause_ty
-                $(: $where_clause_bound)?
-                $(: ?$where_clause_unsized_bound)?
-                $(: $where_clause_lifetime_bound)?
-            ),*
-        )?
+            $( $where_clause )* )?
         {
             $(
                 $field_vis $field: $field_ty
@@ -336,22 +329,18 @@ macro_rules! __pin_project_internal {
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
-            $crate::__pin_project_internal! { @make_proj_ty_struct; ($proj_vis)
-                $vis struct $ident $(<
+            $crate::__pin_project_internal! { @make_proj_ty_struct;
+                [$proj_vis]
+                [$vis struct $ident $(<
                     $( $generics
                         $(: $generics_bound)?
                         $(: ?$generics_unsized_bound)?
                         $(: $generics_lifetime_bound)?
                         $(= $generics_default)?
                     ),*
-                >)?
-                $(where
-                    $( $where_clause_ty
-                        $(: $where_clause_bound)?
-                        $(: ?$where_clause_unsized_bound)?
-                        $(: $where_clause_lifetime_bound)?
-                    ),*
-                )?
+                >)?]
+                [$(where
+                    $( $where_clause )* )?]
                 {
                     $(
                         $(#[$pin])?
@@ -369,12 +358,7 @@ macro_rules! __pin_project_internal {
             >)?
                 $ident $(< $($generics),* >)?
             $(where
-                $( $where_clause_ty
-                    $(: $where_clause_bound)?
-                    $(: ?$where_clause_unsized_bound)?
-                    $(: $where_clause_lifetime_bound)?
-                ),*
-            )?
+                $( $where_clause )* )?
             {
                 $proj_vis fn project<'__pin>(
                     self: $crate::__private::Pin<&'__pin mut Self>,
@@ -439,12 +423,7 @@ macro_rules! __pin_project_internal {
                 ),*
             )?>
             $(where
-                $( $where_clause_ty
-                    $(: $where_clause_bound)?
-                    $(: ?$where_clause_unsized_bound)?
-                    $(: $where_clause_lifetime_bound)?
-                ),*
-            )?
+                $( $where_clause )* )?
             {
                 __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
                 $(
@@ -463,13 +442,7 @@ macro_rules! __pin_project_internal {
                 $crate::__private::Unpin for $ident $(< $($generics),* >)?
             where
                 __Origin <'__pin $(, $($generics),* )?>: $crate::__private::Unpin
-                $(,
-                    $( $where_clause_ty
-                        $(: $where_clause_bound)?
-                        $(: ?$where_clause_unsized_bound)?
-                        $(: $where_clause_lifetime_bound)?
-                    ),*
-                )?
+                $(, $( $where_clause )* )?
             {
             }
 
@@ -494,12 +467,7 @@ macro_rules! __pin_project_internal {
             >)?
                 MustNotImplDrop for $ident $(< $($generics),* >)?
             $(where
-                $( $where_clause_ty
-                    $(: $where_clause_bound)?
-                    $(: ?$where_clause_unsized_bound)?
-                    $(: $where_clause_lifetime_bound)?
-                ),*
-            )?
+                $( $where_clause )* )?
             {
             }
 
@@ -528,12 +496,7 @@ macro_rules! __pin_project_internal {
                 this: &$ident $(< $($generics),* >)?
             )
             $(where
-                $( $where_clause_ty
-                    $(: $where_clause_bound)?
-                    $(: ?$where_clause_unsized_bound)?
-                    $(: $where_clause_lifetime_bound)?
-                ),*
-            )?
+                $( $where_clause )* )?
             {
                 $(
                     &this.$field;
@@ -544,22 +507,18 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     // make_proj_ty: struct
-    (@make_proj_ty_struct; ($proj_vis:vis)
-        $vis:vis struct $ident:ident $(<
+    (@make_proj_ty_struct;
+        [$proj_vis:vis]
+        [$vis:vis struct $ident:ident $(<
             $( $generics:tt
                 $(: $generics_bound:path)?
                 $(: ?$generics_unsized_bound:path)?
                 $(: $generics_lifetime_bound:lifetime)?
                 $(= $generics_default:ty)?
             ),*
-        >)?
-        $(where
-            $( $where_clause_ty:ty
-                $(: $where_clause_bound:path)?
-                $(: ?$where_clause_unsized_bound:path)?
-                $(: $where_clause_lifetime_bound:lifetime)?
-            ),*
-        )?
+        >)?]
+        [$(where
+            $( $where_clause:tt )* )?]
         {
             $(
                 $(#[$pin:ident])?
@@ -579,13 +538,7 @@ macro_rules! __pin_project_internal {
         )?>
         where
             $ident $(< $($generics),* >)?: '__pin
-            $(,
-                $( $where_clause_ty
-                    $(: $where_clause_bound)?
-                    $(: ?$where_clause_unsized_bound)?
-                    $(: $where_clause_lifetime_bound)?
-                ),*
-            )?
+            $(, $( $where_clause )* )?
         {
             $(
                 $field_vis $field: $crate::__pin_project_internal!(@make_proj_field;
@@ -604,13 +557,7 @@ macro_rules! __pin_project_internal {
         )?>
         where
             $ident $(< $($generics),* >)?: '__pin
-            $(,
-                $( $where_clause_ty
-                    $(: $where_clause_bound)?
-                    $(: ?$where_clause_unsized_bound)?
-                    $(: $where_clause_lifetime_bound)?
-                ),*
-            )?
+            $(, $( $where_clause )* )?
         {
             $(
                 $field_vis $field: $crate::__pin_project_internal!(@make_proj_field;
