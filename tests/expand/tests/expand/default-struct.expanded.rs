@@ -30,10 +30,10 @@ const _: () = {
             self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
         ) -> Projection<'__pin, T, U> {
             unsafe {
-                let this = self.get_unchecked_mut();
+                let Self { pinned, unpinned } = self.get_unchecked_mut();
                 Projection {
-                    pinned: ::pin_project_lite::__private::Pin::new_unchecked(&mut this.pinned),
-                    unpinned: &mut this.unpinned,
+                    pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
+                    unpinned: unpinned,
                 }
             }
         }
@@ -41,10 +41,10 @@ const _: () = {
             self: ::pin_project_lite::__private::Pin<&'__pin Self>,
         ) -> ProjectionRef<'__pin, T, U> {
             unsafe {
-                let this = self.get_ref();
+                let Self { pinned, unpinned } = self.get_ref();
                 ProjectionRef {
-                    pinned: ::pin_project_lite::__private::Pin::new_unchecked(&this.pinned),
-                    unpinned: &this.unpinned,
+                    pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
+                    unpinned: unpinned,
                 }
             }
         }

@@ -384,11 +384,11 @@ macro_rules! __pin_project_internal {
                     self: $crate::__private::Pin<&'__pin mut Self>,
                 ) -> Projection<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
-                        let this = self.get_unchecked_mut();
+                        let Self { $($field),* } = self.get_unchecked_mut();
                         Projection {
                             $(
                                 $field: $crate::__pin_project_internal!(@make_unsafe_field_proj
-                                    this; $(#[$pin])? $field; mut
+                                    $(#[$pin])? $field
                                 )
                             ),+
                         }
@@ -398,11 +398,11 @@ macro_rules! __pin_project_internal {
                     self: $crate::__private::Pin<&'__pin Self>,
                 ) -> ProjectionRef<'__pin $(, $($lifetime,)* $($generics),* )?> {
                     unsafe {
-                        let this = self.get_ref();
+                        let Self { $($field),* } = self.get_ref();
                         ProjectionRef {
                             $(
                                 $field: $crate::__pin_project_internal!(@make_unsafe_field_proj
-                                    this; $(#[$pin])? $field;
+                                    $(#[$pin])? $field
                                 )
                             ),+
                         }
@@ -697,19 +697,15 @@ macro_rules! __pin_project_internal {
 
     // make_unsafe_field_proj
     (@make_unsafe_field_proj
-        $this:ident;
         #[pin]
-        $field:ident;
-        $($mut:ident)?
+        $field:ident
     ) => {
-        $crate::__private::Pin::new_unchecked(&$($mut)? $this.$field)
+        $crate::__private::Pin::new_unchecked($field)
     };
     (@make_unsafe_field_proj
-        $this:ident;
-        $field:ident;
-        $($mut:ident)?
+        $field:ident
     ) => {
-        &$($mut)? $this.$field
+        $field
     };
 
     // make_proj_field
