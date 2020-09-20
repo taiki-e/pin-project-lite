@@ -209,7 +209,7 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         }
     ) => {
-        $crate::__pin_project_internal! { @internal (pub(crate))
+        $crate::__pin_project_internal! { @struct_internal; (pub(crate))
             $(#[$attrs])*
             pub struct $ident $(<
                 $( $lifetime $(: $lifetime_bound)? ),*
@@ -260,7 +260,7 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         }
     ) => {
-        $crate::__pin_project_internal! { @internal ($vis)
+        $crate::__pin_project_internal! { @struct_internal; ($vis)
             $(#[$attrs])*
             $vis struct $ident $(<
                 $( $lifetime $(: $lifetime_bound)? ),*
@@ -287,7 +287,8 @@ macro_rules! __pin_project_internal {
         }
     };
 
-    (@internal ($proj_vis:vis)
+    // struct
+    (@struct_internal; ($proj_vis:vis)
         $(#[$attrs:meta])*
         $vis:vis struct $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),*
@@ -338,7 +339,7 @@ macro_rules! __pin_project_internal {
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
-            $crate::__pin_project_internal! { @make_proj_ty ($proj_vis)
+            $crate::__pin_project_internal! { @make_proj_ty; ($proj_vis)
                 $vis struct $ident $(<
                     $( $lifetime $(: $lifetime_bound)? ),*
                     $( $generics
@@ -387,7 +388,7 @@ macro_rules! __pin_project_internal {
                         let Self { $($field),* } = self.get_unchecked_mut();
                         Projection {
                             $(
-                                $field: $crate::__pin_project_internal!(@make_unsafe_field_proj
+                                $field: $crate::__pin_project_internal!(@make_unsafe_field_proj;
                                     $(#[$pin])? $field
                                 )
                             ),+
@@ -401,7 +402,7 @@ macro_rules! __pin_project_internal {
                         let Self { $($field),* } = self.get_ref();
                         ProjectionRef {
                             $(
-                                $field: $crate::__pin_project_internal!(@make_unsafe_field_proj
+                                $field: $crate::__pin_project_internal!(@make_unsafe_field_proj;
                                     $(#[$pin])? $field
                                 )
                             ),+
@@ -453,7 +454,7 @@ macro_rules! __pin_project_internal {
             {
                 __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
                 $(
-                    $field: $crate::__pin_project_internal!(@make_unpin_bound
+                    $field: $crate::__pin_project_internal!(@make_unpin_bound;
                         $(#[$pin])? $field_ty
                     )
                 ),+
@@ -551,7 +552,7 @@ macro_rules! __pin_project_internal {
     };
 
     // make_proj_ty
-    (@make_proj_ty ($proj_vis:vis)
+    (@make_proj_ty; ($proj_vis:vis)
         $vis:vis struct $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),*
             $( $generics:ident
@@ -594,7 +595,7 @@ macro_rules! __pin_project_internal {
             ),*
         {
             $(
-                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field
+                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field;
                     $(#[$pin])? $field_ty; mut
                 )
             ),+
@@ -618,13 +619,13 @@ macro_rules! __pin_project_internal {
             ),*
         {
             $(
-                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field
+                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field;
                     $(#[$pin])? $field_ty;
                 )
             ),+
         }
     };
-    (@make_proj_ty ($proj_vis:vis)
+    (@make_proj_ty; ($proj_vis:vis)
         $vis:vis struct $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),*
             $( $generics:ident
@@ -656,7 +657,7 @@ macro_rules! __pin_project_internal {
             $ident $(< $($lifetime,)* $($generics),* >)?: '__pin,
         {
             $(
-                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field
+                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field;
                     $(#[$pin])? $field_ty; mut
                 )
             ),+
@@ -675,7 +676,7 @@ macro_rules! __pin_project_internal {
             $ident $(< $($lifetime,)* $($generics),* >)?: '__pin,
         {
             $(
-                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field
+                $field_vis $field: $crate::__pin_project_internal!(@make_proj_field;
                     $(#[$pin])? $field_ty;
                 )
             ),+
@@ -683,40 +684,40 @@ macro_rules! __pin_project_internal {
     };
 
     // make_unpin_bound
-    (@make_unpin_bound
+    (@make_unpin_bound;
         #[pin]
         $field_ty:ty
     ) => {
         $field_ty
     };
-    (@make_unpin_bound
+    (@make_unpin_bound;
         $field_ty:ty
     ) => {
         $crate::__private::AlwaysUnpin<$field_ty>
     };
 
     // make_unsafe_field_proj
-    (@make_unsafe_field_proj
+    (@make_unsafe_field_proj;
         #[pin]
         $field:ident
     ) => {
         $crate::__private::Pin::new_unchecked($field)
     };
-    (@make_unsafe_field_proj
+    (@make_unsafe_field_proj;
         $field:ident
     ) => {
         $field
     };
 
     // make_proj_field
-    (@make_proj_field
+    (@make_proj_field;
         #[pin]
         $field_ty:ty;
         $($mut:ident)?
     ) => {
         $crate::__private::Pin<&'__pin $($mut)? ($field_ty)>
     };
-    (@make_proj_field
+    (@make_proj_field;
         $field_ty:ty;
         $($mut:ident)?
     ) => {
