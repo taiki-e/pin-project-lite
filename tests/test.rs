@@ -310,11 +310,7 @@ fn dst() {
     let mut x = Struct2 { f: 0_u8 };
     let x: Pin<&mut Struct2<dyn core::fmt::Debug + Unpin>> = Pin::new(&mut x as _);
     let _y: Pin<&mut (dyn core::fmt::Debug + Unpin)> = x.project().f;
-}
 
-#[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
-#[test]
-fn unsized_in_where_clause() {
     pin_project! {
         struct Struct3<T>
         where
@@ -331,6 +327,13 @@ fn unsized_in_where_clause() {
         {
             #[pin]
             f: T,
+        }
+    }
+
+    pin_project! {
+        struct Struct11<'a, T: ?Sized, U: ?Sized> {
+            f1: &'a mut T,
+            f2: U,
         }
     }
 }
@@ -366,19 +369,19 @@ fn dyn_type() {
 
 #[test]
 fn no_infer_outlives() {
-    trait Bar<X> {
+    trait Trait<X> {
         type Y;
     }
 
-    struct Example<A>(A);
+    struct Struct1<A>(A);
 
-    impl<X, T> Bar<X> for Example<T> {
+    impl<X, T> Trait<X> for Struct1<T> {
         type Y = Option<T>;
     }
 
     pin_project! {
-        struct Foo<A, B> {
-            _f: <Example<A> as Bar<B>>::Y,
+        struct Struct2<A, B> {
+            _f: <Struct1<A> as Trait<B>>::Y,
         }
     }
 }

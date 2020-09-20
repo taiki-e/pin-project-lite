@@ -48,7 +48,6 @@ pub mod rustc {
     use pin_project_lite::pin_project;
 
     pin_project! {
-        // #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
         #[derive(Debug)]
         pub struct ExplicitOutlivesRequirementsStruct<'a, T, U>
         where
