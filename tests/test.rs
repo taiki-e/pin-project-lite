@@ -10,30 +10,30 @@ fn projection() {
     pin_project! {
         struct Struct<T, U> {
             #[pin]
-            field1: T,
-            field2: U,
+            f1: T,
+            f2: U,
         }
     }
 
-    let mut s = Struct { field1: 1, field2: 2 };
+    let mut s = Struct { f1: 1, f2: 2 };
     let mut s_orig = Pin::new(&mut s);
     let s = s_orig.as_mut().project();
 
-    let x: Pin<&mut i32> = s.field1;
+    let x: Pin<&mut i32> = s.f1;
     assert_eq!(*x, 1);
 
-    let y: &mut i32 = s.field2;
+    let y: &mut i32 = s.f2;
     assert_eq!(*y, 2);
 
-    assert_eq!(s_orig.as_ref().field1, 1);
-    assert_eq!(s_orig.as_ref().field2, 2);
+    assert_eq!(s_orig.as_ref().f1, 1);
+    assert_eq!(s_orig.as_ref().f2, 2);
 
-    let mut s = Struct { field1: 1, field2: 2 };
+    let mut s = Struct { f1: 1, f2: 2 };
 
     let s = Pin::new(&mut s).project();
 
-    let _: Pin<&mut i32> = s.field1;
-    let _: &mut i32 = s.field2;
+    let _: Pin<&mut i32> = s.f1;
+    let _: &mut i32 = s.f2;
 }
 
 #[test]
@@ -43,7 +43,7 @@ fn where_clause() {
         where
             T: Copy,
         {
-            field: T,
+            f: T,
         }
     }
 }
@@ -56,8 +56,8 @@ fn where_clause_and_associated_type_field() {
             I: Iterator,
         {
             #[pin]
-            field1: I,
-            field2: I::Item,
+            f1: I,
+            f2: I::Item,
         }
     }
 
@@ -67,8 +67,8 @@ fn where_clause_and_associated_type_field() {
             I: Iterator<Item = J>,
         {
             #[pin]
-            field1: I,
-            field2: J,
+            f1: I,
+            f2: J,
         }
     }
 
@@ -77,7 +77,7 @@ fn where_clause_and_associated_type_field() {
         where
             T: 'static,
         {
-            field: T,
+            f: T,
         }
     }
 
@@ -91,7 +91,7 @@ fn derive_copy() {
     pin_project! {
         #[derive(Clone, Copy)]
         struct Struct<T> {
-            val: T,
+            f: T,
         }
     }
 
@@ -106,57 +106,57 @@ fn move_out() {
 
     pin_project! {
         struct Struct {
-            val: NotCopy,
+            f: NotCopy,
         }
     }
 
-    let x = Struct { val: NotCopy };
-    let _val: NotCopy = x.val;
+    let x = Struct { f: NotCopy };
+    let _val: NotCopy = x.f;
 }
 
 #[test]
 fn trait_bounds_on_type_generics() {
     pin_project! {
         pub struct Struct1<'a, T: ?Sized> {
-            field: &'a mut T,
+            f: &'a mut T,
         }
     }
 
     pin_project! {
         pub struct Struct2<'a, T: ::core::fmt::Debug> {
-            field: &'a mut T,
+            f: &'a mut T,
         }
     }
 
     pin_project! {
         pub struct Struct3<'a, T: core::fmt::Debug> {
-            field: &'a mut T,
+            f: &'a mut T,
         }
     }
 
     // pin_project! {
     //     pub struct Struct4<'a, T: core::fmt::Debug + core::fmt::Display> {
-    //         field: &'a mut T,
+    //         f: &'a mut T,
     //     }
     // }
 
     // pin_project! {
     //     pub struct Struct5<'a, T: core::fmt::Debug + ?Sized> {
-    //         field: &'a mut T,
+    //         f: &'a mut T,
     //     }
     // }
 
     pin_project! {
         pub struct Struct6<'a, T: core::fmt::Debug = [u8; 16]> {
-            field: &'a mut T,
+            f: &'a mut T,
         }
     }
 
-    let _: Struct6<'_> = Struct6 { field: &mut [0u8; 16] };
+    let _: Struct6<'_> = Struct6 { f: &mut [0u8; 16] };
 
     pin_project! {
         pub struct Struct7<T: 'static> {
-            field: T,
+            f: T,
         }
     }
 
@@ -166,8 +166,8 @@ fn trait_bounds_on_type_generics() {
 
     pin_project! {
         pub struct Struct8<'a, 'b: 'a> {
-            field1: &'a u8,
-            field2: &'b u8,
+            f1: &'a u8,
+            f2: &'b u8,
         }
     }
 }
@@ -262,20 +262,20 @@ mod visibility {
     use pin_project_lite::pin_project;
 
     pin_project! {
-        pub(crate) struct A {
-            pub b: u8,
+        pub(crate) struct S {
+            pub f: u8,
         }
     }
 }
 
 #[test]
 fn visibility() {
-    let mut x = visibility::A { b: 0 };
+    let mut x = visibility::S { f: 0 };
     let x = Pin::new(&mut x);
     let y = x.as_ref().project_ref();
-    let _: &u8 = y.b;
+    let _: &u8 = y.f;
     let y = x.project();
-    let _: &mut u8 = y.b;
+    let _: &mut u8 = y.f;
 }
 
 #[test]
@@ -283,7 +283,7 @@ fn trivial_bounds() {
     pin_project! {
         pub struct NoGenerics {
             #[pin]
-            field: PhantomPinned,
+            f: PhantomPinned,
         }
     }
 }
@@ -292,24 +292,24 @@ fn trivial_bounds() {
 fn dst() {
     pin_project! {
         pub struct Struct1<T: ?Sized> {
-            x: T,
+            f: T,
         }
     }
 
-    let mut x = Struct1 { x: 0_u8 };
+    let mut x = Struct1 { f: 0_u8 };
     let x: Pin<&mut Struct1<dyn core::fmt::Debug>> = Pin::new(&mut x as _);
-    let _y: &mut (dyn core::fmt::Debug) = x.project().x;
+    let _y: &mut (dyn core::fmt::Debug) = x.project().f;
 
     pin_project! {
         pub struct Struct2<T: ?Sized> {
             #[pin]
-            x: T,
+            f: T,
         }
     }
 
-    let mut x = Struct2 { x: 0_u8 };
+    let mut x = Struct2 { f: 0_u8 };
     let x: Pin<&mut Struct2<dyn core::fmt::Debug + Unpin>> = Pin::new(&mut x as _);
-    let _y: Pin<&mut (dyn core::fmt::Debug + Unpin)> = x.project().x;
+    let _y: Pin<&mut (dyn core::fmt::Debug + Unpin)> = x.project().f;
 }
 
 #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
@@ -320,7 +320,7 @@ fn unsized_in_where_clause() {
         where
             T: ?Sized,
         {
-            x: T,
+            f: T,
         }
     }
 
@@ -330,7 +330,7 @@ fn unsized_in_where_clause() {
             T: ?Sized,
         {
             #[pin]
-            x: T,
+            f: T,
         }
     }
 }
@@ -378,7 +378,7 @@ fn no_infer_outlives() {
 
     pin_project! {
         struct Foo<A, B> {
-            _x: <Example<A> as Bar<B>>::Y,
+            _f: <Example<A> as Bar<B>>::Y,
         }
     }
 }

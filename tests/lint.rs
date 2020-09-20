@@ -44,6 +44,24 @@ pub mod basic {
     include!("include/basic.rs");
 }
 
+pub mod rustc {
+    use pin_project_lite::pin_project;
+
+    pin_project! {
+        // #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
+        #[derive(Debug)]
+        pub struct ExplicitOutlivesRequirementsStruct<'a, T, U>
+        where
+            T: ?Sized,
+            U: ?Sized,
+        {
+            #[pin]
+            pub pinned: &'a mut T,
+            pub unpinned: &'a mut U,
+        }
+    }
+}
+
 pub mod clippy {
     use pin_project_lite::pin_project;
 
