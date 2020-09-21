@@ -261,47 +261,16 @@ macro_rules! __pin_project_internal {
                 }
             }
 
-            // Automatically create the appropriate conditional `Unpin` implementation.
-            //
-            // Basically this is equivalent to the following code:
-            // ```rust
-            // impl<T, U> Unpin for Struct<T, U> where T: Unpin {}
-            // ```
-            //
-            // However, if struct is public and there is a private type field,
-            // this would cause an E0446 (private type in public interface).
-            //
-            // When RFC 2145 is implemented (rust-lang/rust#48054),
-            // this will become a lint, rather then a hard error.
-            //
-            // As a workaround for this, we generate a new struct, containing all of the pinned
-            // fields from our #[pin_project] type. This struct is delcared within
-            // a function, which makes it impossible to be named by user code.
-            // This guarnatees that it will use the default auto-trait impl for Unpin -
-            // that is, it will implement Unpin iff all of its fields implement Unpin.
-            // This type can be safely declared as 'public', satisfiying the privacy
-            // checker without actually allowing user code to access it.
-            //
-            // This allows users to apply the #[pin_project] attribute to types
-            // regardless of the privacy of the types of their fields.
-            //
-            // See also https://github.com/taiki-e/pin-project/pull/53.
-            $vis struct __Origin <'__pin, $($impl_generics)*>
-            $(where
-                $($where_clause)*)?
-            {
-                __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
+            $crate::__pin_project_internal! { @make_unpin_impl;
+                [$vis $ident]
+                [$($impl_generics)*]
+                [$($ty_generics)*]
+                [$(where $($where_clause)*)?]
                 $(
                     $field: $crate::__pin_project_internal!(@make_unpin_bound;
                         $(#[$pin])? $field_ty
                     )
                 ),+
-            }
-            impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
-            where
-                __Origin <'__pin, $($ty_generics)*>: $crate::__private::Unpin
-                $(, $($where_clause)*)?
-            {
             }
 
             $crate::__pin_project_internal! { @make_drop_impl;
@@ -377,6 +346,55 @@ macro_rules! __pin_project_internal {
                     $(#[$pin])? $field_ty;
                 )
             ),+
+        }
+    };
+
+    // =============================================================================================
+    // make_unpin_impl
+    (@make_unpin_impl;
+        [$vis:vis $ident:ident]
+        [$($impl_generics:tt)*]
+        [$($ty_generics:tt)*]
+        [$(where $($where_clause:tt)* )?]
+        $($field:tt)*
+    ) => {
+        // Automatically create the appropriate conditional `Unpin` implementation.
+        //
+        // Basically this is equivalent to the following code:
+        // ```rust
+        // impl<T, U> Unpin for Struct<T, U> where T: Unpin {}
+        // ```
+        //
+        // However, if struct is public and there is a private type field,
+        // this would cause an E0446 (private type in public interface).
+        //
+        // When RFC 2145 is implemented (rust-lang/rust#48054),
+        // this will become a lint, rather then a hard error.
+        //
+        // As a workaround for this, we generate a new struct, containing all of the pinned
+        // fields from our #[pin_project] type. This struct is delcared within
+        // a function, which makes it impossible to be named by user code.
+        // This guarnatees that it will use the default auto-trait impl for Unpin -
+        // that is, it will implement Unpin iff all of its fields implement Unpin.
+        // This type can be safely declared as 'public', satisfiying the privacy
+        // checker without actually allowing user code to access it.
+        //
+        // This allows users to apply the #[pin_project] attribute to types
+        // regardless of the privacy of the types of their fields.
+        //
+        // See also https://github.com/taiki-e/pin-project/pull/53.
+        $vis struct __Origin <'__pin, $($impl_generics)*>
+        $(where
+            $($where_clause)*)?
+        {
+            __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
+            $($field)*
+        }
+        impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
+        where
+            __Origin <'__pin, $($ty_generics)*>: $crate::__private::Unpin
+            $(, $($where_clause)*)?
+        {
         }
     };
 
