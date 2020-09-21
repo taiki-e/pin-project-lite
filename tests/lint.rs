@@ -1,6 +1,4 @@
-#![warn(rust_2018_idioms, single_use_lifetimes)]
-#![warn(future_incompatible, nonstandard_style, rust_2018_compatibility, unused)]
-#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
+#![warn(future_incompatible, nonstandard_style, rust_2018_compatibility, rust_2018_idioms, unused)]
 #![forbid(unsafe_code)]
 #![allow(unknown_lints)] // for old compilers
 #![warn(
@@ -26,7 +24,6 @@
     trivial_numeric_casts,
     unaligned_references,
     unreachable_pub,
-    unstable_features,
     unused_extern_crates,
     unused_import_braces,
     unused_lifetimes,
@@ -37,6 +34,10 @@
 // unused_crate_dependencies: unrelated
 // unsafe_code: forbidden
 // unsafe_block_in_unsafe_fn: unstable
+// unstable_features: deprecated: https://doc.rust-lang.org/beta/rustc/lints/listing/allowed-by-default.html#unstable-features
+#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
+#![warn(clippy::restriction)]
+#![allow(clippy::blanket_clippy_restriction_lints)] // this is a test, so enable all restriction lints intentionally.
 
 // Check interoperability with rustc and clippy lints.
 
@@ -44,12 +45,25 @@ pub mod basic {
     include!("include/basic.rs");
 }
 
-pub mod rustc {
+pub mod box_pointers {
     use pin_project_lite::pin_project;
 
     pin_project! {
         #[derive(Debug)]
-        pub struct ExplicitOutlivesRequirementsStruct<'a, T, U>
+        pub struct Struct {
+            #[pin]
+            pub p: Box<isize>,
+            pub u: Box<isize>,
+        }
+    }
+}
+
+pub mod explicit_outlives_requirements {
+    use pin_project_lite::pin_project;
+
+    pin_project! {
+        #[derive(Debug)]
+        pub struct Struct<'a, T, U>
         where
             T: ?Sized,
             U: ?Sized,
@@ -61,33 +75,41 @@ pub mod rustc {
     }
 }
 
-pub mod clippy {
+pub mod clippy_mut_mut {
     use pin_project_lite::pin_project;
 
     pin_project! {
         #[derive(Debug)]
-        pub struct MutMutStruct<'a, T, U> {
+        pub struct Struct<'a, T, U> {
             #[pin]
             pub pinned: &'a mut T,
             pub unpinned: &'a mut U,
         }
     }
+}
+
+pub mod clippy_type_repetition_in_bounds {
+    use pin_project_lite::pin_project;
 
     pin_project! {
         #[derive(Debug)]
-        pub struct TypeRepetitionInBoundsStruct<T, U>
+        pub struct Struct<T, U>
         where
-            TypeRepetitionInBoundsStruct<T, U>: Sized,
+            Struct<T, U>: Sized,
         {
             #[pin]
             pub pinned: T,
             pub unpinned: U,
         }
     }
+}
+
+pub mod clippy_used_underscore_binding {
+    use pin_project_lite::pin_project;
 
     pin_project! {
         #[derive(Debug)]
-        pub struct UsedUnderscoreBindingStruct<T, U> {
+        pub struct Struct<T, U> {
             #[pin]
             pub _pinned: T,
             pub _unpinned: U,
@@ -96,6 +118,7 @@ pub mod clippy {
 }
 
 #[allow(box_pointers)]
+#[allow(clippy::restriction)]
 #[rustversion::attr(not(nightly), ignore)]
 #[test]
 fn check_lint_list() {
