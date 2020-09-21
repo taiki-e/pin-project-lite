@@ -190,9 +190,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
         [$($def_generics:tt)*]
-        [$($impl_generics:tt)*]
-        [$($ty_generics:tt)*]
-        [$(where $($where_clause:tt)*)?]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         {
             $(
                 $(#[$pin:ident])?
@@ -216,9 +214,7 @@ macro_rules! __pin_project_internal {
             $crate::__pin_project_internal! { @make_proj_ty_struct;
                 [$proj_vis]
                 [$vis struct $ident]
-                [$($impl_generics)*]
-                [$($ty_generics)*]
-                [$(where $($where_clause)*)?]
+                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
                 {
                     $(
                         $(#[$pin])?
@@ -233,7 +229,7 @@ macro_rules! __pin_project_internal {
             {
                 $proj_vis fn project<'__pin>(
                     self: $crate::__private::Pin<&'__pin mut Self>,
-                ) -> Projection<'__pin, $($ty_generics)*> {
+                ) -> Projection <'__pin, $($ty_generics)*> {
                     unsafe {
                         let Self { $($field),* } = self.get_unchecked_mut();
                         Projection {
@@ -247,7 +243,7 @@ macro_rules! __pin_project_internal {
                 }
                 $proj_vis fn project_ref<'__pin>(
                     self: $crate::__private::Pin<&'__pin Self>,
-                ) -> ProjectionRef<'__pin, $($ty_generics)*> {
+                ) -> ProjectionRef <'__pin, $($ty_generics)*> {
                     unsafe {
                         let Self { $($field),* } = self.get_ref();
                         ProjectionRef {
@@ -263,9 +259,7 @@ macro_rules! __pin_project_internal {
 
             $crate::__pin_project_internal! { @make_unpin_impl;
                 [$vis $ident]
-                [$($impl_generics)*]
-                [$($ty_generics)*]
-                [$(where $($where_clause)*)?]
+                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
                 $(
                     $field: $crate::__pin_project_internal!(@make_unpin_bound;
                         $(#[$pin])? $field_ty
@@ -275,9 +269,7 @@ macro_rules! __pin_project_internal {
 
             $crate::__pin_project_internal! { @make_drop_impl;
                 [$ident]
-                [$($impl_generics)*]
-                [$($ty_generics)*]
-                [$(where $($where_clause)*)?]
+                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             }
 
             // Ensure that it's impossible to use pin projections on a #[repr(packed)] struct.
@@ -299,7 +291,7 @@ macro_rules! __pin_project_internal {
                 $($where_clause)*)?
             {
                 $(
-                    &this.$field;
+                    let _ = &this.$field;
                 )+
             }
         };
@@ -310,9 +302,7 @@ macro_rules! __pin_project_internal {
     (@make_proj_ty_struct;
         [$proj_vis:vis]
         [$vis:vis struct $ident:ident]
-        [$($impl_generics:tt)*]
-        [$($ty_generics:tt)*]
-        [$(where $($where_clause:tt)* )?]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         {
             $(
                 $(#[$pin:ident])?
@@ -353,9 +343,7 @@ macro_rules! __pin_project_internal {
     // make_unpin_impl
     (@make_unpin_impl;
         [$vis:vis $ident:ident]
-        [$($impl_generics:tt)*]
-        [$($ty_generics:tt)*]
-        [$(where $($where_clause:tt)* )?]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($field:tt)*
     ) => {
         // Automatically create the appropriate conditional `Unpin` implementation.
@@ -402,9 +390,7 @@ macro_rules! __pin_project_internal {
     // make_drop_impl
     (@make_drop_impl;
         [$ident:ident]
-        [$($impl_generics:tt)*]
-        [$($ty_generics:tt)*]
-        [$(where $($where_clause:tt)* )?]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
     ) => {
         // Ensure that struct does not implement `Drop`.
         //

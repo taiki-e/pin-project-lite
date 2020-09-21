@@ -64,8 +64,8 @@ const _: () = {
     impl<T, U> MustNotImplDrop for Struct<T, U> {}
     #[deny(safe_packed_borrows)]
     fn __assert_not_repr_packed<T, U>(this: &Struct<T, U>) {
-        &this.pinned;
-        &this.unpinned;
+        let _ = &this.pinned;
+        let _ = &this.unpinned;
     }
 };
 fn main() {}
