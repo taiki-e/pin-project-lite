@@ -68,7 +68,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.7...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.6...v0.1.8
 [0.1.7]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.4...v0.1.5
