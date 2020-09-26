@@ -275,7 +275,7 @@ macro_rules! __pin_project_internal {
             // Ensure that it's impossible to use pin projections on a #[repr(packed)] struct.
             //
             // Taking a reference to a packed field is unsafe, amd appplying
-            // #[deny(safe_packed_borrows)] makes sure that doing this without
+            // #[forbid(safe_packed_borrows)] makes sure that doing this without
             // an 'unsafe' block (which we deliberately do not generate)
             // is a hard error.
             //
@@ -285,7 +285,7 @@ macro_rules! __pin_project_internal {
             // a much nicer error above.
             //
             // See https://github.com/taiki-e/pin-project/pull/34 for more details.
-            #[deny(safe_packed_borrows)]
+            #[forbid(safe_packed_borrows)]
             fn __assert_not_repr_packed <$($impl_generics)*> (this: &$ident <$($ty_generics)*>)
             $(where
                 $($where_clause)*)?
