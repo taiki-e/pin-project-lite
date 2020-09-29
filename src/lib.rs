@@ -208,6 +208,7 @@ macro_rules! __pin_project_internal {
             ),+
         }
 
+        #[allow(explicit_outlives_requirements)]
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
@@ -460,7 +461,8 @@ macro_rules! __pin_project_internal {
     (
         $(#[$attrs:meta])*
         pub struct $ident:ident $(<
-            $( $generics:tt
+            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
+            $( $generics:ident
                 $(: $generics_bound:path)?
                 $(: ?$generics_unsized_bound:path)?
                 $(: $generics_lifetime_bound:lifetime)?
@@ -484,18 +486,24 @@ macro_rules! __pin_project_internal {
         $crate::__pin_project_internal! { @struct_internal;
             [pub(crate)]
             [$(#[$attrs])* pub struct $ident]
-            [$(< $( $generics
-                $(: $generics_bound)?
-                $(: ?$generics_unsized_bound)?
-                $(: $generics_lifetime_bound)?
-                $(= $generics_default)?
-            ),* >)?]
-            [$( $( $generics
-                $(: $generics_bound)?
-                $(: ?$generics_unsized_bound)?
-                $(: $generics_lifetime_bound)?
-            ),* )?]
-            [$( $( $generics ),* )?]
+            [$(<
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics
+                    $(: $generics_bound)?
+                    $(: ?$generics_unsized_bound)?
+                    $(: $generics_lifetime_bound)?
+                    $(= $generics_default)?
+                ),*
+            >)?]
+            [$(
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics
+                    $(: $generics_bound)?
+                    $(: ?$generics_unsized_bound)?
+                    $(: $generics_lifetime_bound)?
+                ),*
+            )?]
+            [$( $( $lifetime ,)* $( $generics ),* )?]
             [$(where $( $where_clause_ty
                 $(: $where_clause_bound)?
                 $(: ?$where_clause_unsized_bound)?
@@ -512,7 +520,8 @@ macro_rules! __pin_project_internal {
     (
         $(#[$attrs:meta])*
         $vis:vis struct $ident:ident $(<
-            $( $generics:tt
+            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
+            $( $generics:ident
                 $(: $generics_bound:path)?
                 $(: ?$generics_unsized_bound:path)?
                 $(: $generics_lifetime_bound:lifetime)?
@@ -536,18 +545,24 @@ macro_rules! __pin_project_internal {
         $crate::__pin_project_internal! { @struct_internal;
             [$vis]
             [$(#[$attrs])* $vis struct $ident]
-            [$(< $( $generics
-                $(: $generics_bound)?
-                $(: ?$generics_unsized_bound)?
-                $(: $generics_lifetime_bound)?
-                $(= $generics_default)?
-            ),* >)?]
-            [$( $( $generics
-                $(: $generics_bound)?
-                $(: ?$generics_unsized_bound)?
-                $(: $generics_lifetime_bound)?
-            ),* )?]
-            [$( $( $generics ),* )?]
+            [$(<
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics
+                    $(: $generics_bound)?
+                    $(: ?$generics_unsized_bound)?
+                    $(: $generics_lifetime_bound)?
+                    $(= $generics_default)?
+                ),*
+            >)?]
+            [$(
+                $( $lifetime $(: $lifetime_bound)? ,)*
+                $( $generics
+                    $(: $generics_bound)?
+                    $(: ?$generics_unsized_bound)?
+                    $(: $generics_lifetime_bound)?
+                ),*
+            )?]
+            [$( $( $lifetime ,)* $( $generics ),* )?]
             [$(where $( $where_clause_ty
                 $(: $where_clause_bound)?
                 $(: ?$where_clause_unsized_bound)?

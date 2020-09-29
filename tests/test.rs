@@ -385,3 +385,51 @@ fn no_infer_outlives() {
         }
     }
 }
+
+// https://github.com/taiki-e/pin-project-lite/issues/31
+#[test]
+fn trailing_comma() {
+    pub trait T {}
+
+    pin_project! {
+        pub struct S1<
+            A: T,
+            B: T,
+        > {
+            f: (A, B),
+        }
+    }
+
+    pin_project! {
+        pub struct S2<
+            A,
+            B,
+        >
+        where
+            A: T,
+            B: T,
+        {
+            f: (A, B),
+        }
+    }
+
+    pin_project! {
+        #[allow(explicit_outlives_requirements)]
+        pub struct S3<
+            'a,
+            A: 'a,
+            B: 'a,
+        > {
+            f: &'a (A, B),
+        }
+    }
+
+    // pin_project! {
+    //     pub struct S4<
+    //         'a,
+    //         'b: 'a, // <-----
+    //     > {
+    //         f: &'a &'b (),
+    //     }
+    // }
+}

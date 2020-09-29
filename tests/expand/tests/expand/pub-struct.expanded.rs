@@ -3,6 +3,7 @@ pub struct Struct<T, U> {
     pub pinned: T,
     pub unpinned: U,
 }
+#[allow(explicit_outlives_requirements)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
