@@ -5,6 +5,7 @@ pub struct Struct<T, U> {
 }
 #[allow(explicit_outlives_requirements)]
 #[allow(single_use_lifetimes)]
+#[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     #[allow(dead_code)]

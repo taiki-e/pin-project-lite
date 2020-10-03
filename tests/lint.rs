@@ -1,8 +1,8 @@
+#![forbid(unsafe_code)]
 #![warn(nonstandard_style, rust_2018_compatibility, rust_2018_idioms, unused)]
 // Note: This does not guarantee compatibility with `forbid(future_incompatible)` in the future.
 // If rustc adds a new lint, we may not be able to keep this.
 #![forbid(future_incompatible)]
-#![forbid(unsafe_code)]
 #![allow(unknown_lints)] // for old compilers
 #![warn(
     absolute_paths_not_starting_with_crate,
@@ -87,6 +87,20 @@ pub mod clippy_mut_mut {
             #[pin]
             pub pinned: &'a mut T,
             pub unpinned: &'a mut U,
+        }
+    }
+}
+
+#[allow(unreachable_pub)]
+mod clippy_redundant_pub_crate {
+    use pin_project_lite::pin_project;
+
+    pin_project! {
+        #[derive(Debug)]
+        pub struct Struct<T, U> {
+            #[pin]
+            pub pinned: T,
+            pub unpinned: U,
         }
     }
 }

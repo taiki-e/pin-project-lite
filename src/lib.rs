@@ -210,6 +210,7 @@ macro_rules! __pin_project_internal {
 
         #[allow(explicit_outlives_requirements)]
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
+        #[allow(clippy::redundant_pub_crate)]
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
             $crate::__pin_project_internal! { @make_proj_ty_struct;
