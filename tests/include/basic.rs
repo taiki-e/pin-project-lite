@@ -8,3 +8,17 @@
         pub unpinned: U,
     }
 }
+
+::pin_project_lite::pin_project! {
+    #[project = DefaultEnumProj]
+    #[project_ref = DefaultEnumProjRef]
+    #[derive(Debug)]
+    pub enum DefaultEnum<T, U> {
+        Struct {
+            #[pin]
+            pinned: T,
+            unpinned: U,
+        },
+        Unit,
+    }
+}

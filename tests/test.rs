@@ -36,6 +36,83 @@ fn projection() {
 
     let _: Pin<&mut i32> = s.f1;
     let _: &mut i32 = s.f2;
+
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        #[derive(Eq, PartialEq, Debug)]
+        enum Enum<C, D> {
+            Struct {
+                #[pin]
+                f1: C,
+                f2: D,
+            },
+            Unit,
+        }
+    }
+
+    let mut e = Enum::Struct { f1: 1, f2: 2 };
+    let mut e_orig = Pin::new(&mut e);
+    let e = e_orig.as_mut().project();
+
+    match e {
+        EnumProj::Struct { f1, f2 } => {
+            let x: Pin<&mut i32> = f1;
+            assert_eq!(*x, 1);
+            let y: &mut i32 = f2;
+            assert_eq!(*y, 2);
+        }
+        EnumProj::Unit => {}
+    }
+
+    assert_eq!(Pin::into_ref(e_orig).get_ref(), &Enum::Struct { f1: 1, f2: 2 });
+
+    let mut e = Enum::Struct { f1: 3, f2: 4 };
+    let mut e = Pin::new(&mut e).project();
+
+    match &mut e {
+        EnumProj::Struct { f1, f2 } => {
+            let x: &mut Pin<&mut i32> = f1;
+            assert_eq!(**x, 3);
+            let y: &mut &mut i32 = f2;
+            assert_eq!(**y, 4);
+        }
+        EnumProj::Unit => {}
+    }
+
+    if let EnumProj::Struct { f1, f2 } = e {
+        let x: Pin<&mut i32> = f1;
+        assert_eq!(*x, 3);
+        let y: &mut i32 = f2;
+        assert_eq!(*y, 4);
+    }
+}
+
+#[test]
+fn enum_project_set() {
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        #[derive(Eq, PartialEq, Debug)]
+        enum Enum {
+            V1 { #[pin] f: u8 },
+            V2 { f: bool },
+        }
+    }
+
+    let mut e = Enum::V1 { f: 25 };
+    let mut e_orig = Pin::new(&mut e);
+    let e_proj = e_orig.as_mut().project();
+
+    match e_proj {
+        EnumProj::V1 { f } => {
+            let new_e = Enum::V2 { f: f.as_ref().get_ref() == &25 };
+            e_orig.set(new_e);
+        }
+        _ => unreachable!(),
+    }
+
+    assert_eq!(e, Enum::V2 { f: true });
 }
 
 #[test]
@@ -46,6 +123,17 @@ fn where_clause() {
             T: Copy,
         {
             f: T,
+        }
+    }
+
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        enum Enum<T>
+        where
+            T: Copy,
+        {
+            V { f: T },
         }
     }
 }
@@ -86,6 +174,18 @@ fn where_clause_and_associated_type_field() {
     trait Static: 'static {}
 
     impl<T> Static for Struct3<T> {}
+
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        enum Enum<I>
+        where
+            I: Iterator,
+        {
+            V1 { #[pin] f: I },
+            V2 { f: I::Item },
+        }
+    }
 }
 
 #[test]
@@ -114,6 +214,20 @@ fn move_out() {
 
     let x = Struct { f: NotCopy };
     let _val: NotCopy = x.f;
+
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        enum Enum {
+            V { f: NotCopy },
+        }
+    }
+
+    let x = Enum::V { f: NotCopy };
+    #[allow(clippy::infallible_destructuring_match)]
+    let _val: NotCopy = match x {
+        Enum::V { f } => f,
+    };
 }
 
 #[test]
@@ -172,6 +286,14 @@ fn trait_bounds_on_type_generics() {
             f2: &'b u8,
         }
     }
+
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        enum Enum<'a, T: ?Sized> {
+            V { f: &'a mut T },
+        }
+    }
 }
 
 #[test]
@@ -205,6 +327,18 @@ fn lifetime_project() {
         }
     }
 
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        enum Enum<T, U> {
+            V {
+                #[pin]
+                pinned: T,
+                unpinned: U,
+            },
+        }
+    }
+
     impl<T, U> Struct1<T, U> {
         fn get_pin_ref<'a>(self: Pin<&'a Self>) -> Pin<&'a T> {
             self.project_ref().pinned
@@ -232,6 +366,29 @@ fn lifetime_project() {
         }
         fn get_pin_mut_elided(self: Pin<&mut Self>) -> Pin<&mut &'b mut T> {
             self.project().pinned
+        }
+    }
+
+    impl<T, U> Enum<T, U> {
+        fn get_pin_ref<'a>(self: Pin<&'a Self>) -> Pin<&'a T> {
+            match self.project_ref() {
+                EnumProjRef::V { pinned, .. } => pinned,
+            }
+        }
+        fn get_pin_mut<'a>(self: Pin<&'a mut Self>) -> Pin<&'a mut T> {
+            match self.project() {
+                EnumProj::V { pinned, .. } => pinned,
+            }
+        }
+        fn get_pin_ref_elided(self: Pin<&Self>) -> Pin<&T> {
+            match self.project_ref() {
+                EnumProjRef::V { pinned, .. } => pinned,
+            }
+        }
+        fn get_pin_mut_elided(self: Pin<&mut Self>) -> Pin<&mut T> {
+            match self.project() {
+                EnumProj::V { pinned, .. } => pinned,
+            }
         }
     }
 }
