@@ -3,6 +3,18 @@ struct Struct<T, U> {
     pinned: T,
     unpinned: U,
 }
+#[allow(dead_code)]
+#[allow(single_use_lifetimes)]
+#[allow(clippy::mut_mut)]
+#[allow(clippy::redundant_pub_crate)]
+#[allow(clippy::type_repetition_in_bounds)]
+struct StructProjRef<'__pin, T, U>
+where
+    Struct<T, U>: '__pin,
+{
+    pinned: ::pin_project_lite::__private::Pin<&'__pin (T)>,
+    unpinned: &'__pin (U),
+}
 #[allow(explicit_outlives_requirements)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::redundant_pub_crate)]
@@ -20,18 +32,6 @@ const _: () = {
         pinned: ::pin_project_lite::__private::Pin<&'__pin mut (T)>,
         unpinned: &'__pin mut (U),
     }
-    #[allow(dead_code)]
-    #[allow(single_use_lifetimes)]
-    #[allow(clippy::mut_mut)]
-    #[allow(clippy::redundant_pub_crate)]
-    #[allow(clippy::type_repetition_in_bounds)]
-    struct ProjectionRef<'__pin, T, U>
-    where
-        Struct<T, U>: '__pin,
-    {
-        pinned: ::pin_project_lite::__private::Pin<&'__pin (T)>,
-        unpinned: &'__pin (U),
-    }
     impl<T, U> Struct<T, U> {
         fn project<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
@@ -46,10 +46,10 @@ const _: () = {
         }
         fn project_ref<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin Self>,
-        ) -> ProjectionRef<'__pin, T, U> {
+        ) -> StructProjRef<'__pin, T, U> {
             unsafe {
                 let Self { pinned, unpinned } = self.get_ref();
-                ProjectionRef {
+                StructProjRef {
                     pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
                     unpinned: unpinned,
                 }

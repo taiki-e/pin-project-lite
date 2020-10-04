@@ -9,6 +9,7 @@ pub struct Struct<T, U> {
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     #[allow(dead_code)]
+    #[allow(single_use_lifetimes)]
     #[allow(clippy::mut_mut)]
     #[allow(clippy::redundant_pub_crate)]
     #[allow(clippy::type_repetition_in_bounds)]
@@ -20,6 +21,8 @@ const _: () = {
         pub unpinned: &'__pin mut (U),
     }
     #[allow(dead_code)]
+    #[allow(single_use_lifetimes)]
+    #[allow(clippy::mut_mut)]
     #[allow(clippy::redundant_pub_crate)]
     #[allow(clippy::type_repetition_in_bounds)]
     pub(crate) struct ProjectionRef<'__pin, T, U>
