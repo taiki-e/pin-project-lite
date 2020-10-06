@@ -6,9 +6,11 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+* Suppress `clippy::redundant_pub_crate` lint in generated code.
+
 ## [0.1.10] - 2020-10-01
 
-* Fix compatibility with `drop_bounds` lint, which will be added to rustc in the future. See [taiki-e/pin-project#272](https://github.com/taiki-e/pin-project/issues/272) for more details.
+* Suppress `drop_bounds` lint, which will be added to rustc in the future. See [taiki-e/pin-project#272](https://github.com/taiki-e/pin-project/issues/272) for more details.
 
 ## [0.1.9] - 2020-09-29
 
