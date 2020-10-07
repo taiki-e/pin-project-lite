@@ -1,6 +1,9 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
 #![allow(dead_code)]
 
+#[macro_use]
+mod auxiliary;
+
 use core::{marker::PhantomPinned, pin::Pin};
 use pin_project_lite::pin_project;
 
@@ -260,6 +263,8 @@ fn trivial_bounds() {
             f: PhantomPinned,
         }
     }
+
+    assert_not_unpin!(NoGenerics);
 }
 
 #[test]

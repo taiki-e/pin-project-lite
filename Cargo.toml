@@ -28,5 +28,6 @@ members = [
 [dependencies]
 
 [dev-dependencies]
-rustversion = "1.0"
-trybuild = "1.0"
+rustversion = "1"
+static_assertions = "1"
+trybuild = "1"
