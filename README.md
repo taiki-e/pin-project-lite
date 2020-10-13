@@ -89,11 +89,11 @@ pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-un
 [pin-project supports this.][naming]
 
 [`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
-[naming]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html
-[not-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unpin
+[naming]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html
+[not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
 [pin-project]: https://github.com/taiki-e/pin-project
-[pinned-drop]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#pinned_drop
-[unsafe-unpin]: https://docs.rs/pin-project/0.4/pin_project/attr.pin_project.html#unsafeunpin
+[pinned-drop]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#pinned_drop
+[unsafe-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unsafeunpin
 
 ## License
 
