@@ -61,7 +61,6 @@
 //!
 //! [pin-project supports this.][naming]
 //!
-//! [`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
 //! [naming]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html
 //! [not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
 //! [pin-project]: https://github.com/taiki-e/pin-project
@@ -141,6 +140,28 @@
 /// original [`Pin`] type, it needs to use [`.as_mut()`][`Pin::as_mut`] to avoid
 /// consuming the [`Pin`].
 ///
+/// ```rust
+/// use pin_project_lite::pin_project;
+/// use std::pin::Pin;
+///
+/// pin_project! {
+///     struct Struct<T> {
+///         #[pin]
+///         field: T,
+///     }
+/// }
+///
+/// impl<T> Struct<T> {
+///     fn call_project_twice(mut self: Pin<&mut Self>) {
+///         // `project` consumes `self`, so reborrow the `Pin<&mut Self>` via `as_mut`.
+///         self.as_mut().project();
+///         self.as_mut().project();
+///     }
+/// }
+/// ```
+///
+/// # `!Unpin`
+///
 /// If you want to ensure that [`Unpin`] is not implemented, use `#[pin]`
 /// attribute for a [`PhantomPinned`] field.
 ///
@@ -151,7 +172,7 @@
 /// pin_project! {
 ///     struct Struct<T> {
 ///         field: T,
-///         #[pin]
+///         #[pin] // <------ This `#[pin]` is required to make `Struct` to `!Unpin`.
 ///         _pin: PhantomPinned,
 ///     }
 /// }
