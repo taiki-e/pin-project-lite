@@ -570,3 +570,15 @@ fn trailing_comma() {
     //     }
     // }
 }
+
+#[test]
+fn attrs() {
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        enum Enum {
+            #[cfg(not(any()))]
+            V { f: () },
+        }
+    }
+}

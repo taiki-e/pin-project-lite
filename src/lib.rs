@@ -507,6 +507,7 @@ macro_rules! __pin_project_internal {
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         {
             $(
+                $(#[$variant_attrs:meta])*
                 $variant:ident $({
                     $(
                         $(#[$pin:ident])?
@@ -522,6 +523,7 @@ macro_rules! __pin_project_internal {
             $($where_clause)*)?
         {
             $(
+                $(#[$variant_attrs])*
                 $variant $({
                     $(
                         $field: $field_ty
@@ -1125,6 +1127,7 @@ macro_rules! __pin_project_internal {
         )?
         {
             $(
+                $(#[$variant_attrs:meta])*
                 $variant:ident $({
                     $(
                         $(#[$pin:ident])?
@@ -1164,6 +1167,7 @@ macro_rules! __pin_project_internal {
             ),* )?]
             {
                 $(
+                    $(#[$variant_attrs])*
                     $variant $({
                         $(
                             $(#[$pin])?
@@ -1197,6 +1201,7 @@ macro_rules! __pin_project_internal {
         )?
         {
             $(
+                $(#[$variant_attrs:meta])*
                 $variant:ident $({
                     $(
                         $(#[$pin:ident])?
@@ -1236,6 +1241,7 @@ macro_rules! __pin_project_internal {
             ),* )?]
             {
                 $(
+                    $(#[$variant_attrs])*
                     $variant $({
                         $(
                             $(#[$pin])?
