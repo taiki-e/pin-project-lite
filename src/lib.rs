@@ -150,12 +150,13 @@
 /// ```
 ///
 /// The `#[project]` (and `#[project_ref]`) attribute must precede the other
-/// attributes. For example, the following code will not be compiled:
+/// attributes except for `#[doc]`. For example, the following code will not be compiled:
 ///
 /// ```rust,compile_fail
 /// # use pin_project_lite::pin_project;
 /// # use std::pin::Pin;
 /// pin_project! {
+///     /// documents (`#[doc]`) can be placed before `#[project]`.
 ///     #[derive(Clone)] // <--- ERROR
 ///     #[project = EnumProj]
 ///     #[derive(Debug)] // <--- Ok
@@ -290,30 +291,36 @@
 macro_rules! pin_project {
     // Parses options
     (
+        $(#[doc $($doc:tt)*])*
         #[project = $proj_mut_ident:ident]
         #[project_ref = $proj_ref_ident:ident]
         $($tt:tt)*
     ) => {
         $crate::__pin_project_internal! {
             [$proj_mut_ident][$proj_ref_ident]
+            $(#[doc $($doc)*])*
             $($tt)*
         }
     };
     (
+        $(#[doc $($doc:tt)*])*
         #[project = $proj_mut_ident:ident]
         $($tt:tt)*
     ) => {
         $crate::__pin_project_internal! {
             [$proj_mut_ident][]
+            $(#[doc $($doc)*])*
             $($tt)*
         }
     };
     (
+        $(#[doc $($doc:tt)*])*
         #[project_ref = $proj_ref_ident:ident]
         $($tt:tt)*
     ) => {
         $crate::__pin_project_internal! {
             [][$proj_ref_ident]
+            $(#[doc $($doc)*])*
             $($tt)*
         }
     };

@@ -574,11 +574,26 @@ fn trailing_comma() {
 #[test]
 fn attrs() {
     pin_project! {
-        #[project = EnumProj]
-        #[project_ref = EnumProjRef]
-        enum Enum {
+        #[project = Enum1Proj]
+        #[project_ref = Enum1ProjRef]
+        enum Enum1 {
             #[cfg(not(any()))]
-            V { f: () },
+            V {
+                f: ()
+            },
+        }
+    }
+
+    pin_project! {
+        /// dox
+        #[project = Enum2Proj]
+        #[project_ref = Enum2ProjRef]
+        enum Enum2 {
+            /// dox
+            V {
+                // TODO
+                f: ()
+            },
         }
     }
 }
