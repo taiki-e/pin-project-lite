@@ -9,7 +9,9 @@ pub struct Struct<T, U> {
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     #[allow(dead_code)]
+    #[allow(single_use_lifetimes)]
     #[allow(clippy::mut_mut)]
+    #[allow(clippy::redundant_pub_crate)]
     #[allow(clippy::type_repetition_in_bounds)]
     pub(crate) struct Projection<'__pin, T, U>
     where
@@ -19,6 +21,9 @@ const _: () = {
         pub unpinned: &'__pin mut (U),
     }
     #[allow(dead_code)]
+    #[allow(single_use_lifetimes)]
+    #[allow(clippy::mut_mut)]
+    #[allow(clippy::redundant_pub_crate)]
     #[allow(clippy::type_repetition_in_bounds)]
     pub(crate) struct ProjectionRef<'__pin, T, U>
     where
@@ -51,6 +56,7 @@ const _: () = {
             }
         }
     }
+    #[allow(non_snake_case)]
     pub struct __Origin<'__pin, T, U> {
         __dummy_lifetime: ::pin_project_lite::__private::PhantomData<&'__pin ()>,
         pinned: T,

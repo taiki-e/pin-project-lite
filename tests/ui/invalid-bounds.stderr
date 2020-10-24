@@ -1,14 +1,26 @@
-error: no rules expected the token `:`
- --> $DIR/invalid-bounds.rs:4:33
+error: no rules expected the token `[`
+ --> $DIR/invalid-bounds.rs:3:1
   |
-4 |     struct Generics1<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
-  |                                 ^ no rules expected this token in macro call
+3 | / pin_project! {
+4 | |     struct Generics1<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
+5 | |         field: T,
+6 | |     }
+7 | | }
+  | |_^ no rules expected this token in macro call
+  |
+  = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `:`
-  --> $DIR/invalid-bounds.rs:10:33
+error: no rules expected the token `[`
+  --> $DIR/invalid-bounds.rs:9:1
    |
-10 |     struct Generics2<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
-   |                                 ^ no rules expected this token in macro call
+9  | / pin_project! {
+10 | |     struct Generics2<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
+11 | |         field: T,
+12 | |     }
+13 | | }
+   | |_^ no rules expected this token in macro call
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> $DIR/invalid-bounds.rs:15:1
@@ -58,23 +70,45 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `Sized`
-  --> $DIR/invalid-bounds.rs:34:34
+error: no rules expected the token `[`
+  --> $DIR/invalid-bounds.rs:33:1
    |
-34 |     struct Generics6<T: ?Sized : Sized> { //~ ERROR no rules expected the token `Sized`
-   |                                  ^^^^^ no rules expected this token in macro call
+33 | / pin_project! {
+34 | |     struct Generics6<T: ?Sized : Sized> { //~ ERROR no rules expected the token `Sized`
+35 | |         field: T,
+36 | |     }
+37 | | }
+   | |_^ no rules expected this token in macro call
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `:`
-  --> $DIR/invalid-bounds.rs:42:20
+error: no rules expected the token `[`
+  --> $DIR/invalid-bounds.rs:39:1
    |
-42 |         T: 'static : Sized //~ ERROR no rules expected the token `:`
-   |                    ^ no rules expected this token in macro call
+39 | / pin_project! {
+40 | |     struct WhereClause1<T>
+41 | |     where
+42 | |         T: 'static : Sized //~ ERROR no rules expected the token `:`
+...  |
+45 | |     }
+46 | | }
+   | |_^ no rules expected this token in macro call
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `:`
-  --> $DIR/invalid-bounds.rs:51:20
+error: no rules expected the token `[`
+  --> $DIR/invalid-bounds.rs:48:1
    |
-51 |         T: 'static : ?Sized //~ ERROR no rules expected the token `:`
-   |                    ^ no rules expected this token in macro call
+48 | / pin_project! {
+49 | |     struct WhereClause2<T>
+50 | |     where
+51 | |         T: 'static : ?Sized //~ ERROR no rules expected the token `:`
+...  |
+54 | |     }
+55 | | }
+   | |_^ no rules expected this token in macro call
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `where`, or `{` after struct name, found `:`
   --> $DIR/invalid-bounds.rs:57:1
@@ -127,8 +161,16 @@ error: expected `where`, or `{` after struct name, found `:`
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `Sized`
-  --> $DIR/invalid-bounds.rs:87:21
+error: no rules expected the token `[`
+  --> $DIR/invalid-bounds.rs:84:1
    |
-87 |         T: ?Sized : Sized //~ ERROR no rules expected the token `Sized`
-   |                     ^^^^^ no rules expected this token in macro call
+84 | / pin_project! {
+85 | |     struct WhereClause6<T>
+86 | |     where
+87 | |         T: ?Sized : Sized //~ ERROR no rules expected the token `Sized`
+...  |
+90 | |     }
+91 | | }
+   | |_^ no rules expected this token in macro call
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -52,6 +52,32 @@ impl<T, U> Struct<T, U> {
 }
 ```
 
+To use [`pin_project!`] on enums, you need to name the projection type
+returned from the method.
+
+```rust
+use pin_project_lite::pin_project;
+use std::pin::Pin;
+
+pin_project! {
+    #[project = EnumProj]
+    enum Enum<T, U> {
+        Variant { #[pin] pinned: T, unpinned: U },
+    }
+}
+
+impl<T, U> Enum<T, U> {
+    fn method(self: Pin<&mut Self>) {
+        match self.project() {
+            EnumProj::Variant { pinned, unpinned } => {
+                let _: Pin<&mut T> = pinned;
+                let _: &mut U = unpinned;
+            }
+        }
+    }
+}
+```
+
 ## [pin-project] vs pin-project-lite
 
 Here are some similarities and differences compared to [pin-project].
@@ -72,10 +98,6 @@ This is the **only** reason to use this crate. However, **if you already have pr
 
 This macro does not handle any invalid input. So error messages are not to be useful in most cases. If you do need useful error messages, then upon error you can pass the same input to [pin-project] to receive a helpful description of the compile error.
 
-### Different: Structs only
-
-pin-project-lite will refuse anything other than a braced struct with named fields. Enums and tuple structs are not supported.
-
 ### Different: No support for custom Drop implementation
 
 pin-project supports this by [`#[pinned_drop]`][pinned-drop].
@@ -84,12 +106,11 @@ pin-project supports this by [`#[pinned_drop]`][pinned-drop].
 
 pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-unpin].
 
-### Different: No support for pattern matching and destructing
+### Different: No support for tuple structs and tuple variants
 
-[pin-project supports this.][naming]
+pin-project supports this.
 
 [`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
-[naming]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html
 [not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
 [pin-project]: https://github.com/taiki-e/pin-project
 [pinned-drop]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#pinned_drop
