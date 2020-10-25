@@ -268,7 +268,7 @@ fn trait_bounds_on_type_generics() {
         }
     }
 
-    let _: Struct6<'_> = Struct6 { f: &mut [0u8; 16] };
+    let _: Struct6<'_> = Struct6 { f: &mut [0_u8; 16] };
 
     pin_project! {
         pub struct Struct7<T: 'static> {
