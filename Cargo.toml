@@ -25,8 +25,6 @@ members = [
     "tests/no-std",
 ]
 
-[dependencies]
-
 [dev-dependencies]
 rustversion = "1"
 static_assertions = "1"
