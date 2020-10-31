@@ -27,11 +27,11 @@ const _: () = {
         ) -> EnumProjRef<'__pin, T, U> {
             unsafe {
                 match self.get_ref() {
-                    Enum::Struct { pinned, unpinned } => EnumProjRef::Struct {
+                    Self::Struct { pinned, unpinned } => EnumProjRef::Struct {
                         pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
                         unpinned: unpinned,
                     },
-                    Enum::Unit => EnumProjRef::Unit,
+                    Self::Unit => EnumProjRef::Unit,
                 }
             }
         }
