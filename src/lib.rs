@@ -380,7 +380,7 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$($proj_mut_ident)?]
             [make_proj_field_mut]
-            [$vis] [$ident]
+            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $(
@@ -393,7 +393,7 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$($proj_ref_ident)?]
             [make_proj_field_ref]
-            [$vis] [$ident]
+            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $(
@@ -412,7 +412,7 @@ macro_rules! __pin_project_internal {
                 [$proj_vis]
                 [$($proj_mut_ident)?][Projection]
                 [make_proj_field_mut]
-                [$vis] [$ident]
+                [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
                 {
                     $(
@@ -425,7 +425,7 @@ macro_rules! __pin_project_internal {
                 [$proj_vis]
                 [$($proj_ref_ident)?][ProjectionRef]
                 [make_proj_field_ref]
-                [$vis] [$ident]
+                [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
                 {
                     $(
@@ -443,12 +443,11 @@ macro_rules! __pin_project_internal {
                     [$proj_vis]
                     [$($proj_mut_ident)?][Projection]
                     [project get_unchecked_mut mut]
-                    [$ident]
                     [$($ty_generics)*]
                     {
                         $(
                             $(#[$pin])?
-                            $field_vis $field: $field_ty
+                            $field_vis $field
                         ),+
                     }
                 }
@@ -456,12 +455,11 @@ macro_rules! __pin_project_internal {
                     [$proj_vis]
                     [$($proj_ref_ident)?][ProjectionRef]
                     [project_ref get_ref]
-                    [$ident]
                     [$($ty_generics)*]
                     {
                         $(
                             $(#[$pin])?
-                            $field_vis $field: $field_ty
+                            $field_vis $field
                         ),+
                     }
                 }
@@ -546,7 +544,7 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$($proj_mut_ident)?]
             [make_proj_field_mut]
-            [$vis] [$ident]
+            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $(
@@ -563,7 +561,7 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$($proj_ref_ident)?]
             [make_proj_field_ref]
-            [$vis] [$ident]
+            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $(
@@ -588,14 +586,13 @@ macro_rules! __pin_project_internal {
                     [$proj_vis]
                     [$($proj_mut_ident)?]
                     [project get_unchecked_mut mut]
-                    [$ident]
                     [$($ty_generics)*]
                     {
                         $(
                             $variant $({
                                 $(
                                     $(#[$pin])?
-                                    $field: $field_ty
+                                    $field
                                 ),+
                             })?
                         ),+
@@ -605,14 +602,13 @@ macro_rules! __pin_project_internal {
                     [$proj_vis]
                     [$($proj_ref_ident)?]
                     [project_ref get_ref]
-                    [$ident]
                     [$($ty_generics)*]
                     {
                         $(
                             $variant $({
                                 $(
                                     $(#[$pin])?
-                                    $field: $field_ty
+                                    $field
                                 ),+
                             })?
                         ),+
@@ -650,7 +646,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [$_proj_ty_ident:ident][$proj_ty_ident:ident]
         [$make_proj_field:ident]
-        [$vis:vis] [$ident:ident]
+        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($field:tt)*
     ) => {};
@@ -658,7 +654,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [][$proj_ty_ident:ident]
         [$make_proj_field:ident]
-        [$vis:vis] [$ident:ident]
+        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($field:tt)*
     ) => {
@@ -666,7 +662,7 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$proj_ty_ident]
             [$make_proj_field]
-            [$vis] [$ident]
+            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             $($field)*
         }
@@ -675,7 +671,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
         [$make_proj_field:ident]
-        [$vis:vis] [$ident:ident]
+        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         {
             $(
@@ -705,7 +701,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         []
         [$make_proj_field:ident]
-        [$vis:vis] [$ident:ident]
+        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($field:tt)*
     ) => {};
@@ -715,7 +711,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
         [$make_proj_field:ident]
-        [$vis:vis] [$ident:ident]
+        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         {
             $(
@@ -753,7 +749,7 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         []
         [$make_proj_field:ident]
-        [$vis:vis] [$ident:ident]
+        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($variant:tt)*
     ) => {};
@@ -764,12 +760,11 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [$proj_ty_ident:ident][$_proj_ty_ident:ident]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$ident:ident]
         [$($ty_generics:tt)*]
         {
             $(
                 $(#[$pin:ident])?
-                $field_vis:vis $field:ident: $field_ty:ty
+                $field_vis:vis $field:ident
             ),+
         }
     ) => {
@@ -792,7 +787,6 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [][$proj_ty_ident:ident]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$ident:ident]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {
@@ -800,7 +794,6 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$proj_ty_ident][$proj_ty_ident]
             [$method_ident $get_method $($mut)?]
-            [$ident]
             [$($ty_generics)*]
             $($variant)*
         }
@@ -811,14 +804,13 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$ident:ident]
         [$($ty_generics:tt)*]
         {
             $(
                 $variant:ident $({
                     $(
                         $(#[$pin:ident])?
-                        $field:ident: $field_ty:ty
+                        $field:ident
                     ),+
                 })?
             ),+
@@ -830,7 +822,7 @@ macro_rules! __pin_project_internal {
             unsafe {
                 match self.$get_method() {
                     $(
-                        $ident::$variant $({
+                        Self::$variant $({
                             $($field),+
                         })? => {
                             $proj_ty_ident::$variant $({
@@ -851,7 +843,6 @@ macro_rules! __pin_project_internal {
         [$proj_vis:vis]
         []
         [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$ident:ident]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {};
