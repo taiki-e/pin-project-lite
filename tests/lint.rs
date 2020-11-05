@@ -239,7 +239,7 @@ pub mod clippy_used_underscore_binding {
 
 #[allow(box_pointers)]
 #[allow(clippy::restriction)]
-#[rustversion::attr(before(2020-10-28), ignore)] // Note: This date is the day before the toolchain date.
+#[rustversion::attr(before(2020-11-04), ignore)] // Note: This date is commit-date and the day before the toolchain date.
 #[test]
 fn check_lint_list() {
     use std::{env, fs, path::Path, process::Command, str};
