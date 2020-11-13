@@ -22,7 +22,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-pin-project-lite = "0.1"
+pin-project-lite = "0.2"
 ```
 
 The current pin-project-lite requires Rust 1.37 or later.
@@ -110,7 +110,7 @@ pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-un
 
 pin-project supports this.
 
-[`pin_project!`]: https://docs.rs/pin-project-lite/0.1/pin_project_lite/macro.pin_project.html
+[`pin_project!`]: https://docs.rs/pin-project-lite/0.2/pin_project_lite/macro.pin_project.html
 [not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
 [pin-project]: https://github.com/taiki-e/pin-project
 [pinned-drop]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#pinned_drop
