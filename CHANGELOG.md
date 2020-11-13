@@ -6,6 +6,60 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-11-13
+
+* [`pin_project!` macro now supports enums.][28]
+
+  To use `pin_project!` on enums, you need to name the projection type
+  returned from the method.
+
+  ```rust
+  use pin_project_lite::pin_project;
+  use std::pin::Pin;
+
+  pin_project! {
+      #[project = EnumProj]
+      enum Enum<T, U> {
+          Variant { #[pin] pinned: T, unpinned: U },
+      }
+  }
+
+  impl<T, U> Enum<T, U> {
+      fn method(self: Pin<&mut Self>) {
+          match self.project() {
+              EnumProj::Variant { pinned, unpinned } => {
+                  let _: Pin<&mut T> = pinned;
+                  let _: &mut U = unpinned;
+              }
+          }
+      }
+  }
+  ```
+
+* [Support naming the projection types.][28]
+
+  By passing an attribute with the same name as the method, you can name the projection type returned from the method:
+
+  ```rust
+  use pin_project_lite::pin_project;
+  use std::pin::Pin;
+
+  pin_project! {
+      #[project = StructProj]
+      struct Struct<T> {
+          #[pin]
+          field: T,
+      }
+  }
+
+  fn func<T>(x: Pin<&mut Struct<T>>) {
+      let StructProj { field } = x.project();
+      let _: Pin<&mut T> = field;
+  }
+  ```
+
+[28]: https://github.com/taiki-e/pin-project-lite/pull/28
+
 ## [0.1.11] - 2020-10-20
 
 * Suppress `clippy::redundant_pub_crate` lint in generated code.
@@ -82,7 +136,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.11...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.11...v0.2.0
 [0.1.11]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.10...v0.1.11
 [0.1.10]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.8...v0.1.9
