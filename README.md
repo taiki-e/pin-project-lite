@@ -1,18 +1,10 @@
 # pin-project-lite
 
-[![crates-badge]][crates-url]
-[![docs-badge]][docs-url]
-[![license-badge]][license]
-[![rustc-badge]][rustc-url]
-
-[crates-badge]: https://img.shields.io/crates/v/pin-project-lite.svg
-[crates-url]: https://crates.io/crates/pin-project-lite
-[docs-badge]: https://docs.rs/pin-project-lite/badge.svg
-[docs-url]: https://docs.rs/pin-project-lite
-[license-badge]: https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg
-[license]: #license
-[rustc-badge]: https://img.shields.io/badge/rustc-1.37+-lightgray.svg
-[rustc-url]: https://blog.rust-lang.org/2019/08/15/Rust-1.37.0.html
+[![crates.io](https://img.shields.io/crates/v/pin-project-lite.svg?style=flat-square&logo=rust)](https://crates.io/crates/pin-project-lite)
+[![docs.rs](https://img.shields.io/badge/docs.rs-pin--project--lite-blue?style=flat-square)](https://docs.rs/pin-project-lite)
+[![license](https://img.shields.io/badge/license-Apache--2.0_OR_MIT-blue.svg?style=flat-square)](#license)
+[![rustc](https://img.shields.io/badge/rustc-1.37+-blue.svg?style=flat-square)](https://www.rust-lang.org)
+[![build status](https://img.shields.io/github/workflow/status/taiki-e/pin-project-lite/CI/master?style=flat-square)](https://github.com/taiki-e/pin-project-lite/actions?query=workflow%3ACI+branch%3Amaster)
 
 A lightweight version of [pin-project] written with declarative macros.
 
@@ -25,7 +17,7 @@ Add this to your `Cargo.toml`:
 pin-project-lite = "0.2"
 ```
 
-The current pin-project-lite requires Rust 1.37 or later.
+*Compiler support: requires rustc 1.37+*
 
 ## Examples
 
@@ -119,7 +111,5 @@ pin-project supports this.
 ## License
 
 Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.
-
-### Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
