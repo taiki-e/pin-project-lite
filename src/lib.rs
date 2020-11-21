@@ -89,7 +89,6 @@
 //! [unsafe-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unsafeunpin
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/pin-project-lite/0.2.0")]
 #![doc(test(
     no_crate_inject,
     attr(deny(warnings, rust_2018_idioms, single_use_lifetimes), allow(dead_code))
