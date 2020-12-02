@@ -39,7 +39,7 @@ jobs:
         run: cargo install cargo-hack
       - run: rustup target add thumbv7m-none-eabi
       - run: cargo test --all --exclude expandtest
-      - run: cargo check --manifest-path tests/no-std/Cargo.toml --target thumbv7m-none-eabi
+      - run: cargo build --manifest-path tests/no-std/Cargo.toml --target thumbv7m-none-eabi
       - if: startsWith(matrix.rust, 'nightly')
         run: bash scripts/check-minimal-versions.sh
 
