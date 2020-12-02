@@ -50,10 +50,12 @@ jobs:
       - uses: taiki-e/github-actions/install-rust@main
         with:
           component: rustfmt
-      - name: Fetch latest release version of cargo-expand
+      - name: Pre Cache cargo-expand
         run: |
           mkdir -p .github/caching
-          curl -LsSf https://api.github.com/repos/dtolnay/cargo-expand/releases/latest | jq -r '.name' > .github/caching/cargo-expand.lock
+          curl -LsSf https://api.github.com/repos/dtolnay/cargo-expand/releases/latest \
+            | jq -r '.tag_name' > .github/caching/cargo-expand.lock
+          echo "${{ runner.tool_cache }}/cargo-expand/bin" >> "${GITHUB_PATH}"
       - name: Cache cargo-expand
         id: cache-cargo-expand
         uses: actions/cache@v2
@@ -63,7 +65,6 @@ jobs:
       - name: Install cargo-expand
         if: steps.cache-cargo-expand.outputs.cache-hit != 'true'
         run: cargo install -f cargo-expand --root ${{ runner.tool_cache }}/cargo-expand
-      - run: echo "${{ runner.tool_cache }}/cargo-expand/bin" >> "${GITHUB_PATH}"
       - run: cargo test -p expandtest
 
   clippy:
