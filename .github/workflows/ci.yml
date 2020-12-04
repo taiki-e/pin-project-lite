@@ -25,7 +25,7 @@ jobs:
         rust:
           # This is the minimum supported Rust version of this crate.
           # When updating this, the reminder to update the minimum supported Rust version in README.md.
-          - 1.37.0
+          - 1.37
           - stable
           - beta
           - nightly
