@@ -21,7 +21,8 @@ pin-project-lite = "0.2"
 
 ## Examples
 
-[`pin_project!`] macro creates a projection type covering all the fields of struct.
+[`pin_project!`] macro creates a projection type covering all the fields of
+struct.
 
 ```rust
 use pin_project_lite::pin_project;
@@ -76,19 +77,28 @@ Here are some similarities and differences compared to [pin-project].
 
 ### Similar: Safety
 
-pin-project-lite guarantees safety in much the same way as [pin-project]. Both are completely safe unless you write other unsafe code.
+pin-project-lite guarantees safety in much the same way as [pin-project].
+Both are completely safe unless you write other unsafe code.
 
 ### Different: Minimal design
 
-This library does not tackle as expansive of a range of use cases as [pin-project] does. If your use case is not already covered, please use [pin-project].
+This library does not tackle as expansive of a range of use cases as
+[pin-project] does. If your use case is not already covered, please use
+[pin-project].
 
 ### Different: No proc-macro related dependencies
 
-This is the **only** reason to use this crate. However, **if you already have proc-macro related dependencies in your crate's dependency graph, there is no benefit from using this crate.** (Note: There is almost no difference in the amount of code generated between [pin-project] and pin-project-lite.)
+This is the **only** reason to use this crate. However, **if you already
+have proc-macro related dependencies in your crate's dependency graph, there
+is no benefit from using this crate.** (Note: There is almost no difference
+in the amount of code generated between [pin-project] and pin-project-lite.)
 
 ### Different: No useful error messages
 
-This macro does not handle any invalid input. So error messages are not to be useful in most cases. If you do need useful error messages, then upon error you can pass the same input to [pin-project] to receive a helpful description of the compile error.
+This macro does not handle any invalid input. So error messages are not to
+be useful in most cases. If you do need useful error messages, then upon
+error you can pass the same input to [pin-project] to receive a helpful
+description of the compile error.
 
 ### Different: No support for custom Drop implementation
 
@@ -110,6 +120,9 @@ pin-project supports this.
 
 ## License
 
-Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or
+[MIT license](LICENSE-MIT) at your option.
 
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.
