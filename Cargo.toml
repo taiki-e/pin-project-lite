@@ -27,5 +27,4 @@ members = [
 [dev-dependencies]
 rustversion = "1"
 static_assertions = "1"
-tempfile = "3"
 trybuild = "1"
