@@ -9,6 +9,7 @@ documentation = "https://docs.rs/pin-project-lite"
 keywords = ["pin", "macros"]
 categories = ["no-std", "rust-patterns"]
 readme = "README.md"
+exclude = ["/.github", "/scripts"]
 description = """
 A lightweight version of pin-project written with declarative macros.
 """
