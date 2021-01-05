@@ -4,14 +4,21 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org).
 
+<!--
+Note: In this file, do not use the hard wrap in the middle of a sentence for compatibility with GitHub comment style markdown rendering.
+-->
+
 ## [Unreleased]
+
+## [0.2.1] - 2021-01-05
+
+- Exclude unneeded files from crates.io.
 
 ## [0.2.0] - 2020-11-13
 
 - [`pin_project!` macro now supports enums.][28]
 
-  To use `pin_project!` on enums, you need to name the projection type
-  returned from the method.
+  To use `pin_project!` on enums, you need to name the projection type returned from the method.
 
   ```rust
   use pin_project_lite::pin_project;
@@ -136,7 +143,8 @@ This project adheres to [Semantic Versioning](https://semver.org).
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.11...v0.2.0
 [0.1.11]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.10...v0.1.11
 [0.1.10]: https://github.com/taiki-e/pin-project-lite/compare/v0.1.9...v0.1.10
