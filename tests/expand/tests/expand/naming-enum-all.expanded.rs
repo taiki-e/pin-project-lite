@@ -98,8 +98,10 @@ const _: () = {
                             value: ::pin_project_lite::__private::ManuallyDrop::new(__replacement),
                         };
                         {
-                            let __guard =
-                                ::pin_project_lite::__private::UnsafeDropInPlaceGuard(pinned);
+                            (
+                                ::pin_project_lite::__private::UnsafeDropInPlaceGuard(pinned),
+                                (),
+                            );
                         }
                         result
                     }

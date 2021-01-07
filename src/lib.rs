@@ -371,7 +371,7 @@ macro_rules! pin_project {
         $($tt:tt)*
     ) => {
         $crate::__pin_project_internal! {
-            [][][$project_replace_ident]
+            [][][$proj_replace_ident]
             $(#[doc $($doc)*])*
             $($tt)*
         }
@@ -489,7 +489,7 @@ macro_rules! __pin_project_internal {
             }
             $crate::__pin_project_internal! { @struct=>make_proj_ty=>unnamed;
                 [$proj_vis]
-                [$($proj_replace_ident)?][ProjectionRef]
+                [$($proj_ref_ident)?][ProjectionRef]
                 [make_proj_field_ref]
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
@@ -1019,11 +1019,11 @@ macro_rules! __pin_project_internal {
         };
 
         {
-            $(
+            ( $(
                 $crate::__pin_project_internal!(@make_unsafe_drop_in_place_guard;
                     $(#[$pin])? $field
-                );
-            )*
+                ),
+            )* );
         }
 
         result
@@ -1359,11 +1359,12 @@ macro_rules! __pin_project_internal {
         #[pin]
         $field:ident
     ) => {
-        let __guard = $crate::__private::UnsafeDropInPlaceGuard($field);
+        $crate::__private::UnsafeDropInPlaceGuard($field)
     };
     (@make_unsafe_drop_in_place_guard;
         $field:ident
     ) => {
+        ()
     };
 
     // =============================================================================================
