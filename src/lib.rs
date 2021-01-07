@@ -993,8 +993,6 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     (@make_proj_replace_block;
-        [$self_ptr: ident]
-        [$replacement: ident]
         [$($proj_path: tt)+]
         {
             $(
@@ -1011,13 +1009,6 @@ macro_rules! __pin_project_internal {
             ),+
         };
 
-        // Destructors will run in reverse order, so next create a guard to overwrite
-        // `self` with the replacement value without calling destructors.
-        let __guard = $crate::__private::UnsafeOverwriteGuard {
-            target: $self_ptr,
-            value: $crate::__private::ManuallyDrop::new($replacement),
-        };
-
         {
             ( $(
                 $crate::__pin_project_internal!(@make_unsafe_drop_in_place_guard;
@@ -1029,21 +1020,9 @@ macro_rules! __pin_project_internal {
         result
     };
     (@make_proj_replace_block;
-        [$self_ptr: ident]
-        [$replacement: ident]
         [$($proj_path: tt)+]
     ) => {
-
-        let result = $($proj_path)*;
-
-        // Destructors will run in reverse order, so next create a guard to overwrite
-        // `self` with the replacement value without calling destructors.
-        let __guard = $crate::__private::UnsafeOverwriteGuard {
-            target: $self_ptr,
-            value: $crate::__private::ManuallyDrop::new($replacement),
-        };
-
-        result
+        $($proj_path)*
     };
 
     // =============================================================================================
@@ -1108,13 +1087,18 @@ macro_rules! __pin_project_internal {
             replacement: Self,
         ) -> $proj_ty_ident <$($ty_generics)*> {
             unsafe {
-                let __replacement = replacement;
                 let __self_ptr: *mut Self = self.$get_method();
+
+                // Destructors will run in reverse order, so next create a guard to overwrite
+                // `self` with the replacement value without calling destructors.
+                let __guard = $crate::__private::UnsafeOverwriteGuard {
+                    target: __self_ptr,
+                    value: $crate::__private::ManuallyDrop::new(replacement),
+                };
+
                 let Self { $($field),* } = &mut *__self_ptr;
 
                 $crate::__pin_project_internal!{@make_proj_replace_block;
-                    [__self_ptr]
-                    [__replacement]
                     [$proj_ty_ident]
                     {
                         $(
@@ -1205,16 +1189,21 @@ macro_rules! __pin_project_internal {
             replacement: Self,
         ) -> $proj_ty_ident <$($ty_generics)*> {
             unsafe {
-                let __replacement = replacement;
                 let __self_ptr: *mut Self = self.$get_method();
+
+                // Destructors will run in reverse order, so next create a guard to overwrite
+                // `self` with the replacement value without calling destructors.
+                let __guard = $crate::__private::UnsafeOverwriteGuard {
+                    target: __self_ptr,
+                    value: $crate::__private::ManuallyDrop::new(replacement),
+                };
+
                 match &mut *__self_ptr {
                     $(
                         Self::$variant $({
                             $($field),+
                         })? => {
                             $crate::__pin_project_internal!{@make_proj_replace_block;
-                                [__self_ptr]
-                                [__replacement]
                                 [$proj_ty_ident :: $variant]
                                 $({
                                     $(

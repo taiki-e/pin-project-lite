@@ -31,8 +31,11 @@ const _: () = {
             replacement: Self,
         ) -> EnumProjReplace<T, U> {
             unsafe {
-                let __replacement = replacement;
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
+                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
+                    target: __self_ptr,
+                    value: ::pin_project_lite::__private::ManuallyDrop::new(replacement),
+                };
                 match &mut *__self_ptr {
                     Self::Struct {
                         pinned1,
@@ -46,10 +49,6 @@ const _: () = {
                             unpinned1: ::pin_project_lite::__private::ptr::read(unpinned1),
                             unpinned2: ::pin_project_lite::__private::ptr::read(unpinned2),
                         };
-                        let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
-                            target: __self_ptr,
-                            value: ::pin_project_lite::__private::ManuallyDrop::new(__replacement),
-                        };
                         {
                             (
                                 ::pin_project_lite::__private::UnsafeDropInPlaceGuard(pinned1),
@@ -60,14 +59,7 @@ const _: () = {
                         }
                         result
                     }
-                    Self::Unit => {
-                        let result = EnumProjReplace::Unit;
-                        let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
-                            target: __self_ptr,
-                            value: ::pin_project_lite::__private::ManuallyDrop::new(__replacement),
-                        };
-                        result
-                    }
+                    Self::Unit => EnumProjReplace::Unit,
                 }
             }
         }

@@ -91,8 +91,11 @@ const _: () = {
             replacement: Self,
         ) -> StructProjRef<T, U> {
             unsafe {
-                let __replacement = replacement;
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
+                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
+                    target: __self_ptr,
+                    value: ::pin_project_lite::__private::ManuallyDrop::new(replacement),
+                };
                 let Self {
                     pinned1,
                     pinned2,
@@ -104,10 +107,6 @@ const _: () = {
                     pinned2: ::pin_project_lite::__private::PhantomData,
                     unpinned1: ::pin_project_lite::__private::ptr::read(unpinned1),
                     unpinned2: ::pin_project_lite::__private::ptr::read(unpinned2),
-                };
-                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
-                    target: __self_ptr,
-                    value: ::pin_project_lite::__private::ManuallyDrop::new(__replacement),
                 };
                 {
                     (
