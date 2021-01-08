@@ -153,6 +153,18 @@
 /// }
 /// ```
 ///
+/// By passing the `#[project_replace = MyProjReplace]` attribute you may create an additional
+/// method which allows the contents of `Pin<&mut Self>` to be replaced while simultaneously moving
+/// out all unpinned fields in `Self`.
+///
+/// ```rust
+/// # use std::pin::Pin;
+/// # type MyProjReplace = ();
+/// # trait Dox {
+/// fn project_replace(self: Pin<&mut Self>, replacement: Self) -> MyProjReplace;
+/// # }
+/// ```
+///
 /// The `#[project]` (and `#[project_ref]`) attribute must precede the other
 /// attributes except for `#[doc]`. For example, the following code will not be compiled:
 ///
