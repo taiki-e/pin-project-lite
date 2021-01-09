@@ -5,6 +5,7 @@ struct Struct<T, U> {
 }
 #[allow(dead_code)]
 #[allow(single_use_lifetimes)]
+#[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::mut_mut)]
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::ref_option_ref)]
@@ -18,11 +19,13 @@ where
 }
 #[allow(explicit_outlives_requirements)]
 #[allow(single_use_lifetimes)]
+#[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     #[allow(dead_code)]
     #[allow(single_use_lifetimes)]
+    #[allow(clippy::unknown_clippy_lints)]
     #[allow(clippy::mut_mut)]
     #[allow(clippy::redundant_pub_crate)]
     #[allow(clippy::ref_option_ref)]

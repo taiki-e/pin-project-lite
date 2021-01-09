@@ -4,6 +4,7 @@ enum Enum<T, U> {
     Unit,
 }
 #[allow(single_use_lifetimes)]
+#[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     impl<T, U> Enum<T, U> {}
