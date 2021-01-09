@@ -10,7 +10,7 @@ struct Struct<T, U> {
 #[allow(clippy::mut_mut)]
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::type_repetition_in_bounds)]
-struct StructProjRef<T, U> {
+struct StructProjReplace<T, U> {
     pinned1: ::pin_project_lite::__private::PhantomData<T>,
     pinned2: ::pin_project_lite::__private::PhantomData<T>,
     unpinned1: U,
@@ -18,13 +18,16 @@ struct StructProjRef<T, U> {
 }
 #[allow(explicit_outlives_requirements)]
 #[allow(single_use_lifetimes)]
+#[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     #[allow(dead_code)]
     #[allow(single_use_lifetimes)]
+    #[allow(clippy::unknown_clippy_lints)]
     #[allow(clippy::mut_mut)]
     #[allow(clippy::redundant_pub_crate)]
+    #[allow(clippy::ref_option_ref)]
     #[allow(clippy::type_repetition_in_bounds)]
     struct Projection<'__pin, T, U>
     where
@@ -37,8 +40,10 @@ const _: () = {
     }
     #[allow(dead_code)]
     #[allow(single_use_lifetimes)]
+    #[allow(clippy::unknown_clippy_lints)]
     #[allow(clippy::mut_mut)]
     #[allow(clippy::redundant_pub_crate)]
+    #[allow(clippy::ref_option_ref)]
     #[allow(clippy::type_repetition_in_bounds)]
     struct ProjectionRef<'__pin, T, U>
     where
@@ -89,7 +94,7 @@ const _: () = {
         fn project_replace(
             self: ::pin_project_lite::__private::Pin<&mut Self>,
             replacement: Self,
-        ) -> StructProjRef<T, U> {
+        ) -> StructProjReplace<T, U> {
             unsafe {
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
                 let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
@@ -102,7 +107,7 @@ const _: () = {
                     unpinned1,
                     unpinned2,
                 } = &mut *__self_ptr;
-                let result = StructProjRef {
+                let result = StructProjReplace {
                     pinned1: ::pin_project_lite::__private::PhantomData,
                     pinned2: ::pin_project_lite::__private::PhantomData,
                     unpinned1: ::pin_project_lite::__private::ptr::read(unpinned1),

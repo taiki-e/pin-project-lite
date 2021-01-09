@@ -1,7 +1,7 @@
 use pin_project_lite::pin_project;
 
 pin_project! {
-#[project_replace = StructProjRef]
+#[project_replace = StructProjReplace]
 struct Struct<T, U> {
     #[pin]
     pinned1: T,

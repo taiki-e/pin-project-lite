@@ -557,7 +557,6 @@ macro_rules! __pin_project_internal {
                 $crate::__pin_project_internal! { @struct=>make_proj_replace_method;
                     [$proj_vis]
                     [$($proj_replace_ident)?][ProjectionReplace]
-                    [project_replace get_unchecked_mut mut]
                     [$($ty_generics)*]
                     {
                         $(
@@ -741,7 +740,6 @@ macro_rules! __pin_project_internal {
                 $crate::__pin_project_internal! { @enum=>make_proj_replace_method;
                     [$proj_vis]
                     [$($proj_replace_ident)?]
-                    [project_replace get_unchecked_mut mut]
                     [$($ty_generics)*]
                     {
                         $(
@@ -1085,7 +1083,6 @@ macro_rules! __pin_project_internal {
     (@struct=>make_proj_replace_method;
         [$proj_vis:vis]
         [$proj_ty_ident:ident][$_proj_ty_ident:ident]
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         {
             $(
@@ -1094,12 +1091,12 @@ macro_rules! __pin_project_internal {
             ),+
         }
     ) => {
-        $proj_vis fn $method_ident(
-            self: $crate::__private::Pin<&$($mut)? Self>,
+        $proj_vis fn project_replace(
+            self: $crate::__private::Pin<&mut Self>,
             replacement: Self,
         ) -> $proj_ty_ident <$($ty_generics)*> {
             unsafe {
-                let __self_ptr: *mut Self = self.$get_method();
+                let __self_ptr: *mut Self = self.get_unchecked_mut();
 
                 // Destructors will run in reverse order, so next create a guard to overwrite
                 // `self` with the replacement value without calling destructors.
@@ -1125,7 +1122,6 @@ macro_rules! __pin_project_internal {
     (@struct=>make_proj_replace_method;
         [$proj_vis:vis]
         [][$proj_ty_ident:ident]
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {
@@ -1183,7 +1179,6 @@ macro_rules! __pin_project_internal {
     (@enum=>make_proj_replace_method;
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         {
             $(
@@ -1196,12 +1191,12 @@ macro_rules! __pin_project_internal {
             ),+
         }
     ) => {
-        $proj_vis fn $method_ident(
-            self: $crate::__private::Pin<&$($mut)? Self>,
+        $proj_vis fn project_replace(
+            self: $crate::__private::Pin<&mut Self>,
             replacement: Self,
         ) -> $proj_ty_ident <$($ty_generics)*> {
             unsafe {
-                let __self_ptr: *mut Self = self.$get_method();
+                let __self_ptr: *mut Self = self.get_unchecked_mut();
 
                 // Destructors will run in reverse order, so next create a guard to overwrite
                 // `self` with the replacement value without calling destructors.
@@ -1233,7 +1228,6 @@ macro_rules! __pin_project_internal {
     (@enum=>make_proj_replace_method;
         [$proj_vis:vis]
         []
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {};
