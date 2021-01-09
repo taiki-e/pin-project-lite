@@ -686,6 +686,7 @@ macro_rules! __pin_project_internal {
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
         #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
         #[allow(clippy::redundant_pub_crate)]
+        #[allow(clippy::ref_option_ref)] // This lint warns `&Option<&<ty>>`. (only needed for project_ref)
         #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
         $proj_vis struct $proj_ty_ident <'__pin, $($impl_generics)*>
         where
@@ -730,6 +731,7 @@ macro_rules! __pin_project_internal {
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
         #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
         #[allow(clippy::redundant_pub_crate)]
+        #[allow(clippy::ref_option_ref)] // This lint warns `&Option<&<ty>>`. (only needed for project_ref)
         #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
         $proj_vis enum $proj_ty_ident <'__pin, $($impl_generics)*>
         where

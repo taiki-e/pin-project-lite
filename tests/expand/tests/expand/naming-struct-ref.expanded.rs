@@ -7,6 +7,7 @@ struct Struct<T, U> {
 #[allow(single_use_lifetimes)]
 #[allow(clippy::mut_mut)]
 #[allow(clippy::redundant_pub_crate)]
+#[allow(clippy::ref_option_ref)]
 #[allow(clippy::type_repetition_in_bounds)]
 struct StructProjRef<'__pin, T, U>
 where
@@ -24,6 +25,7 @@ const _: () = {
     #[allow(single_use_lifetimes)]
     #[allow(clippy::mut_mut)]
     #[allow(clippy::redundant_pub_crate)]
+    #[allow(clippy::ref_option_ref)]
     #[allow(clippy::type_repetition_in_bounds)]
     struct Projection<'__pin, T, U>
     where
