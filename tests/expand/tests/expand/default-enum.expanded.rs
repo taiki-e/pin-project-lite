@@ -37,6 +37,18 @@ where
     },
     Unit,
 }
+#[allow(dead_code)]
+#[allow(single_use_lifetimes)]
+#[allow(clippy::mut_mut)]
+#[allow(clippy::redundant_pub_crate)]
+#[allow(clippy::type_repetition_in_bounds)]
+enum EnumProjReplace<T, U> {
+    Struct {
+        pinned: ::pin_project_lite::__private::PhantomData<T>,
+        unpinned: U,
+    },
+    Unit,
+}
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::used_underscore_binding)]
@@ -65,6 +77,34 @@ const _: () = {
                         unpinned: unpinned,
                     },
                     Self::Unit => EnumProjRef::Unit,
+                }
+            }
+        }
+        fn project_replace(
+            self: ::pin_project_lite::__private::Pin<&mut Self>,
+            replacement: Self,
+        ) -> EnumProjReplace<T, U> {
+            unsafe {
+                let __self_ptr: *mut Self = self.get_unchecked_mut();
+                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
+                    target: __self_ptr,
+                    value: ::pin_project_lite::__private::ManuallyDrop::new(replacement),
+                };
+                match &mut *__self_ptr {
+                    Self::Struct { pinned, unpinned } => {
+                        let result = EnumProjReplace::Struct {
+                            pinned: ::pin_project_lite::__private::PhantomData,
+                            unpinned: ::pin_project_lite::__private::ptr::read(unpinned),
+                        };
+                        {
+                            (
+                                ::pin_project_lite::__private::UnsafeDropInPlaceGuard(pinned),
+                                (),
+                            );
+                        }
+                        result
+                    }
+                    Self::Unit => EnumProjReplace::Unit,
                 }
             }
         }

@@ -31,6 +31,15 @@ where
     pinned: ::pin_project_lite::__private::Pin<&'__pin (T)>,
     unpinned: &'__pin (U),
 }
+#[allow(dead_code)]
+#[allow(single_use_lifetimes)]
+#[allow(clippy::mut_mut)]
+#[allow(clippy::redundant_pub_crate)]
+#[allow(clippy::type_repetition_in_bounds)]
+struct StructProjReplace<T, U> {
+    pinned: ::pin_project_lite::__private::PhantomData<T>,
+    unpinned: U,
+}
 #[allow(explicit_outlives_requirements)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
@@ -58,6 +67,30 @@ const _: () = {
                     pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
                     unpinned: unpinned,
                 }
+            }
+        }
+        fn project_replace(
+            self: ::pin_project_lite::__private::Pin<&mut Self>,
+            replacement: Self,
+        ) -> StructProjReplace<T, U> {
+            unsafe {
+                let __self_ptr: *mut Self = self.get_unchecked_mut();
+                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard {
+                    target: __self_ptr,
+                    value: ::pin_project_lite::__private::ManuallyDrop::new(replacement),
+                };
+                let Self { pinned, unpinned } = &mut *__self_ptr;
+                let result = StructProjReplace {
+                    pinned: ::pin_project_lite::__private::PhantomData,
+                    unpinned: ::pin_project_lite::__private::ptr::read(unpinned),
+                };
+                {
+                    (
+                        ::pin_project_lite::__private::UnsafeDropInPlaceGuard(pinned),
+                        (),
+                    );
+                }
+                result
             }
         }
     }
