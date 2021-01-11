@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [0.2.4] - 2021-01-11
+
+- [Add `project_replace`.](https://github.com/taiki-e/pin-project-lite/pull/43)
+
 ## [0.2.3] - 2021-01-09
 
 - [Suppress `clippy::unknown_clippy_lints` lint in generated code.](https://github.com/taiki-e/pin-project-lite/pull/47)
@@ -89,7 +93,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.1.8] - 2020-09-26
 
-- [Fix compatibility of generated code with `forbid(future_incompatible)`](https://github.com/taiki-e/pin-project-lite/pull/30)
+- [Fix compatibility of generated code with `forbid(future_incompatible)`.](https://github.com/taiki-e/pin-project-lite/pull/30)
 
   Note: This does not guarantee compatibility with `forbid(future_incompatible)` in the future.
   If rustc adds a new lint, we may not be able to keep this.
@@ -134,7 +138,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.0...v0.2.1
