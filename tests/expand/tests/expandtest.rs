@@ -9,8 +9,9 @@ use std::env;
 #[cfg_attr(not(expandtest), ignore)]
 #[test]
 fn expandtest() {
-    #[cfg(not(ci))]
-    env::set_var("MACROTEST", "overwrite");
+    if !cfg!(ci) {
+        env::set_var("MACROTEST", "overwrite");
+    }
 
     expand("tests/expand/*.rs");
 }
