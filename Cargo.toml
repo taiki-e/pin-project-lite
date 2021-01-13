@@ -20,12 +20,12 @@ targets = ["x86_64-unknown-linux-gnu"]
 [workspace]
 members = [
     "tests/doc",
-    "tests/expand",
     "tests/no-core",
     "tests/no-std",
 ]
 
 [dev-dependencies]
+macrotest = { version = "1.0.7", git = "https://github.com/taiki-e/macrotest.git", rev = "acd8b3c" }
 rustversion = "1"
 static_assertions = "1"
 trybuild = "1"
