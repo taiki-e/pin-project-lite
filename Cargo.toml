@@ -8,7 +8,7 @@ repository = "https://github.com/taiki-e/pin-project-lite"
 documentation = "https://docs.rs/pin-project-lite"
 keywords = ["pin", "macros"]
 categories = ["no-std", "rust-patterns"]
-exclude = ["/.github", "/scripts"]
+exclude = ["/.*", "/scripts"]
 description = """
 A lightweight version of pin-project written with declarative macros.
 """
