@@ -5,8 +5,9 @@
 //! [`pin_project!`] macro creates a projection type covering all the fields of struct.
 //!
 //! ```rust
-//! use pin_project_lite::pin_project;
 //! use std::pin::Pin;
+//!
+//! use pin_project_lite::pin_project;
 //!
 //! pin_project! {
 //!     struct Struct<T, U> {
@@ -29,8 +30,9 @@
 //! returned from the method.
 //!
 //! ```rust
-//! use pin_project_lite::pin_project;
 //! use std::pin::Pin;
+//!
+//! use pin_project_lite::pin_project;
 //!
 //! pin_project! {
 //!     #[project = EnumProj]
@@ -205,8 +207,9 @@
 /// # Examples
 ///
 /// ```rust
-/// use pin_project_lite::pin_project;
 /// use std::pin::Pin;
+///
+/// use pin_project_lite::pin_project;
 ///
 /// pin_project! {
 ///     struct Struct<T, U> {
@@ -229,8 +232,9 @@
 /// returned from the method.
 ///
 /// ```rust
-/// use pin_project_lite::pin_project;
 /// use std::pin::Pin;
+///
+/// use pin_project_lite::pin_project;
 ///
 /// pin_project! {
 ///     #[project = EnumProj]
@@ -260,8 +264,9 @@
 /// consuming the [`Pin`].
 ///
 /// ```rust
-/// use pin_project_lite::pin_project;
 /// use std::pin::Pin;
+///
+/// use pin_project_lite::pin_project;
 ///
 /// pin_project! {
 ///     struct Struct<T> {
@@ -285,8 +290,9 @@
 /// attribute for a [`PhantomPinned`] field.
 ///
 /// ```rust
-/// use pin_project_lite::pin_project;
 /// use std::marker::PhantomPinned;
+///
+/// use pin_project_lite::pin_project;
 ///
 /// pin_project! {
 ///     struct Struct<T> {
