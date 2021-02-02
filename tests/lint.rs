@@ -29,7 +29,7 @@
     unused_results,
     variant_size_differences
 )]
-// absolute_paths_not_starting_with_crate, anonymous_parameters, keyword_idents, pointer_structural_match: forbidden as a part of future_incompatible
+// absolute_paths_not_starting_with_crate, anonymous_parameters, keyword_idents, pointer_structural_match, semicolon_in_expressions_from_macros: forbidden as a part of future_incompatible
 // missing_doc_code_examples, private_doc_tests, invalid_html_tags: warned as a part of rustdoc
 // unsafe_block_in_unsafe_fn: unstable
 // unsafe_code: forbidden
@@ -38,6 +38,7 @@
 #![warn(clippy::all, clippy::pedantic, clippy::nursery)]
 #![warn(clippy::restriction)]
 #![allow(clippy::blanket_clippy_restriction_lints)] // this is a test, so enable all restriction lints intentionally.
+#![allow(clippy::exhaustive_structs, clippy::exhaustive_enums)] // TODO
 
 // Check interoperability with rustc and clippy lints.
 
