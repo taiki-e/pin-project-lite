@@ -23,6 +23,13 @@ allowed_external_types = [
 [lib]
 doc-scrape-examples = false
 
+[features]
+rustc-dep-of-std = ["core", "compiler_builtins"]
+
+[dependencies]
+core = { package = "rustc-std-workspace-core", version = "1", optional = true }
+compiler_builtins = { version = "0.1", optional = true }
+
 [dev-dependencies]
 macrotest = { git = "https://github.com/taiki-e/macrotest.git", branch = "dev-old-msrv" } # adjust overwrite behavior + no cargo-expand + lower MSRV
 rustversion = "1"
