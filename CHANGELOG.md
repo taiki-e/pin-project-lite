@@ -10,23 +10,37 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [0.2.5] - 2021-03-02
+
+- [Prepare for removal of `safe_packed_borrows` lint.](https://github.com/taiki-e/pin-project-lite/pull/55) See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+
 ## [0.2.4] - 2021-01-11
+
+**Note: This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Add `project_replace`.](https://github.com/taiki-e/pin-project-lite/pull/43)
 
 ## [0.2.3] - 2021-01-09
 
+**Note: This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+
 - [Suppress `clippy::unknown_clippy_lints` lint in generated code.](https://github.com/taiki-e/pin-project-lite/pull/47)
 
 ## [0.2.2] - 2021-01-09
+
+**Note: This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Suppress `clippy::ref_option_ref` lint in generated code.](https://github.com/taiki-e/pin-project-lite/pull/45)
 
 ## [0.2.1] - 2021-01-05
 
+**Note: This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+
 - Exclude unneeded files from crates.io.
 
 ## [0.2.0] - 2020-11-13
+
+**Note: This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [`pin_project!` macro now supports enums.](https://github.com/taiki-e/pin-project-lite/pull/28)
 
@@ -138,7 +152,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.1...v0.2.2
