@@ -301,10 +301,8 @@ macro_rules! __pin_project_internal {
 
             // Ensure that it's impossible to use pin projections on a #[repr(packed)] struct.
             //
-            // Taking a reference to a packed field is unsafe, amd appplying
-            // #[forbid(safe_packed_borrows)] makes sure that doing this without
-            // an 'unsafe' block (which we deliberately do not generate)
-            // is a hard error.
+            // Taking a reference to a packed field is UB, and applying
+            // `#[forbid(unaligned_references)]` makes sure that doing this is a hard error.
             //
             // If the struct ends up having #[repr(packed)] applied somehow,
             // this will generate an (unfriendly) error message. Under all reasonable
@@ -312,7 +310,16 @@ macro_rules! __pin_project_internal {
             // a much nicer error above.
             //
             // See https://github.com/taiki-e/pin-project/pull/34 for more details.
-            #[forbid(safe_packed_borrows)]
+            //
+            // Note:
+            // - Lint-based tricks aren't perfect, but they're much better than nothing:
+            //   https://github.com/taiki-e/pin-project-lite/issues/26
+            //
+            // - Enable both unaligned_references and safe_packed_borrows lints
+            //   because unaligned_references lint does not exist in older compilers:
+            //   https://github.com/taiki-e/pin-project-lite/pull/55
+            //   https://github.com/rust-lang/rust/pull/82525
+            #[forbid(unaligned_references, safe_packed_borrows)]
             fn __assert_not_repr_packed <$($impl_generics)*> (this: &$ident <$($ty_generics)*>)
             $(where
                 $($where_clause)*)?
