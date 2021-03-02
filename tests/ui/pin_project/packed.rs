@@ -1,16 +1,16 @@
 use pin_project_lite::pin_project;
 
-pin_project! { //~ ERROR borrow of packed field is unsafe and requires unsafe function or block
+pin_project! { //~ ERROR reference to packed field is unaligned
     #[repr(packed, C)]
-    struct A {
+    struct Packed {
         #[pin]
         field: u16,
     }
 }
 
-pin_project! { //~ ERROR borrow of packed field is unsafe and requires unsafe function or block
+pin_project! { //~ ERROR reference to packed field is unaligned
     #[repr(packed(2))]
-    struct C {
+    struct PackedN {
         #[pin]
         field: u32,
     }
