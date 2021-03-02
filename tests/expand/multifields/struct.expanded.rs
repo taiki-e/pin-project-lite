@@ -141,7 +141,7 @@ const _: () = {
     #[allow(clippy::drop_bounds, drop_bounds)]
     impl<T: ::pin_project_lite::__private::Drop> MustNotImplDrop for T {}
     impl<T, U> MustNotImplDrop for Struct<T, U> {}
-    #[forbid(safe_packed_borrows)]
+    #[forbid(unaligned_references, safe_packed_borrows)]
     fn __assert_not_repr_packed<T, U>(this: &Struct<T, U>) {
         let _ = &this.pinned1;
         let _ = &this.pinned2;
