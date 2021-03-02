@@ -15,11 +15,11 @@ extern crate core as _core;
 mod pin_project_lite {}
 
 pub mod module {
-    use _core::{fmt::Debug, include};
+    use _core::{fmt::Debug, include, prelude::v1::derive};
 
     include!("../include/basic.rs");
 }
 
-use _core::{fmt::Debug, include};
+use _core::{fmt::Debug, include, prelude::v1::derive};
 
 include!("../include/basic.rs");

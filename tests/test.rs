@@ -5,6 +5,7 @@
 mod auxiliary;
 
 use core::{marker::PhantomPinned, pin::Pin};
+
 use pin_project_lite::pin_project;
 
 #[test]
