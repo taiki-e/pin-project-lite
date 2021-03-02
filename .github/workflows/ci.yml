@@ -6,11 +6,14 @@ on:
     branches:
       - master
       - staging
+      - v[0-9]+.[0-9]+
   schedule:
     - cron: '0 1 * * *'
 
 env:
-  RUSTFLAGS: -Dwarnings
+  CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
   RUST_BACKTRACE: 1
 
 defaults:
@@ -19,76 +22,96 @@ defaults:
 
 jobs:
   test:
-    name: test
     strategy:
       matrix:
         rust:
-          # This is the minimum supported Rust version of this crate.
-          # When updating this, the reminder to update the minimum supported Rust version in README.md.
-          - 1.37.0
+          - 1.37
           - stable
           - beta
           - nightly
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust
-        run: ci/install-rust.sh ${{ matrix.rust }}
-      - if: matrix.rust == 'nightly'
-        run: cargo install cargo-hack
+      - uses: taiki-e/github-actions/install-rust@main
+        with:
+          toolchain: ${{ matrix.rust }}
+          component: rustfmt
+      - name: Pre Cache cargo-expand
+        run: |
+          mkdir -p .github/caching
+          curl -LsSf https://api.github.com/repos/dtolnay/cargo-expand/releases/latest \
+            | jq -r '.tag_name' > .github/caching/cargo-expand.lock
+          echo "${{ runner.tool_cache }}/cargo-expand/bin" >> "${GITHUB_PATH}"
+        if: startsWith(matrix.rust, 'nightly')
+      - name: Cache cargo-expand
+        id: cache-cargo-expand
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.tool_cache }}/cargo-expand/bin
+          key: cargo-expand-bin-${{ hashFiles('.github/caching/cargo-expand.lock') }}
+        if: startsWith(matrix.rust, 'nightly')
+      - name: Install cargo-expand
+        run: cargo install -f cargo-expand --root ${{ runner.tool_cache }}/cargo-expand
+        if: startsWith(matrix.rust, 'nightly') && steps.cache-cargo-expand.outputs.cache-hit != 'true'
+      - run: cargo install cargo-hack
+        if: startsWith(matrix.rust, 'nightly')
       - run: rustup target add thumbv7m-none-eabi
-      - run: cargo test --all --exclude expandtest
-      - run: cargo check --manifest-path tests/no-std/Cargo.toml --target thumbv7m-none-eabi
-      - if: matrix.rust == 'nightly'
-        run: bash scripts/check-minimal-versions.sh
+      - run: cargo test --all
+      - run: cargo build --manifest-path tests/no-std/Cargo.toml --target thumbv7m-none-eabi
+      - run: scripts/check-minimal-versions.sh
+        if: startsWith(matrix.rust, 'nightly')
 
-  expandtest:
-    name: expandtest
+  build:
+    strategy:
+      matrix:
+        range:
+          # This is the minimum supported Rust version of this crate.
+          # When updating this, the reminder to update the minimum supported
+          # Rust version in README.md and clippy.toml.
+          - 1.37..1.43
+          - 1.44..
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust and Rustfmt
-        run: ci/install-component.sh rustfmt
-      - run: cargo install cargo-expand
-      - run: bash scripts/expandtest.sh
+      - run: cargo install cargo-hack
+      - run: cargo hack build --all --ignore-private --no-dev-deps --version-range ${{ matrix.range }}
 
-  clippy:
-    name: clippy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Rust and Clippy
-        run: ci/install-component.sh clippy
-      - run: cargo clippy --all --all-features --all-targets
+  # This branch no longer actively developed. Most commits to this
+  # branch are backporting and should not be blocked by clippy.
+  # clippy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: taiki-e/github-actions/install-rust@main
+  #       with:
+  #         component: clippy
+  #     - run: cargo clippy --all --all-features --all-targets
 
   rustfmt:
-    name: rustfmt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust and Rustfmt
-        run: ci/install-component.sh rustfmt
+      - uses: taiki-e/github-actions/install-rust@main
+        with:
+          component: rustfmt
       - run: cargo fmt --all -- --check
 
   rustdoc:
-    name: rustdoc
-    env:
-      RUSTDOCFLAGS: -Dwarnings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust
-        run: ci/install-rust.sh
+      - uses: taiki-e/github-actions/install-rust@main
       - run: cargo doc --no-deps --all --all-features
+        env:
+          RUSTDOCFLAGS: -D warnings
 
   shellcheck:
-    name: shellcheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: shellcheck **/*.sh
 
-  # These jobs don't actually test anything, but they're used to tell bors the
+  # This job doesn't actually test anything, but they're used to tell bors the
   # build completed, as there is no practical way to detect when a workflow is
   # successful listening to webhooks only.
   #
@@ -99,8 +122,8 @@ jobs:
     if: github.event_name == 'push' && success()
     needs:
       - test
-      - expandtest
-      - clippy
+      - build
+      # - clippy
       - rustfmt
       - rustdoc
       - shellcheck
@@ -108,17 +131,3 @@ jobs:
     steps:
       - name: Mark the job as a success
         run: exit 0
-  ci-failure:
-    name: ci
-    if: github.event_name == 'push' && !success()
-    needs:
-      - test
-      - expandtest
-      - clippy
-      - rustfmt
-      - rustdoc
-      - shellcheck
-    runs-on: ubuntu-latest
-    steps:
-      - name: Mark the job as a failure
-        run: exit 1
