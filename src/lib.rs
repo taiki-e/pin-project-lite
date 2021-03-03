@@ -167,23 +167,6 @@
 /// # }
 /// ```
 ///
-/// The `#[project]` (and `#[project_ref]`) attribute must precede the other
-/// attributes except for `#[doc]`. For example, the following code will not be compiled:
-///
-/// ```rust,compile_fail
-/// # use pin_project_lite::pin_project;
-/// # use std::pin::Pin;
-/// pin_project! {
-///     /// documents (`#[doc]`) can be placed before `#[project]`.
-///     #[derive(Clone)] // <--- ERROR
-///     #[project = EnumProj]
-///     #[derive(Debug)] // <--- Ok
-///     enum Enum<T> {
-///         Variant { #[pin] field: T },
-///     }
-/// }
-/// ```
-///
 /// Also, note that the projection types returned by `project` and `project_ref` have
 /// an additional lifetime at the beginning of generics.
 ///
@@ -311,94 +294,9 @@
 /// [pin-project]: https://github.com/taiki-e/pin-project
 #[macro_export]
 macro_rules! pin_project {
-    // Parses options
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project = $proj_mut_ident:ident]
-        #[project_ref = $proj_ref_ident:ident]
-        #[project_replace = $proj_replace_ident:ident]
-        $($tt:tt)*
-    ) => {
+    ($($tt:tt)*) => {
         $crate::__pin_project_internal! {
-            [$proj_mut_ident][$proj_ref_ident][$proj_replace_ident]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project = $proj_mut_ident:ident]
-        #[project_ref = $proj_ref_ident:ident]
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [$proj_mut_ident][$proj_ref_ident][]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project = $proj_mut_ident:ident]
-        #[project_replace = $proj_replace_ident:ident]
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [$proj_mut_ident][][$proj_replace_ident]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project_ref = $proj_ref_ident:ident]
-        #[project_replace = $proj_replace_ident:ident]
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [][$proj_ref_ident][$proj_replace_ident]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project = $proj_mut_ident:ident]
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [$proj_mut_ident][][]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project_ref = $proj_ref_ident:ident]
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [][$proj_ref_ident][]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $(#[doc $($doc:tt)*])*
-        #[project_replace = $proj_replace_ident:ident]
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [][][$proj_replace_ident]
-            $(#[doc $($doc)*])*
-            $($tt)*
-        }
-    };
-    (
-        $($tt:tt)*
-    ) => {
-        $crate::__pin_project_internal! {
-            [][][]
+            [][][][]
             $($tt)*
         }
     };
@@ -1414,13 +1312,74 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     // Parses input and determines visibility
+
+    (
+        []
+        [$($proj_ref_ident:ident)?]
+        [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
+
+        #[project = $proj_mut_ident:ident]
+        $($tt:tt)*
+    ) => {
+        $crate::__pin_project_internal! {
+            [$proj_mut_ident][$($proj_ref_ident)?][$($proj_replace_ident)?][$($attrs)*]
+            $($tt)*
+        }
+    };
+
+    {
+        [$($proj_mut_ident:ident)?]
+        []
+        [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
+
+        #[project_ref = $proj_ref_ident:ident]
+        $($tt:tt)*
+    } => {
+        $crate::__pin_project_internal! {
+            [$($proj_mut_ident)?][$proj_ref_ident][$($proj_replace_ident)?][$($attrs)*]
+            $($tt)*
+        }
+    };
+
+    {
+        [$($proj_mut_ident:ident)?]
+        [$($proj_ref_ident:ident)?]
+        []
+        [$($attrs:tt)*]
+
+        #[project_replace = $proj_replace_ident:ident]
+        $($tt:tt)*
+    } => {
+        $crate::__pin_project_internal! {
+            [$($proj_mut_ident)?][$($proj_ref_ident)?][$proj_replace_ident][$($attrs)*]
+            $($tt)*
+        }
+    };
+
+    {
+        [$($proj_mut_ident:ident)?]
+        [$($proj_ref_ident:ident)?]
+        [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
+
+        #[$($attr:tt)*]
+        $($tt:tt)*
+    } => {
+        $crate::__pin_project_internal! {
+            [$($proj_mut_ident)?][$($proj_ref_ident)?][$($proj_replace_ident)?][$($attrs)* #[$($attr)*]]
+            $($tt)*
+        }
+    };
+
     // struct
     (
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
 
-        $(#[$attrs:meta])*
         pub struct $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
@@ -1449,7 +1408,7 @@ macro_rules! __pin_project_internal {
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [pub(crate)]
-            [$(#[$attrs])* pub struct $ident]
+            [$($attrs)* pub struct $ident]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
@@ -1485,8 +1444,8 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
 
-        $(#[$attrs:meta])*
         $vis:vis struct $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
@@ -1515,7 +1474,7 @@ macro_rules! __pin_project_internal {
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [$vis]
-            [$(#[$attrs])* $vis struct $ident]
+            [$($attrs)* $vis struct $ident]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
@@ -1552,8 +1511,8 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
 
-        $(#[$attrs:meta])*
         pub enum $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
@@ -1587,7 +1546,7 @@ macro_rules! __pin_project_internal {
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [pub(crate)]
-            [$(#[$attrs])* pub enum $ident]
+            [$($attrs)* pub enum $ident]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
@@ -1628,8 +1587,8 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
 
-        $(#[$attrs:meta])*
         $vis:vis enum $ident:ident $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
@@ -1663,7 +1622,7 @@ macro_rules! __pin_project_internal {
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [$vis]
-            [$(#[$attrs])* $vis enum $ident]
+            [$($attrs)* $vis enum $ident]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
