@@ -1323,7 +1323,10 @@ macro_rules! __pin_project_internal {
         $($tt:tt)*
     ) => {
         $crate::__pin_project_internal! {
-            [$proj_mut_ident][$($proj_ref_ident)?][$($proj_replace_ident)?][$($attrs)*]
+            [$proj_mut_ident]
+            [$($proj_ref_ident)?]
+            [$($proj_replace_ident)?]
+            [$($attrs)*]
             $($tt)*
         }
     };
@@ -1338,7 +1341,10 @@ macro_rules! __pin_project_internal {
         $($tt:tt)*
     } => {
         $crate::__pin_project_internal! {
-            [$($proj_mut_ident)?][$proj_ref_ident][$($proj_replace_ident)?][$($attrs)*]
+            [$($proj_mut_ident)?]
+            [$proj_ref_ident]
+            [$($proj_replace_ident)?]
+            [$($attrs)*]
             $($tt)*
         }
     };
@@ -1353,7 +1359,10 @@ macro_rules! __pin_project_internal {
         $($tt:tt)*
     } => {
         $crate::__pin_project_internal! {
-            [$($proj_mut_ident)?][$($proj_ref_ident)?][$proj_replace_ident][$($attrs)*]
+            [$($proj_mut_ident)?]
+            [$($proj_ref_ident)?]
+            [$proj_replace_ident]
+            [$($attrs)*]
             $($tt)*
         }
     };
@@ -1368,7 +1377,10 @@ macro_rules! __pin_project_internal {
         $($tt:tt)*
     } => {
         $crate::__pin_project_internal! {
-            [$($proj_mut_ident)?][$($proj_ref_ident)?][$($proj_replace_ident)?][$($attrs)* #[$($attr)*]]
+            [$($proj_mut_ident)?]
+            [$($proj_ref_ident)?]
+            [$($proj_replace_ident)?]
+            [$($attrs)* #[$($attr)*]]
             $($tt)*
         }
     };
