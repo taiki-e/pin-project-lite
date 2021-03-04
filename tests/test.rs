@@ -600,6 +600,7 @@ fn attrs() {
 
     pin_project! {
         /// dox1
+        #[derive(Clone)]
         #[project = Enum2Proj]
         #[project_ref = Enum2ProjRef]
         /// dox2
