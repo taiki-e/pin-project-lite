@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [0.2.6] - 2021-03-04
+
+- [Support item attributes in any order.](https://github.com/taiki-e/pin-project-lite/pull/57)
+
 ## [0.2.5] - 2021-03-02
 
 - [Prepare for removal of `safe_packed_borrows` lint.](https://github.com/taiki-e/pin-project-lite/pull/55) See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
@@ -180,7 +184,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.2...v0.2.3
