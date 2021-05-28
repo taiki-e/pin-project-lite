@@ -108,7 +108,7 @@
     )
 ))]
 #![warn(future_incompatible, rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
-#![warn(clippy::default_trait_access)]
+#![warn(clippy::default_trait_access, clippy::wildcard_imports)]
 
 /// A macro that creates a projection type covering all the fields of struct.
 ///
