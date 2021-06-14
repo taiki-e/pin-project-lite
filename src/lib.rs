@@ -82,10 +82,6 @@
 //! error you can pass the same input to [pin-project] to receive a helpful
 //! description of the compile error.
 //!
-//! ## Different: No support for custom Drop implementation
-//!
-//! pin-project supports this by [`#[pinned_drop]`][pinned-drop].
-//!
 //! ## Different: No support for custom Unpin implementation
 //!
 //! pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-unpin].
@@ -96,7 +92,6 @@
 //!
 //! [not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
 //! [pin-project]: https://github.com/taiki-e/pin-project
-//! [pinned-drop]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#pinned_drop
 //! [unsafe-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unsafeunpin
 
 #![no_std]
@@ -331,6 +326,7 @@ macro_rules! __pin_project_internal {
                 $field_vis:vis $field:ident: $field_ty:ty
             ),+
         }
+        $(impl $($pinned_drop:tt)*)?
     ) => {
         $(#[$attrs])*
         $vis struct $ident $($def_generics)*
@@ -374,6 +370,7 @@ macro_rules! __pin_project_internal {
             [make_proj_field_replace]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            [$(impl $($pinned_drop)*)?]
             {
                 $(
                     $(#[$pin])?
@@ -422,6 +419,7 @@ macro_rules! __pin_project_internal {
                 [make_proj_field_replace]
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                [$(impl $($pinned_drop)*)?]
                 {
                     $(
                         $(#[$pin])?
@@ -484,6 +482,7 @@ macro_rules! __pin_project_internal {
             $crate::__pin_project_internal! { @make_drop_impl;
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                $(impl $($pinned_drop)*)?
             }
 
             // Ensure that it's impossible to use pin projections on a #[repr(packed)] struct.
@@ -538,6 +537,7 @@ macro_rules! __pin_project_internal {
                 })?
             ),+
         }
+        $(impl $($pinned_drop:tt)*)?
     ) => {
         $(#[$attrs])*
         $vis enum $ident $($def_generics)*
@@ -594,6 +594,7 @@ macro_rules! __pin_project_internal {
             [make_proj_field_replace]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            [$(impl $($pinned_drop)*)?]
             {
                 $(
                     $variant $({
@@ -682,6 +683,7 @@ macro_rules! __pin_project_internal {
             $crate::__pin_project_internal! { @make_drop_impl;
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                $(impl $($pinned_drop)*)?
             }
 
             // We don't need to check for '#[repr(packed)]',
@@ -765,6 +767,7 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [$(impl $($pinned_drop:tt)*)?]
         $($field:tt)*
     ) => {};
     (@struct=>make_proj_replace_ty=>unnamed;
@@ -773,15 +776,16 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [$(impl $($pinned_drop:tt)*)?]
         $($field:tt)*
-    ) => {
-    };
+    ) => {};
     (@struct=>make_proj_replace_ty=>named;
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        []
         {
             $(
                 $(#[$pin:ident])?
@@ -811,6 +815,7 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [$(impl $($pinned_drop:tt)*)?]
         $($field:tt)*
     ) => {};
     // =============================================================================================
@@ -872,6 +877,7 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        []
         {
             $(
                 $variant:ident $({
@@ -909,6 +915,7 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [$(impl $($pinned_drop:tt)*)?]
         $($variant:tt)*
     ) => {};
 
@@ -1194,6 +1201,90 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // make_drop_impl
     (@make_drop_impl;
+        [$_ident:ident]
+        [$($_impl_generics:tt)*] [$($_ty_generics:tt)*] [$(where $($_where_clause:tt)* )?]
+        impl $(<
+            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
+            $( $generics:ident
+                $(: $generics_bound:path)?
+                $(: ?$generics_unsized_bound:path)?
+                $(: $generics_lifetime_bound:lifetime)?
+            ),*
+        >)? PinnedDrop for $self_ty:ty
+        $(where
+            $( $where_clause_ty:ty
+                $(: $where_clause_bound:path)?
+                $(: ?$where_clause_unsized_bound:path)?
+                $(: $where_clause_lifetime_bound:lifetime)?
+            ),*
+        )?
+        {
+            fn drop($($arg:ident)+: Pin<&mut Self>) {
+                $($tt:tt)*
+            }
+        }
+    ) => {
+        impl $(<
+            $( $lifetime $(: $lifetime_bound)? ,)*
+            $( $generics
+                $(: $generics_bound)?
+                $(: ?$generics_unsized_bound)?
+                $(: $generics_lifetime_bound)?
+            ),*
+        >)? $crate::__private::Drop for $self_ty
+        $(where
+            $( $where_clause_ty
+                $(: $where_clause_bound)?
+                $(: ?$where_clause_unsized_bound)?
+                $(: $where_clause_lifetime_bound)?
+            ),*
+        )?
+        {
+            fn drop(&mut self) {
+                // Implementing `__DropInner::__drop_inner` is safe, but calling it is not safe.
+                // This is because destructors can be called multiple times in safe code and
+                // [double dropping is unsound](https://github.com/rust-lang/rust/pull/62360).
+                //
+                // `__drop_inner` is defined as a safe method, but this is fine since
+                // `__drop_inner` is not accessible by the users and we call `__drop_inner` only
+                // once.
+                //
+                // Users can implement [`Drop`] safely using `pin_project!` and can drop a
+                // type that implements `PinnedDrop` using the [`drop`] function safely.
+                fn __drop_inner $(<
+                    $( $lifetime $(: $lifetime_bound)? ,)*
+                    $( $generics
+                        $(: $generics_bound)?
+                        $(: ?$generics_unsized_bound)?
+                        $(: $generics_lifetime_bound)?
+                    ),*
+                >)? (
+                    $($arg)+: $crate::__private::Pin<&mut $self_ty>,
+                )
+                $(where
+                    $( $where_clause_ty
+                        $(: $where_clause_bound)?
+                        $(: ?$where_clause_unsized_bound)?
+                        $(: $where_clause_lifetime_bound)?
+                    ),*
+                )?
+                {
+                    // A dummy `__drop_inner` function to prevent users call outer `__drop_inner`.
+                    fn __drop_inner() {}
+                    $($tt)*
+                }
+
+                // Safety - we're in 'drop', so we know that 'self' will
+                // never move again.
+                let pinned_self: $crate::__private::Pin<&mut Self>
+                    = unsafe { $crate::__private::Pin::new_unchecked(self) };
+                // We call `__drop_inner` only once. Since `__DropInner::__drop_inner`
+                // is not accessible by the users, it is never called again.
+                __drop_inner(pinned_self);
+            }
+        }
+    };
+    (@make_drop_impl;
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
     ) => {
@@ -1414,6 +1505,7 @@ macro_rules! __pin_project_internal {
                 $field_vis:vis $field:ident: $field_ty:ty
             ),+ $(,)?
         }
+        $(impl $($pinned_drop:tt)*)?
     ) => {
         $crate::__pin_project_internal! { @struct=>internal;
             [$($proj_mut_ident)?]
@@ -1450,6 +1542,7 @@ macro_rules! __pin_project_internal {
                     $field_vis $field: $field_ty
                 ),+
             }
+            $(impl $($pinned_drop)*)?
         }
     };
     (
@@ -1480,6 +1573,7 @@ macro_rules! __pin_project_internal {
                 $field_vis:vis $field:ident: $field_ty:ty
             ),+ $(,)?
         }
+        $(impl $($pinned_drop:tt)*)?
     ) => {
         $crate::__pin_project_internal! { @struct=>internal;
             [$($proj_mut_ident)?]
@@ -1516,6 +1610,7 @@ macro_rules! __pin_project_internal {
                     $field_vis $field: $field_ty
                 ),+
             }
+            $(impl $($pinned_drop)*)?
         }
     };
     // enum
@@ -1552,6 +1647,7 @@ macro_rules! __pin_project_internal {
                 })?
             ),+ $(,)?
         }
+        $(impl $($pinned_drop:tt)*)?
     ) => {
         $crate::__pin_project_internal! { @enum=>internal;
             [$($proj_mut_ident)?]
@@ -1593,6 +1689,7 @@ macro_rules! __pin_project_internal {
                     })?
                 ),+
             }
+            $(impl $($pinned_drop)*)?
         }
     };
     (
@@ -1628,6 +1725,7 @@ macro_rules! __pin_project_internal {
                 })?
             ),+ $(,)?
         }
+        $(impl $($pinned_drop:tt)*)?
     ) => {
         $crate::__pin_project_internal! { @enum=>internal;
             [$($proj_mut_ident)?]
@@ -1669,6 +1767,7 @@ macro_rules! __pin_project_internal {
                     })?
                 ),+
             }
+            $(impl $($pinned_drop)*)?
         }
     };
 }

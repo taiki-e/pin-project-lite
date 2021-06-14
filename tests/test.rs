@@ -633,3 +633,36 @@ fn attrs() {
         }
     }
 }
+
+#[test]
+fn pinned_drop() {
+    pin_project! {
+        pub struct Struct1<'a> {
+            was_dropped: &'a mut bool,
+            #[pin]
+            field: u8,
+        }
+        impl PinnedDrop for Struct1<'_> {
+            fn drop(this: Pin<&mut Self>) {
+                **this.project().was_dropped = true;
+            }
+        }
+    }
+
+    let mut was_dropped = false;
+    drop(Struct1 { was_dropped: &mut was_dropped, field: 42 });
+    assert!(was_dropped);
+
+    pin_project! {
+        pub struct Struct2<'a> {
+            was_dropped: &'a mut bool,
+            #[pin]
+            field: u8,
+        }
+        impl PinnedDrop for Struct2<'_> {
+            fn drop(mut this: Pin<&mut Self>) {
+                **this.as_mut().project().was_dropped = true;
+            }
+        }
+    }
+}
