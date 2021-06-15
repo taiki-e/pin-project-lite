@@ -52,7 +52,7 @@ fn projection() {
 
     {
         let StructProjReplace { f1: PhantomData, f2 } =
-            s.as_mut().project_replace(Default::default());
+            s.as_mut().project_replace(Struct::default());
         assert_eq!(f2, 2);
         let StructProj { f1, f2 } = s.project();
         assert_eq!(*f1, 0);
