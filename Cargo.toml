@@ -13,14 +13,18 @@ description = """
 A lightweight version of pin-project written with declarative macros.
 """
 
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
 [workspace]
-members = ["tests/doc", "tests/no-core", "tests/no-std"]
+members = [
+    "tests/doc",
+    "tests/no-core",
+    "tests/no-std",
+]
 
 [dev-dependencies]
 macrotest = "1.0.8"
 rustversion = "1"
 static_assertions = "1"
 trybuild = "1"
-
-[package.metadata.docs.rs]
-targets = ["x86_64-unknown-linux-gnu"]
