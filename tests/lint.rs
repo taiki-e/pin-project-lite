@@ -160,7 +160,6 @@ mod clippy_redundant_pub_crate {
         }
     }
 
-    #[allow(dead_code)]
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
