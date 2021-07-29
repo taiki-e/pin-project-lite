@@ -1216,7 +1216,7 @@ macro_rules! __pin_project_internal {
                 $(: $where_clause_bound:path)?
                 $(: ?$where_clause_unsized_bound:path)?
                 $(: $where_clause_lifetime_bound:lifetime)?
-            ),*
+            ),* $(,)?
         )?
         {
             fn drop($($arg:ident)+: Pin<&mut Self>) {
