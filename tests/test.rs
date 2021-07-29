@@ -130,6 +130,33 @@ fn enum_project_set() {
 }
 
 #[test]
+fn enum_newtype_project_set() {
+    pin_project! {
+        #[project = EnumProj]
+        #[project_ref = EnumProjRef]
+        #[derive(Eq, PartialEq, Debug)]
+        pub enum Enum {
+            V1(#[pin] u8),
+            V2(bool),
+        }
+    }
+
+    let mut e = Enum::V1(25);
+    let mut e_orig = Pin::new(&mut e);
+    let e_proj = e_orig.as_mut().project();
+
+    match e_proj {
+        EnumProj::V1(f) => {
+            let new_e = Enum::V2(f.as_ref().get_ref() == &25);
+            e_orig.set(new_e);
+        }
+        EnumProj::V2(_) => unreachable!(),
+    }
+
+    assert_eq!(e, Enum::V2(true));
+}
+
+#[test]
 fn where_clause() {
     pin_project! {
         struct Struct<T>
