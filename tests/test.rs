@@ -666,24 +666,26 @@ fn pinned_drop() {
         }
     }
 
-    trait Associated {
-        type Output;
+    trait Service<Request> {
+        type Error;
     }
 
     pin_project! {
-        struct Struct3<'a, T>
+        struct Struct3<'a, T, Request>
         where
-            T: Associated,
-            T::Output: Copy
+            T: Service<Request>,
+            T::Error: std::error::Error,
         {
             was_dropped: &'a mut bool,
             #[pin]
             field: T,
+            req: Request,
         }
 
-        impl<T: Associated> PinnedDrop for Struct3<'_, T>
+        impl<T, Request> PinnedDrop for Struct3<'_, T, Request>
         where
-            T::Output: Copy
+            T: Service<Request>,
+            T::Error: std::error::Error,
         {
             fn drop(mut this: Pin<&mut Self>) {
                 **this.as_mut().project().was_dropped = true;
