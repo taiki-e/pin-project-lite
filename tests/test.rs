@@ -665,4 +665,29 @@ fn pinned_drop() {
             }
         }
     }
+
+    trait Associated {
+        type Output;
+    }
+
+    pin_project! {
+        struct Struct3<'a, T>
+        where
+            T: Associated,
+            T::Output: Copy
+        {
+            was_dropped: &'a mut bool,
+            #[pin]
+            field: T,
+        }
+
+        impl<T: Associated> PinnedDrop for Struct3<'_, T>
+        where
+            T::Output: Copy
+        {
+            fn drop(mut this: Pin<&mut Self>) {
+                **this.as_mut().project().was_dropped = true;
+            }
+        }
+    }
 }
