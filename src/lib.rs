@@ -1458,7 +1458,7 @@ macro_rules! __pin_project_internal {
         pub $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
     } => {
-        $crate::__pin_project_internal! {@$struct_ty_ident=>parse;
+        $crate::__pin_project_internal! {@generics;
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
@@ -1475,12 +1475,29 @@ macro_rules! __pin_project_internal {
         $vis:vis $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
     } => {
-        $crate::__pin_project_internal! {@$struct_ty_ident=>parse;
+        $crate::__pin_project_internal! {@generics;
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [$($attrs)*]
             [$vis $struct_ty_ident $ident $vis]
+            $($tt)*
+        }
+    };
+    (@generics;
+        [$($proj_mut_ident:ident)?]
+        [$($proj_ref_ident:ident)?]
+        [$($proj_replace_ident:ident)?]
+        [$($attrs:tt)*]
+        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ty_vis:vis]
+        $($tt:tt)*
+    ) => {
+        $crate::__pin_project_internal! {@$struct_ty_ident=>parse;
+            [$($proj_mut_ident)?]
+            [$($proj_ref_ident)?]
+            [$($proj_replace_ident)?]
+            [$($attrs)*]
+            [$vis $struct_ty_ident $ident $proj_ty_vis]
             $($tt)*
         }
     };
