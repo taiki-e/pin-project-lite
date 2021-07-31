@@ -418,19 +418,22 @@ macro_rules! __pin_project_internal {
                 }
             ]
         }
-        $crate::__pin_project_internal! { @struct=>make_proj_replace_ty=>named;
-            [$proj_vis]
-            [$($proj_replace_ident)?]
-            [make_proj_field_replace]
-            [$ident]
-            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-            [$(impl $($pinned_drop)*)?]
-            {
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
-            }
+        $crate::__pin_project_internal! { @callback_if;
+            [conditional $($proj_replace_ident)?]
+            [cb struct make_proj_replace_ty]
+            [args
+                [$proj_vis]
+                [make_proj_field_replace]
+                [$ident]
+                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                [$(impl $($pinned_drop)*)?]
+                {
+                    $(
+                        $(#[$pin])?
+                        $field_vis $field: $field_ty
+                    ),+
+                }
+            ]
         }
 
         #[allow(explicit_outlives_requirements)] // https://github.com/rust-lang/rust/issues/60993
@@ -654,7 +657,7 @@ macro_rules! __pin_project_internal {
         }
         $crate::__pin_project_internal! { @callback_if;
             [conditional $($proj_replace_ident)?]
-            [cb  enum make_proj_replace_ty]
+            [cb enum make_proj_replace_ty]
             [args
                 [$proj_vis]
                 [make_proj_field_replace]
@@ -811,9 +814,9 @@ macro_rules! __pin_project_internal {
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($field:tt)*
     ) => {};
-    (@struct=>make_proj_replace_ty=>named;
-        [$proj_vis:vis]
+    (@struct=>make_proj_replace_ty;
         [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
@@ -841,15 +844,6 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@struct=>make_proj_replace_ty=>named;
-        [$proj_vis:vis]
-        []
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        [$(impl $($pinned_drop:tt)*)?]
-        $($field:tt)*
-    ) => {};
     // =============================================================================================
     // enum:make_proj_ty
     (@enum=>make_proj_ty;
