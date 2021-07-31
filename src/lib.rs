@@ -652,23 +652,26 @@ macro_rules! __pin_project_internal {
                 }
             ]
         }
-        $crate::__pin_project_internal! { @enum=>make_proj_replace_ty;
-            [$proj_vis]
-            [$($proj_replace_ident)?]
-            [make_proj_field_replace]
-            [$ident]
-            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-            [$(impl $($pinned_drop)*)?]
-            {
-                $(
-                    $variant $({
-                        $(
-                            $(#[$pin])?
-                            $field: $field_ty
-                        ),+
-                    })?
-                ),+
-            }
+        $crate::__pin_project_internal! { @callback_if;
+            [conditional $($proj_replace_ident)?]
+            [cb  enum make_proj_replace_ty]
+            [args
+                [$proj_vis]
+                [make_proj_field_replace]
+                [$ident]
+                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                [$(impl $($pinned_drop)*)?]
+                {
+                    $(
+                        $variant $({
+                            $(
+                                $(#[$pin])?
+                                $field: $field_ty
+                            ),+
+                        })?
+                    ),+
+                }
+            ]
         }
 
         #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
@@ -892,8 +895,8 @@ macro_rules! __pin_project_internal {
         }
     };
     (@enum=>make_proj_replace_ty;
-        [$proj_vis:vis]
         [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
@@ -929,16 +932,6 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@enum=>make_proj_replace_ty;
-        [$proj_vis:vis]
-        []
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        [$(impl $($pinned_drop:tt)*)?]
-        $($variant:tt)*
-    ) => {};
-
     // =============================================================================================
     (@make_proj_replace_block;
         [$($proj_path: tt)+]
