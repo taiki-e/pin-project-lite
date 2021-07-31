@@ -441,31 +441,39 @@ macro_rules! __pin_project_internal {
         #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
-            $crate::__pin_project_internal! { @struct=>make_proj_ty=>unnamed;
-                [$proj_vis]
-                [$($proj_mut_ident)?][Projection]
-                [make_proj_field_mut]
-                [$ident]
-                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                {
-                    $(
-                        $(#[$pin])?
-                        $field_vis $field: $field_ty
-                    ),+
-                }
+            $crate::__pin_project_internal! { @callback_if_not;
+                [not $($proj_mut_ident)?]
+                [cb struct make_proj_ty]
+                [args
+                    [Projection]
+                    [$proj_vis]
+                    [make_proj_field_mut]
+                    [$ident]
+                    [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                    {
+                        $(
+                            $(#[$pin])?
+                            $field_vis $field: $field_ty
+                        ),+
+                    }
+                ]
             }
-            $crate::__pin_project_internal! { @struct=>make_proj_ty=>unnamed;
-                [$proj_vis]
-                [$($proj_ref_ident)?][ProjectionRef]
-                [make_proj_field_ref]
-                [$ident]
-                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                {
-                    $(
-                        $(#[$pin])?
-                        $field_vis $field: $field_ty
-                    ),+
-                }
+            $crate::__pin_project_internal! { @callback_if_not;
+                [not $($proj_ref_ident)?]
+                [cb struct make_proj_ty]
+                [args
+                    [ProjectionRef]
+                    [$proj_vis]
+                    [make_proj_field_ref]
+                    [$ident]
+                    [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                    {
+                        $(
+                            $(#[$pin])?
+                            $field_vis $field: $field_ty
+                        ),+
+                    }
+                ]
             }
 
             impl <$($impl_generics)*> $ident <$($ty_generics)*>
@@ -758,31 +766,6 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     // struct:make_proj_ty
-    (@struct=>make_proj_ty=>unnamed;
-        [$proj_vis:vis]
-        [$_proj_ty_ident:ident][$proj_ty_ident:ident]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($field:tt)*
-    ) => {};
-    (@struct=>make_proj_ty=>unnamed;
-        [$proj_vis:vis]
-        [][$proj_ty_ident:ident]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($field:tt)*
-    ) => {
-        $crate::__pin_project_internal! { @struct=>make_proj_ty;
-            [$proj_ty_ident]
-            [$proj_vis]
-            [$make_proj_field]
-            [$ident]
-            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-            $($field)*
-        }
-    };
     (@struct=>make_proj_ty;
         [$proj_ty_ident:ident]
         [$proj_vis:vis]
