@@ -310,6 +310,21 @@ macro_rules! pin_project {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __pin_project_internal {
+    // MACRO HELPERS
+    // if a certain identity is present, call the macro with the ident as the first argument
+    // assumes internal callback
+    (@callback_if;
+        [conditional $present:ident]
+        [cb $proj_ty:ident $callback:ident]
+        [args $($args:tt)*]
+    ) => {
+        $crate::__pin_project_internal! {@$proj_ty=>$callback; [$present] $($args)*}
+    };
+    (@callback_if;
+        [conditional]
+        $($_tail:tt)*
+    ) => {
+    };
     // =============================================================================================
     // struct:main
     (@struct=>internal;
