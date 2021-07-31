@@ -434,8 +434,9 @@ macro_rules! __pin_project_internal {
                 $($where_clause)*)?
             {
                 $crate::__pin_project_internal! { @struct=>make_proj_method;
+                    [$($proj_mut_ident)?]
                     [$proj_vis]
-                    [$($proj_mut_ident)?][Projection]
+                    [Projection]
                     [project get_unchecked_mut mut]
                     [$($ty_generics)*]
                     {
@@ -446,8 +447,9 @@ macro_rules! __pin_project_internal {
                     }
                 }
                 $crate::__pin_project_internal! { @struct=>make_proj_method;
+                    [$($proj_ref_ident)?]
                     [$proj_vis]
-                    [$($proj_ref_ident)?][ProjectionRef]
+                    [ProjectionRef]
                     [project_ref get_ref]
                     [$($ty_generics)*]
                     {
@@ -622,37 +624,43 @@ macro_rules! __pin_project_internal {
             $(where
                 $($where_clause)*)?
             {
-                $crate::__pin_project_internal! { @enum=>make_proj_method;
-                    [$proj_vis]
-                    [$($proj_mut_ident)?]
-                    [project get_unchecked_mut mut]
-                    [$($ty_generics)*]
-                    {
-                        $(
-                            $variant $({
-                                $(
-                                    $(#[$pin])?
-                                    $field
-                                ),+
-                            })?
-                        ),+
-                    }
+                $crate::__pin_project_internal! { @callback_if;
+                    [conditional $($proj_mut_ident)?]
+                    [cb enum make_proj_method]
+                    [args
+                        [$proj_vis]
+                        [project get_unchecked_mut mut]
+                        [$($ty_generics)*]
+                        {
+                            $(
+                                $variant $({
+                                    $(
+                                        $(#[$pin])?
+                                        $field
+                                    ),+
+                                })?
+                            ),+
+                        }
+                    ]
                 }
-                $crate::__pin_project_internal! { @enum=>make_proj_method;
-                    [$proj_vis]
-                    [$($proj_ref_ident)?]
-                    [project_ref get_ref]
-                    [$($ty_generics)*]
-                    {
-                        $(
-                            $variant $({
-                                $(
-                                    $(#[$pin])?
-                                    $field
-                                ),+
-                            })?
-                        ),+
-                    }
+                $crate::__pin_project_internal! { @callback_if;
+                    [conditional $($proj_ref_ident)?]
+                    [cb enum make_proj_method]
+                    [args
+                        [$proj_vis]
+                        [project_ref get_ref]
+                        [$($ty_generics)*]
+                        {
+                            $(
+                                $variant $({
+                                    $(
+                                        $(#[$pin])?
+                                        $field
+                                    ),+
+                                })?
+                            ),+
+                        }
+                    ]
                 }
                 $crate::__pin_project_internal! { @callback_if;
                     [conditional $($proj_replace_ident)?]
@@ -945,8 +953,9 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // struct:make_proj_method
     (@struct=>make_proj_method;
+        [$proj_ty_ident:ident]
         [$proj_vis:vis]
-        [$proj_ty_ident:ident][$_proj_ty_ident:ident]
+        [$_proj_ty_ident:ident]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         {
@@ -972,15 +981,17 @@ macro_rules! __pin_project_internal {
         }
     };
     (@struct=>make_proj_method;
+        []
         [$proj_vis:vis]
-        [][$proj_ty_ident:ident]
+        [$proj_ty_ident:ident]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {
         $crate::__pin_project_internal! { @struct=>make_proj_method;
+            [$proj_ty_ident]
             [$proj_vis]
-            [$proj_ty_ident][$proj_ty_ident]
+            [$proj_ty_ident]
             [$method_ident $get_method $($mut)?]
             [$($ty_generics)*]
             $($variant)*
@@ -1030,8 +1041,8 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // enum:make_proj_method
     (@enum=>make_proj_method;
-        [$proj_vis:vis]
         [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         {
@@ -1068,14 +1079,6 @@ macro_rules! __pin_project_internal {
             }
         }
     };
-    (@enum=>make_proj_method;
-        [$proj_vis:vis]
-        []
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$($ty_generics:tt)*]
-        $($variant:tt)*
-    ) => {};
-
     (@enum=>make_proj_replace_method;
         [$proj_ty_ident:ident]
         [$proj_vis:vis]
