@@ -327,6 +327,21 @@ macro_rules! __pin_project_internal {
     ) => {
     };
 
+    // executes callback if a contitional is not present
+    (@callback_if_not;
+        [not $present:ident]
+        $($tt:tt)*
+    ) => {
+        // do nothing because the conditional is present
+    };
+    (@callback_if_not;
+        [not]
+        [cb $proj_ty:ident $callback:ident]
+        [args $($args:tt)*]
+    ) => {
+        $crate::__pin_project_internal! {@$proj_ty=>$callback; $($args)*}
+    };
+
     // callback with a default argument if the target is not present
     (@callback_default;
         [$target:ident default $_ignored:ident]
