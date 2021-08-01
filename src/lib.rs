@@ -361,20 +361,23 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // struct:main
     (@struct=>internal;
-        [$vis:vis struct $ident:ident $proj_vis:vis ]
-        [$($proj_mut_ident:ident)?]
-        [$($proj_ref_ident:ident)?]
-        [$($proj_replace_ident:ident)?]
-        [$(#[$attrs:meta])*]
-        [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
-        [$(where $($where_clause:tt)*)?]
-        [$(impl $($pinned_drop:tt)*)?]
-        {
+        [info
+            [$vis:vis struct $ident:ident $proj_vis:vis ]
+            [$($proj_mut_ident:ident)?]
+            [$($proj_ref_ident:ident)?]
+            [$($proj_replace_ident:ident)?]]
+
+        [meta
+            [$(#[$attrs:meta])*]
+            [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
+            [$(where $($where_clause:tt)*)?]
+            [$(impl $($pinned_drop:tt)*)?]]
+        [body
             $(
                 $(#[$pin:ident])?
                 $field_vis:vis $field:ident: $field_ty:ty
-            ),+
-        }
+            ),+ $(,)?
+        ]
     ) => {
         $(#[$attrs])*
         $vis struct $ident $($def_generics)*
@@ -580,25 +583,27 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // enum:main
     (@enum=>internal;
-        [$vis:vis enum $ident:ident $proj_vis:vis ]
-        [$($proj_mut_ident:ident)?]
-        [$($proj_ref_ident:ident)?]
-        [$($proj_replace_ident:ident)?]
-        [$(#[$attrs:meta])*]
-        [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
-        [$(where $($where_clause:tt)*)?]
-        [$(impl $($pinned_drop:tt)*)?]
-        {
+        [info
+            [$vis:vis enum $ident:ident $proj_vis:vis ]
+            [$($proj_mut_ident:ident)?]
+            [$($proj_ref_ident:ident)?]
+            [$($proj_replace_ident:ident)?]]
+        [meta
+            [$(#[$attrs:meta])*]
+            [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
+            [$(where $($where_clause:tt)*)?]
+            [$(impl $($pinned_drop:tt)*)?]]
+        [body
             $(
                 $(#[$variant_attrs:meta])*
                 $variant:ident $({
                     $(
                         $(#[$pin:ident])?
                         $field:ident: $field_ty:ty
-                    ),+
+                    ),+ $(,)?
                 })?
-            ),+
-        }
+            ),+ $(,)?
+        ]
     ) => {
         $(#[$attrs])*
         $vis enum $ident $($def_generics)*
@@ -1511,11 +1516,13 @@ macro_rules! __pin_project_internal {
         // for some reason these brackets prevent me from forwarding the entire token tree
         // so i have to deconstract and pass
         {
-            $($tt:tt)*
+            // I believe we need at least *1* token tree, i.e. at least one field on the struct or variant on an enum
+            // TODO(mike): is this what caused the compiler-UI test errors? also check the updated Little Book of Macros
+            $($tt:tt)+
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
-        $crate::__pin_project_internal! {@$struct_ty_ident=>parse;
+        $crate::__pin_project_internal! {@$struct_ty_ident=>internal;
             [info
                 [$vis $struct_ty_ident $ident $proj_ty_vis]
                 [$($proj_mut_ident)?]
@@ -1549,7 +1556,7 @@ macro_rules! __pin_project_internal {
                 ),* )?]
                 [$(impl $($pinned_drop)*)?]
             ]
-            [parsed {}; projected {}; methods {}; $($tt)*]
+            [body $($tt)+]
         }
     };
     /////////////////////////
@@ -1557,8 +1564,7 @@ macro_rules! __pin_project_internal {
     (@struct=>parse;
         [info $([$($info_data:tt)*])*]
         [meta $([$($meta_data:tt)*])*]
-        // structs don't do any push-down accumulation, currently
-        [parsed {$($_eout:tt)*}; projected {$($_pout:tt)*}; methods {$($_mout:tt)*};
+        [body
             $(
                 $(#[$pin:ident])?
                 $field_vis:vis $field:ident: $field_ty:ty
@@ -1566,36 +1572,25 @@ macro_rules! __pin_project_internal {
         ]
     ) => {
         $crate::__pin_project_internal! { @struct=>internal;
-            $([$($info_data)*])*
-            $([$($meta_data)*])*
-            {
+            [info $([$($info_data)*])*]
+            [meta $([$($meta_data)*])*]
+            [body
                 $(
                     $(#[$pin])?
                     $field_vis $field: $field_ty
                 ),+
-            }
+            ]
         }
     };
     (@enum=>parse;
         [info $([$($info_data:tt)*])*]
         [meta $([$($meta_data:tt)*])*]
-        [parsed {$($_eout:tt)*}; projected {$($_pout:tt)*}; methods {$($_mout:tt)*};
-            $(
-                $(#[$variant_attrs:meta])*
-                $variant:ident $({
-                    $(
-                        $(#[$pin:ident])?
-                        $field:ident: $field_ty:ty
-                    ),+ $(,)?
-                })?
-            ),+ $(,)?
-        ]
+
     ) => {
         $crate::__pin_project_internal! { @enum=>internal;
-            $([$($info_data)*])*
-            $([$($meta_data)*])*
-            {
-                $(
+            [info $([$($info_data)*])*]
+            [meta $([$($meta_data)*])*]
+            [body $(
                     $(#[$variant_attrs])*
                     $variant $({
                         $(
@@ -1604,7 +1599,7 @@ macro_rules! __pin_project_internal {
                         ),+
                     })?
                 ),+
-            }
+            ]
         }
     };
 }
