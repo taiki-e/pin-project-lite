@@ -360,7 +360,7 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     // struct:main
-    (@struct=>internal;
+    (@expand=>types;
         [info
             [$vis:vis struct $ident:ident $proj_vis:vis ]
             [$($proj_mut_ident:ident)?]
@@ -439,7 +439,7 @@ macro_rules! __pin_project_internal {
             ]
         }
     };
-    (@struct=>constant;
+    (@expand=>constant;
         [info
             [$vis:vis struct $ident:ident $proj_vis:vis ]
             [$($proj_mut_ident:ident)?]
@@ -601,7 +601,7 @@ macro_rules! __pin_project_internal {
     };
     // =============================================================================================
     // enum:main
-    (@enum=>internal;
+    (@expand=>types;
         [info
             [$vis:vis enum $ident:ident $proj_vis:vis ]
             [$($proj_mut_ident:ident)?]
@@ -701,7 +701,7 @@ macro_rules! __pin_project_internal {
             ]
         }
     };
-    (@enum=>constant;
+    (@expand=>constant;
         [info
             [$vis:vis enum $ident:ident $proj_vis:vis ]
             [$($proj_mut_ident:ident)?]
@@ -1565,7 +1565,7 @@ macro_rules! __pin_project_internal {
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
-        $crate::__pin_project_internal! {@$struct_ty_ident=>expand;
+        $crate::__pin_project_internal! {@expand;
             [info
                 [$vis $struct_ty_ident $ident $proj_ty_vis]
                 [$($proj_mut_ident)?]
@@ -1603,36 +1603,19 @@ macro_rules! __pin_project_internal {
         }
     };
     /////////////////////////
-    // PARSE FUNCTION
-    (@struct=>expand;
+    // EXPAND FUNCTION
+    // This performs some arg `tt` bundling and splits the expansion up into types gen and `const` gen
+    (@expand;
         [info $([$($info_data:tt)*])*]
         [meta $([$($meta_data:tt)*])*]
         [body $($body_data:tt)+]
     ) => {
-        $crate::__pin_project_internal! { @struct=>internal;
+        $crate::__pin_project_internal! { @expand=>types;
             [info $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
             [body $($body_data)+]
         }
-        $crate::__pin_project_internal! { @struct=>constant;
-            [info $([$($info_data)*])*]
-            [meta $([$($meta_data)*])*]
-            [body $($body_data)+]
-        }
-    };
-    (@enum=>expand;
-        [info $([$($info_data:tt)*])*]
-        [meta $([$($meta_data:tt)*])*]
-        [body $($body_data:tt)+]
-
-    ) => {
-        $crate::__pin_project_internal! { @enum=>internal;
-            [info $([$($info_data)*])*]
-            [meta $([$($meta_data)*])*]
-            [body $($body_data)+]
-        }
-
-        $crate::__pin_project_internal! { @enum=>constant;
+        $crate::__pin_project_internal! { @expand=>constant;
             [info $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
             [body $($body_data)+]
