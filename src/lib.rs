@@ -358,6 +358,30 @@ macro_rules! __pin_project_internal {
         $crate::__pin_project_internal! {@$proj_ty=>$callback; [$default] $($args)*}
     };
 
+    (@project_and_construct;
+        [$struct_ty_ident:ident $($_other:tt)*]
+        [meta $([$($meta_data:tt)*])*]
+        [$projection:ident {$($pout:tt)*}]
+        [raw {$($raw:tt)*}]
+    ) => {
+
+    };
+    // ============================================================================================
+    // newstype expansion
+    (@expand=>types;
+        [$struct_ty_ident:ident
+            [$vis:vis $ident:ident $proj_vis:vis]
+            [mut_ident $($proj_mut_ident:ident)?; ref_ident $($proj_ref_ident:ident)?; replace_ident $($proj_replace_ident:ident)?]]
+        [meta $([$($meta_data:tt)*])*]
+        [body $($body_data:tt)+]
+    ) => {
+
+        // START HERE
+        // `clean_and_construct`
+        // `project_and_construct`
+
+    };
+
     // =============================================================================================
     // struct:main
     (@expand=>internal;
@@ -1603,6 +1627,11 @@ macro_rules! __pin_project_internal {
         [meta $([$($meta_data:tt)*])*]
         [body $($body_data:tt)+]
     ) => {
+        $crate::__pin_project_internal! { @expand=>types;
+            [$struct_ty_ident $([$($info_data)*])*]
+            [meta $([$($meta_data)*])*]
+            [body $($body_data)+]
+        }
         $crate::__pin_project_internal! { @expand=>internal;
             [$struct_ty_ident $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
