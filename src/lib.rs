@@ -1551,7 +1551,7 @@ macro_rules! __pin_project_internal {
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [$($attrs)*]
-            [$vis $struct_ty_ident $ident $vis]
+            [$vis $struct_ty_ident $ident $proj_ty_vis]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
