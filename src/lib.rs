@@ -1461,7 +1461,7 @@ macro_rules! __pin_project_internal {
         }
     };
 
-    // this is actually part of a recurssive step,
+    // this is actually part of a recursive step,
     // there could be more to parse
     {
         [$($proj_mut_ident:ident)?]
@@ -1540,7 +1540,7 @@ macro_rules! __pin_project_internal {
             ),* $(,)?
         )?
         // for some reason these brackets prevent me from forwarding the entire token tree
-        // so i have to deconstract and pass
+        // so I have to deconstruct and pass
         {
             $($tt:tt)*
         }
