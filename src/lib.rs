@@ -360,11 +360,10 @@ macro_rules! __pin_project_internal {
 
     // =============================================================================================
     // struct:main
-    (@expand=>types;
+    (@expand=>internal;
         [struct
-            [$vis:vis $ident:ident $proj_vis:vis ]
+            [$vis:vis $ident:ident $proj_vis:vis]
             [mut_ident $($proj_mut_ident:ident)?; ref_ident $($proj_ref_ident:ident)?; replace_ident $($proj_replace_ident:ident)?]]
-
         [meta
             [$(#[$attrs:meta])*]
             [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
@@ -598,7 +597,7 @@ macro_rules! __pin_project_internal {
     };
     // =============================================================================================
     // enum:main
-    (@expand=>types;
+    (@expand=>internal;
         [enum
             [$vis:vis $ident:ident $proj_vis:vis ]
             [mut_ident $($proj_mut_ident:ident)?; ref_ident $($proj_ref_ident:ident)?; replace_ident $($proj_replace_ident:ident)?]]
@@ -1604,7 +1603,7 @@ macro_rules! __pin_project_internal {
         [meta $([$($meta_data:tt)*])*]
         [body $($body_data:tt)+]
     ) => {
-        $crate::__pin_project_internal! { @expand=>types;
+        $crate::__pin_project_internal! { @expand=>internal;
             [$struct_ty_ident $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
             [body $($body_data)+]
