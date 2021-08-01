@@ -429,6 +429,7 @@ macro_rules! __pin_project_internal {
                 [make_proj_field_replace]
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is this intentional?
                 [$(impl $($pinned_drop)*)?]
                 {
                     $(
@@ -687,6 +688,7 @@ macro_rules! __pin_project_internal {
                 [make_proj_field_replace]
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is this intentional?
                 [$(impl $($pinned_drop)*)?]
                 {
                     $(
@@ -868,6 +870,7 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is it illegal to have both an impl drop and make_proj_replace??
         []
         {
             $(
@@ -942,6 +945,7 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is this intentional?
         []
         {
             $(
