@@ -1491,7 +1491,7 @@ macro_rules! __pin_project_internal {
         pub $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
     } => {
-        $crate::__pin_project_internal! {@generics;
+        $crate::__pin_project_internal! {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
@@ -1509,7 +1509,7 @@ macro_rules! __pin_project_internal {
         $vis:vis $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
     } => {
-        $crate::__pin_project_internal! {@generics;
+        $crate::__pin_project_internal! {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
@@ -1518,7 +1518,7 @@ macro_rules! __pin_project_internal {
             $($tt)*
         }
     };
-    (@generics;
+    (
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
