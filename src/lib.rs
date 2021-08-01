@@ -1482,7 +1482,7 @@ macro_rules! __pin_project_internal {
     };
 
     // now determine visibility
-    // if public, downgrade
+    // if public, downgrade to pub(crate)
     {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
@@ -1500,6 +1500,7 @@ macro_rules! __pin_project_internal {
             $($tt)*
         }
     };
+    // if not public, the projection gets the same visibility
     {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
@@ -1539,10 +1540,8 @@ macro_rules! __pin_project_internal {
                 $(: $where_clause_lifetime_bound:lifetime)?
             ),* $(,)?
         )?
-        // for some reason these brackets prevent me from forwarding the entire token tree
-        // so I have to deconstruct and pass
         {
-            $($tt:tt)*
+            $($tt:tt)+
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
@@ -1576,7 +1575,7 @@ macro_rules! __pin_project_internal {
                 $(: $where_clause_lifetime_bound)?
             ),* )?]
             {
-                $($tt)*
+                $($tt)+
             }
             $(impl $($pinned_drop)*)?
         }
