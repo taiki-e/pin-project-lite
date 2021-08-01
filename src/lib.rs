@@ -413,20 +413,6 @@ macro_rules! __pin_project_internal {
                     ),+
                 }
             }
-            $crate::__pin_project_internal! { @struct=>make_proj_replace_ty=>unnamed;
-                [$proj_vis]
-                [$($proj_replace_ident)?][ProjectionReplace]
-                [make_proj_field_replace]
-                [$ident]
-                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                [$(impl $($pinned_drop)*)?]
-                {
-                    $(
-                        $(#[$pin])?
-                        $field_vis $field: $field_ty
-                    ),+
-                }
-            }
 
             impl <$($impl_generics)*> $ident <$($ty_generics)*>
             $(where
@@ -758,25 +744,6 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($field:tt)*
-    ) => {};
-
-    (@struct=>make_proj_replace_ty=>unnamed;
-        [$proj_vis:vis]
-        [$_proj_ty_ident:ident][$proj_ty_ident:ident]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        [$(impl $($pinned_drop:tt)*)?]
-        $($field:tt)*
-    ) => {};
-    (@struct=>make_proj_replace_ty=>unnamed;
-        [$proj_vis:vis]
-        [][$proj_ty_ident:ident]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        [$(impl $($pinned_drop:tt)*)?]
         $($field:tt)*
     ) => {};
     (@struct=>make_proj_replace_ty=>named;
