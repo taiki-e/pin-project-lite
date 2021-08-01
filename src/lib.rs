@@ -1522,7 +1522,7 @@ macro_rules! __pin_project_internal {
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
-        $crate::__pin_project_internal! {@$struct_ty_ident=>internal;
+        $crate::__pin_project_internal! {@$struct_ty_ident=>expand;
             [info
                 [$vis $struct_ty_ident $ident $proj_ty_vis]
                 [$($proj_mut_ident)?]
@@ -1561,45 +1561,27 @@ macro_rules! __pin_project_internal {
     };
     /////////////////////////
     // PARSE FUNCTION
-    (@struct=>parse;
+    (@struct=>expand;
         [info $([$($info_data:tt)*])*]
         [meta $([$($meta_data:tt)*])*]
-        [body
-            $(
-                $(#[$pin:ident])?
-                $field_vis:vis $field:ident: $field_ty:ty
-            ),+ $(,)?
-        ]
+        [body $($body_data:tt)+]
     ) => {
         $crate::__pin_project_internal! { @struct=>internal;
             [info $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
-            [body
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
-            ]
+            [body $($body_data)+]
         }
     };
-    (@enum=>parse;
+    (@enum=>expand;
         [info $([$($info_data:tt)*])*]
         [meta $([$($meta_data:tt)*])*]
+        [body $($body_data:tt)+]
 
     ) => {
         $crate::__pin_project_internal! { @enum=>internal;
             [info $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
-            [body $(
-                    $(#[$variant_attrs])*
-                    $variant $({
-                        $(
-                            $(#[$pin])?
-                            $field: $field_ty
-                        ),+
-                    })?
-                ),+
-            ]
+            [body $($body_data)+]
         }
     };
 }
