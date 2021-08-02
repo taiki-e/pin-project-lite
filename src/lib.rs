@@ -1008,7 +1008,7 @@ macro_rules! __pin_project_internal {
         {
             $(
                 $(#[$pin:ident])?
-                $field_vis:vis $field:ident
+                $field:ident
             ),+
         }
     ) => {
