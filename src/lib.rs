@@ -396,7 +396,6 @@ macro_rules! __pin_project_internal {
             [raw {}]
         }
     };
-
     (@project_and_construct;
         [$vis:vis struct $ident:ident $proj_ident:ident]
         [meta $([$($meta_data:tt)*])*]
@@ -419,7 +418,39 @@ macro_rules! __pin_project_internal {
         }
     };
 
+    // enums need to be munched
+    (@project_and_construct;
+        [$vis:vis enum $ident:ident $proj_ident:ident]
+        [meta $([$($meta_data:tt)*])*]
+        [reconstruction {$($pout:tt)*}]
+        [raw {
+            $(#[$variant_attrs:meta])*
+            $variant:ident $({
+                $(
+                    $(#[$pin:ident])?
+                    $field:ident: $field_ty:ty
+                ),+ $(,)?
+            })?,
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal! {@project_and_construct;
+            [$vis enum $ident $proj_ident]
+            [meta $([$($meta_data)*])*]
+            [reconstruction {
+                $($pout)*
+                $(#[$variant_attrs])*
+                $variant $({
+                    $(
+                        $field: $field_ty
+                    ),+
+                })?,
+            }]
+            [raw {$($tail)*}]
+        }
+    };
 
+    // all done projecting, time to construct
     (@project_and_construct;
         [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ident:ident]
         [meta $([$($meta_data:tt)*])*]
@@ -489,6 +520,32 @@ macro_rules! __pin_project_internal {
     // ============================================================================================
     // newstype expansion
     (@expand=>types;
+        [enum
+            [$vis:vis $ident:ident $proj_vis:vis]
+            [mut_ident $($proj_mut_ident:ident)?; ref_ident $($proj_ref_ident:ident)?; replace_ident $($proj_replace_ident:ident)?]]
+        [meta $([$($meta_data:tt)*])*]
+        [body $($body_data:tt)+]
+    ) => {
+
+        // reconstruct the original type, removing pin_project_lite attrs
+        $crate::__pin_project_internal! {@project_and_construct;
+            [$vis enum $ident $ident]
+            [meta $([$($meta_data)*])*]
+            [reconstruction {}]
+            [raw {$($body_data)+}]
+        }
+
+        // STILL USING OLD STYLE FOR THESE
+        $crate::__pin_project_internal! { @expand=>internal;
+            [enum
+                [$vis $ident $proj_vis]
+                [mut_ident $($proj_mut_ident)?; ref_ident $($proj_ref_ident)?; replace_ident $($proj_replace_ident)?]
+            ]
+            [meta $([$($meta_data)*])*]
+            [body $($body_data)+]
+        }
+    };
+    (@expand=>types;
         [$struct_ty_ident:ident
             [$vis:vis $ident:ident $proj_vis:vis]
             [mut_ident $($proj_mut_ident:ident)?; ref_ident $($proj_ref_ident:ident)?; replace_ident $($proj_replace_ident:ident)?]]
@@ -527,6 +584,17 @@ macro_rules! __pin_project_internal {
                 [raw {$($body_data)+}]
             ]
         }
+
+        // STILL USING OLD STYLE FOR THESE
+        $crate::__pin_project_internal! { @expand=>internal;
+            [$struct_ty_ident
+                [$vis $ident $proj_vis]
+                [mut_ident $($proj_mut_ident)?; ref_ident $($proj_ref_ident)?; replace_ident $($proj_replace_ident)?]
+            ]
+            [meta $([$($meta_data)*])*]
+            [body $($body_data)+]
+        }
+
     };
     // =============================================================================================
     // struct:main
@@ -546,23 +614,6 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         ]
     ) => {
-
-        $crate::__pin_project_internal! {@expand=>types;
-            [struct
-                [$vis $ident $proj_vis]
-                [mut_ident $($proj_mut_ident)?; ref_ident $($proj_ref_ident)?; replace_ident $($proj_replace_ident)?]]
-            [meta
-                [$(#[$attrs])*]
-                [$($def_generics)*] [$($impl_generics)*] [$($ty_generics)*]
-                [$(where $($where_clause)*)?]
-                [$(impl $($pinned_drop)*)?]]
-            [body
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
-            ]
-        }
 
         $crate::__pin_project_internal! { @callback_if;
             [conditional $($proj_replace_ident)?]
@@ -764,21 +815,6 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         ]
     ) => {
-        $(#[$attrs])*
-        $vis enum $ident $($def_generics)*
-        $(where
-            $($where_clause)*)?
-        {
-            $(
-                $(#[$variant_attrs])*
-                $variant $({
-                    $(
-                        $field: $field_ty
-                    ),+
-                })?
-            ),+
-        }
-
         $crate::__pin_project_internal! { @callback_if;
             [conditional $($proj_mut_ident)?]
             [cb enum make_proj_ty]
@@ -1755,7 +1791,7 @@ macro_rules! __pin_project_internal {
         [meta $([$($meta_data:tt)*])*]
         [body $($body_data:tt)+]
     ) => {
-        $crate::__pin_project_internal! { @expand=>internal;
+        $crate::__pin_project_internal! { @expand=>types;
             [$struct_ty_ident $([$($info_data)*])*]
             [meta $([$($meta_data)*])*]
             [body $($body_data)+]
