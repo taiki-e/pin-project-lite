@@ -417,7 +417,6 @@ macro_rules! __pin_project_internal {
             [raw {}]
         }
     };
-
     // enums need to be munched
     // reconstructing struct / unit variant
     (@project_and_construct;
@@ -490,8 +489,8 @@ macro_rules! __pin_project_internal {
         [raw {}]
     ) => {
         $crate::__pin_project_internal! {@construct;
-            [$projection $proj_ident]
-            [$vis $struct_ty_ident $ident]
+            [$projection]
+            [$vis $struct_ty_ident $ident $proj_ident]
             [meta $([$($meta_data)*])*]
             [body {
                 $($pout)*
@@ -501,8 +500,8 @@ macro_rules! __pin_project_internal {
 
     // reconstructing original type gets attrs
     (@construct;
-        [reconstruction $proj_ident:ident]
-        [$vis:vis $struct_ty_ident:ident $ident:ident]
+        [reconstruction]
+        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ident:ident]
         [meta
             [$(#[$attrs:meta])*]
             [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
@@ -521,8 +520,8 @@ macro_rules! __pin_project_internal {
 
     // construcing a make_proj_field_replace type, which gets a different set of attributes
     (@construct;
-        [make_proj_field_replace $proj_ty_ident:ident]
-        [$vis:vis $struct_ty_ident:ident $ident:ident]
+        [make_proj_field_replace]
+        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ty_ident:ident]
         [meta
             [$(#[$attrs:meta])*]
             [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
@@ -544,8 +543,8 @@ macro_rules! __pin_project_internal {
     };
     // default construcing a projected type
     (@construct;
-        [$projection:ident $proj_ty_ident:ident]
-        [$vis:vis $struct_ty_ident:ident $ident:ident]
+        [$projection:ident]
+        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ty_ident:ident]
         [meta
             [$(#[$attrs:meta])*]
             [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
@@ -956,45 +955,6 @@ macro_rules! __pin_project_internal {
     };
 
     // =============================================================================================
-    // struct:make_proj_ty
-    (@struct=>make_proj_ty=>named;
-        [$proj_vis:vis]
-        []
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($field:tt)*
-    ) => {};
-    (@struct=>make_proj_replace_ty;
-        [$proj_ty_ident:ident]
-        [$proj_vis:vis]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        {
-            $(
-                $(#[$pin:ident])?
-                $field_vis:vis $field:ident: $field_ty:ty
-            ),+
-        }
-    ) => {
-        #[allow(dead_code)] // This lint warns unused fields/variants.
-        #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
-        #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
-        #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
-        #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
-        $proj_vis struct $proj_ty_ident <$($impl_generics)*>
-        where
-            $($($where_clause)*)?
-        {
-            $(
-                $field_vis $field: $crate::__pin_project_internal!(@$make_proj_field;
-                    $(#[$pin])? $field_ty
-                )
-            ),+
-        }
-    };
-    // =============================================================================================
     (@make_proj_replace_block;
         [$($proj_path: tt)+]
         {
@@ -1099,6 +1059,7 @@ macro_rules! __pin_project_internal {
     };
     // =============================================================================================
     // enum:make_proj_method
+
     (@enum=>make_proj_method;
         [$proj_ty_ident:ident]
         [$proj_vis:vis]
