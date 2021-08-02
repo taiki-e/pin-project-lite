@@ -1122,16 +1122,45 @@ macro_rules! __pin_project_internal {
         [$($ty_generics:tt)*]
         [body {$($body:tt)*}]
         [unparsed {
-            $(
-                $(#[$variant_attrs:meta])*
-                $variant:ident $({
-                    $(
-                        $(#[$pin:ident])?
-                        $field:ident: $field_ty:ty
-                    ),+ $(,)?
-                })?
-            ),+ $(,)?
+            $(#[$variant_attrs:meta])*
+            $variant:ident $({
+                $(
+                    $(#[$pin:ident])?
+                    $field:ident: $field_ty:ty
+                ),+ $(,)?
+            })?,
+            $($tail:tt)*
         }]
+    ) => {
+        $crate::__pin_project_internal!{@enum=>make_proj_replace_method;
+            [$proj_ty_ident]
+            [$proj_vis]
+            [$($ty_generics)*]
+            [body {
+                $($body)*
+                Self::$variant $({
+                    $($field),+
+                })? => {
+                    $crate::__pin_project_internal!{@make_proj_replace_block;
+                        [$proj_ty_ident :: $variant]
+                        $({
+                            $(
+                                $(#[$pin])?
+                                $field
+                            ),+
+                        })?
+                    }
+                }
+            }]
+            [unparsed {$($tail)*}]
+        }
+    };
+    (@enum=>make_proj_replace_method;
+        [$proj_ty_ident:ident]
+        [$proj_vis:vis]
+        [$($ty_generics:tt)*]
+        [body {$($body:tt)*}]
+        [unparsed {}]
     ) => {
         $proj_vis fn project_replace(
             self: $crate::__private::Pin<&mut Self>,
@@ -1148,21 +1177,7 @@ macro_rules! __pin_project_internal {
                 };
 
                 match &mut *__self_ptr {
-                    $(
-                        Self::$variant $({
-                            $($field),+
-                        })? => {
-                            $crate::__pin_project_internal!{@make_proj_replace_block;
-                                [$proj_ty_ident :: $variant]
-                                $({
-                                    $(
-                                        $(#[$pin])?
-                                        $field
-                                    ),+
-                                })?
-                            }
-                        }
-                    ),+
+                    $($body)*
                 }
             }
         }
