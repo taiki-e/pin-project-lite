@@ -520,7 +520,31 @@ macro_rules! __pin_project_internal {
         }
     };
 
-    // construcing a projected type
+    // construcing a make_proj_field_replace type, which gets a different set of attributes
+    (@construct;
+        [make_proj_field_replace $proj_ty_ident:ident]
+        [$vis:vis $struct_ty_ident:ident $ident:ident]
+        [meta
+            [$(#[$attrs:meta])*]
+            [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
+            [$(where $($where_clause:tt)*)?]
+            [$(impl $($pinned_drop:tt)*)?]
+        ]
+        [body {$($body_data:tt)*}]
+    ) => {
+        #[allow(dead_code)] // This lint warns unused fields/variants.
+        #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
+        #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
+        #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
+        #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
+        $vis $struct_ty_ident $proj_ty_ident <$($impl_generics)*>
+        where
+            $($($where_clause)*)?
+        {
+            $($body_data)+
+        }
+    };
+    // default construcing a projected type
     (@construct;
         [$projection:ident $proj_ty_ident:ident]
         [$vis:vis $struct_ty_ident:ident $ident:ident]
@@ -591,14 +615,16 @@ macro_rules! __pin_project_internal {
             ]
         }
 
-        // STILL USING OLD STYLE FOR THESE
-        $crate::__pin_project_internal! { @expand=>internal;
-            [$struct_ty_ident
-                [$vis $ident $proj_vis]
-                [mut_ident $($proj_mut_ident)?; ref_ident $($proj_ref_ident)?; replace_ident $($proj_replace_ident)?]
+        // if $proj_mut_ref is present, create a projection
+        $crate::__pin_project_internal! { @callback_if;
+            [conditional $($proj_replace_ident)?]
+            [cb triggered project_and_construct]
+            [args
+                [$proj_vis $struct_ty_ident $ident]
+                [meta $([$($meta_data)*])*]
+                [make_proj_field_replace {}]
+                [raw {$($body_data)+}]
             ]
-            [meta $([$($meta_data)*])*]
-            [body $($body_data)+]
         }
 
     };
@@ -629,8 +655,6 @@ macro_rules! __pin_project_internal {
                 [make_proj_field_replace]
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is this intentional?
-                [$(impl $($pinned_drop)*)?]
                 {
                     $(
                         $(#[$pin])?
@@ -830,8 +854,6 @@ macro_rules! __pin_project_internal {
                 [make_proj_field_replace]
                 [$ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is this intentional?
-                [$(impl $($pinned_drop)*)?]
                 {
                     $(
                         $variant $({
@@ -1010,8 +1032,6 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is it illegal to have both an impl drop and make_proj_replace??
-        []
         {
             $(
                 $(#[$pin:ident])?
@@ -1043,8 +1063,6 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        // TODO(mike): for both enum and structs, this only gets matched if `impl pinned drop` is not present... is this intentional?
-        []
         {
             $(
                 $variant:ident $({
