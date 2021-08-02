@@ -419,6 +419,7 @@ macro_rules! __pin_project_internal {
     };
 
     // enums need to be munched
+    // reconstructing struct / unit variant
     (@project_and_construct;
         [$vis:vis enum $ident:ident $proj_ident:ident]
         [meta $([$($meta_data:tt)*])*]
@@ -443,6 +444,37 @@ macro_rules! __pin_project_internal {
                 $variant $({
                     $(
                         $field: $field_ty
+                    ),+
+                })?,
+            }]
+            [raw {$($tail)*}]
+        }
+    };
+    // projecting struct / unit variant
+    (@project_and_construct;
+        [$vis:vis enum $ident:ident $proj_ident:ident]
+        [meta $([$($meta_data:tt)*])*]
+        [$projection:ident {$($pout:tt)*}]
+        [raw {
+            $(#[$variant_attrs:meta])*
+            $variant:ident $({
+                $(
+                    $(#[$pin:ident])?
+                    $field:ident: $field_ty:ty
+                ),+ $(,)?
+            })?,
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal! {@project_and_construct;
+            [$vis enum $ident $proj_ident]
+            [meta $([$($meta_data)*])*]
+            [$projection {
+                $($pout)*
+                $(#[$variant_attrs])*
+                $variant $({
+                    $(
+                        $field: $crate::__pin_project_internal! {@$projection; $(#[$pin])? $field_ty}
                     ),+
                 })?,
             }]
@@ -534,6 +566,31 @@ macro_rules! __pin_project_internal {
             [reconstruction {}]
             [raw {$($body_data)+}]
         }
+
+        // if $proj_mut_ident is present, create a projection
+        $crate::__pin_project_internal! { @callback_if;
+            [conditional $($proj_mut_ident)?]
+            [cb triggered project_and_construct]
+            [args
+                [$proj_vis enum $ident]
+                [meta $([$($meta_data)*])*]
+                [make_proj_field_mut {}]
+                [raw {$($body_data)+}]
+            ]
+        }
+
+        // if $proj_mut_ref is present, create a projection
+        $crate::__pin_project_internal! { @callback_if;
+            [conditional $($proj_ref_ident)?]
+            [cb triggered project_and_construct]
+            [args
+                [$proj_vis enum $ident]
+                [meta $([$($meta_data)*])*]
+                [make_proj_field_ref {}]
+                [raw {$($body_data)+}]
+            ]
+        }
+
 
         // STILL USING OLD STYLE FOR THESE
         $crate::__pin_project_internal! { @expand=>internal;
@@ -815,46 +872,7 @@ macro_rules! __pin_project_internal {
             ),+ $(,)?
         ]
     ) => {
-        $crate::__pin_project_internal! { @callback_if;
-            [conditional $($proj_mut_ident)?]
-            [cb enum make_proj_ty]
-            [args
-                [$proj_vis]
-                [make_proj_field_mut]
-                [$ident]
-                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                {
-                    $(
-                        $variant $({
-                            $(
-                                $(#[$pin])?
-                                $field: $field_ty
-                            ),+
-                        })?
-                    ),+
-                }
-            ]
-        }
-        $crate::__pin_project_internal! { @callback_if;
-            [conditional $($proj_ref_ident)?]
-            [cb enum make_proj_ty]
-            [args
-                [$proj_vis]
-                [make_proj_field_ref]
-                [$ident]
-                [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-                {
-                    $(
-                        $variant $({
-                            $(
-                                $(#[$pin])?
-                                $field: $field_ty
-                            ),+
-                        })?
-                    ),+
-                }
-            ]
-        }
+
         $crate::__pin_project_internal! { @callback_if;
             [conditional $($proj_replace_ident)?]
             [cb enum make_proj_replace_ty]
