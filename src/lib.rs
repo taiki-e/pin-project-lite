@@ -779,12 +779,14 @@ macro_rules! __pin_project_internal {
             $crate::__pin_project_internal! { @make_unpin_impl;
                 [$vis $ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+                [body {
                 $(
                     $field: $crate::__pin_project_internal!(@make_unpin_bound;
                         $(#[$pin])? $field_ty
                     )
-                ),+
-            }
+                ),+}]
+                [unparsed {}]
+            };
 
             $crate::__pin_project_internal! { @make_drop_impl;
                 [$ident]
@@ -1182,19 +1184,8 @@ macro_rules! __pin_project_internal {
     (@make_unpin_impl;
         [$vis:vis $ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        [body {$($body:tt)*}]
+        [body {$($field:tt)*}]
         [unparsed {}]
-    ) => {
-        $crate::__pin_project_internal!{@make_unpin_impl;
-            [$vis $ident]
-            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-            $($body)*
-        }
-    };
-    (@make_unpin_impl;
-        [$vis:vis $ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($field:tt)*
     ) => {
         // Automatically create the appropriate conditional `Unpin` implementation.
         //
