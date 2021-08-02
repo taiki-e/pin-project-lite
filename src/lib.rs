@@ -842,13 +842,6 @@ macro_rules! __pin_project_internal {
                     [$vis $ident $proj_vis]
                     [mut_ident $($proj_mut_ident)?; ref_ident $($proj_ref_ident)?; replace_ident $($proj_replace_ident)?]]
                 [meta $([$($meta_data)*])*]
-                [body $($body_data)+]
-            }
-            $crate::__pin_project_internal! { @oldstyle=>constant;
-                [enum
-                    [$vis $ident $proj_vis]
-                    [mut_ident $($proj_mut_ident)?; ref_ident $($proj_ref_ident)?; replace_ident $($proj_replace_ident)?]]
-                [meta $([$($meta_data)*])*]
                 [pinned_drop $(impl $($pinned_drop)*)?]
                 [body $($body_data)+]
             }
@@ -862,6 +855,7 @@ macro_rules! __pin_project_internal {
             [$(#[$attrs:meta])*]
             [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
             [$(where $($where_clause:tt)*)?]]
+        [pinned_drop $(impl $($pinned_drop:tt)*)?]
         [body $($body_data:tt)+]
     ) => {
         impl <$($impl_generics)*> $ident <$($ty_generics)*>
@@ -907,40 +901,11 @@ macro_rules! __pin_project_internal {
                 ]
             }
         }
-    };
-    (@oldstyle=>constant;
-        [enum
-            [$vis:vis $ident:ident $proj_vis:vis ]
-            [mut_ident $($proj_mut_ident:ident)?; ref_ident $($proj_ref_ident:ident)?; replace_ident $($proj_replace_ident:ident)?]]
-        [meta
-            [$(#[$attrs:meta])*]
-            [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*]
-            [$(where $($where_clause:tt)*)?]]
-        [pinned_drop $(impl $($pinned_drop:tt)*)?]
-        [body
-            $(
-                $(#[$variant_attrs:meta])*
-                $variant:ident $({
-                    $(
-                        $(#[$pin:ident])?
-                        $field:ident: $field_ty:ty
-                    ),+ $(,)?
-                })?
-            ),+ $(,)?
-        ]
-    ) => {
         $crate::__pin_project_internal! { @make_unpin_impl;
             [$vis $ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-            $(
-                $variant: ($(
-                    $(
-                        $crate::__pin_project_internal!(@make_unpin_bound;
-                            $(#[$pin])? $field_ty
-                        )
-                    ),+
-                )?)
-            ),+
+            [body {}]
+            [unparsed {$($body_data)+}]
         }
 
         $crate::__pin_project_internal! { @make_drop_impl;
@@ -948,7 +913,6 @@ macro_rules! __pin_project_internal {
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             $(impl $($pinned_drop)*)?
         }
-
         // We don't need to check for '#[repr(packed)]',
         // since it does not apply to enums.
     };
@@ -1184,6 +1148,49 @@ macro_rules! __pin_project_internal {
     };
     // =============================================================================================
     // make_unpin_impl
+    (@make_unpin_impl;
+        [$vis:vis $ident:ident]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [body {$($body:tt)*}]
+        [unparsed {
+            $(#[$variant_attrs:meta])*
+            $variant:ident $({
+                $(
+                    $(#[$pin:ident])?
+                    $field:ident: $field_ty:ty
+                ),+ $(,)?
+            })?,
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal!{@make_unpin_impl;
+            [$vis $ident]
+            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            [body {
+                $($body)*
+                $variant: ($(
+                    $(
+                        $crate::__pin_project_internal!(@make_unpin_bound;
+                            $(#[$pin])? $field_ty
+                        )
+                    ),+
+                )?),
+            }]
+            [unparsed {$($tail)*}]
+        }
+    };
+    (@make_unpin_impl;
+        [$vis:vis $ident:ident]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [body {$($body:tt)*}]
+        [unparsed {}]
+    ) => {
+        $crate::__pin_project_internal!{@make_unpin_impl;
+            [$vis $ident]
+            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            $($body)*
+        }
+    };
     (@make_unpin_impl;
         [$vis:vis $ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
