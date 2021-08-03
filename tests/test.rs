@@ -65,6 +65,7 @@ fn projection() {
         #[project_replace = EnumProjReplace]
         #[derive(Eq, PartialEq, Debug)]
         enum Enum<C, D> {
+            Newtype(#[pin] String),
             Struct {
                 #[pin]
                 f1: C,
@@ -84,6 +85,7 @@ fn projection() {
             let _: &mut i32 = f2;
             assert_eq!(*f2, 2);
         }
+        EnumProj::Newtype(_inner) => unreachable!(),
         EnumProj::Unit => unreachable!(),
     }
 
@@ -606,6 +608,7 @@ fn attrs() {
         #[project = Enum1Proj]
         #[project_ref = Enum1ProjRef]
         enum Enum1 {
+            Bar(bool),
             #[cfg(not(any()))]
             V {
                 f: ()
@@ -629,7 +632,7 @@ fn attrs() {
                 f: ()
             },
             /// dox6
-            V2,
+            V2(u8),
         }
     }
 }

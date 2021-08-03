@@ -418,6 +418,34 @@ macro_rules! __pin_project_internal {
         }
     };
     // enums need to be munched
+    // reconstructing a newtype variant
+    (@project_and_construct;
+        [$vis:vis enum $ident:ident $proj_ident:ident]
+        [meta $([$($meta_data:tt)*])*]
+        [reconstruction {$($pout:tt)*}]
+        [raw {
+            $(#[$variant_attrs:meta])*
+            $variant:ident (
+                $(#[$pin:ident])?
+                $field_ty:ty
+                $(,)?
+            ),
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal! {@project_and_construct;
+            [$vis enum $ident $proj_ident]
+            [meta $([$($meta_data)*])*]
+            [reconstruction {
+                $($pout)*
+                $(#[$variant_attrs])*
+                $variant (
+                    $field_ty
+                ),
+            }]
+            [raw {$($tail)*}]
+        }
+    };
     // reconstructing struct / unit variant
     (@project_and_construct;
         [$vis:vis enum $ident:ident $proj_ident:ident]
@@ -445,6 +473,34 @@ macro_rules! __pin_project_internal {
                         $field: $field_ty
                     ),+
                 })?,
+            }]
+            [raw {$($tail)*}]
+        }
+    };
+    // projecting newtype
+    (@project_and_construct;
+        [$vis:vis enum $ident:ident $proj_ident:ident]
+        [meta $([$($meta_data:tt)*])*]
+        [$projection:ident {$($pout:tt)*}]
+        [raw {
+            $(#[$variant_attrs:meta])*
+            $variant:ident (
+                $(#[$pin:ident])?
+                $field_ty:ty
+                $(,)?
+            ),
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal! {@project_and_construct;
+            [$vis enum $ident $proj_ident]
+            [meta $([$($meta_data)*])*]
+            [$projection {
+                $($pout)*
+                $(#[$variant_attrs])*
+                $variant (
+                    $crate::__pin_project_internal! {@$projection; $(#[$pin])? $field_ty}
+                ),
             }]
             [raw {$($tail)*}]
         }
@@ -922,6 +978,24 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     (@make_proj_replace_block;
         [$($proj_path: tt)+]
+        [newtype $(#[$pin:ident])? $field:ident]
+    ) => {
+        let result = $($proj_path)* (
+            $crate::__pin_project_internal!(@make_replace_field_proj;
+                $(#[$pin])? $field
+            )
+        );
+
+        {
+            $crate::__pin_project_internal!(@make_unsafe_drop_in_place_guard;
+                $(#[$pin])? $field
+            );
+        }
+
+        result
+    };
+    (@make_proj_replace_block;
+        [$($proj_path: tt)+]
         {
             $(
                 $(#[$pin:ident])?
@@ -1023,6 +1097,40 @@ macro_rules! __pin_project_internal {
         }
     };
     // =============================================================================================
+    // project_method a newtype variant
+    (@enum=>make_proj_method;
+        [$proj_ty_ident:ident]
+        [$proj_vis:vis]
+        [$method_ident:ident $get_method:ident $($mut:ident)?]
+        [$($ty_generics:tt)*]
+        [body {$($body:tt)*}]
+        [unparsed {
+            $(#[$variant_attrs:meta])*
+            $variant:ident (
+                $(#[$pin:ident])? $field_ty:ty
+            ),
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal!{@enum=>make_proj_method;
+            [$proj_ty_ident]
+            [$proj_vis]
+            [$method_ident $get_method $($mut)?]
+            [$($ty_generics)*]
+            [body {
+                $($body)*
+                Self::$variant(inner) => {
+                    $proj_ty_ident::$variant (
+                        $crate::__pin_project_internal!(
+                            @make_unsafe_field_proj;
+                            $(#[$pin])? inner
+                        )
+                    )
+                },
+            }]
+            [unparsed {$($tail)*}]
+        }
+    };
     // project_method a unit or struct variant
     (@enum=>make_proj_method;
         [$proj_ty_ident:ident]
@@ -1080,6 +1188,36 @@ macro_rules! __pin_project_internal {
                     $($body)*
                 }
             }
+        }
+    };
+    // parse newtype for proj_replace_method
+    (@enum=>make_proj_replace_method;
+        [$proj_ty_ident:ident]
+        [$proj_vis:vis]
+        [$($ty_generics:tt)*]
+        [body {$($body:tt)*}]
+        [unparsed {
+            $(#[$variant_attrs:meta])*
+            $variant:ident (
+                $(#[$pin:ident])? $field_ty:ty
+            ),
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal!{@enum=>make_proj_replace_method;
+            [$proj_ty_ident]
+            [$proj_vis]
+            [$($ty_generics)*]
+            [body {
+                $($body)*
+                Self::$variant(inner) => {
+                    $crate::__pin_project_internal!{@make_proj_replace_block;
+                        [$proj_ty_ident :: $variant]
+                        [newtype $(#[$pin])? inner]
+                    }
+                }
+            }]
+            [unparsed {$($tail)*}]
         }
     };
     (@enum=>make_proj_replace_method;
@@ -1149,7 +1287,36 @@ macro_rules! __pin_project_internal {
         }
     };
     // =============================================================================================
-    // make_unpin_impl
+    // make_unpin_impl parse newtype variant
+    (@make_unpin_impl;
+        [$vis:vis $ident:ident]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [body {$($body:tt)*}]
+        [unparsed {
+            $(#[$variant_attrs:meta])*
+            $variant:ident (
+                $(#[$pin:ident])?
+                $field_ty:ty
+                $(,)?
+            ),
+            $($tail:tt)*
+        }]
+    ) => {
+        $crate::__pin_project_internal!{@make_unpin_impl;
+            [$vis $ident]
+            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            [body {
+                $($body)*
+                $variant: (
+                    $crate::__pin_project_internal!(@make_unpin_bound;
+                        $(#[$pin])? $field_ty
+                    ),
+                ),
+            }]
+            [unparsed {$($tail)*}]
+        }
+    };
+    // make_unpin_impl parse struct or unit variant
     (@make_unpin_impl;
         [$vis:vis $ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
@@ -1527,7 +1694,7 @@ macro_rules! __pin_project_internal {
         pub $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
     } => {
-        $crate::__pin_project_internal! {@generics;
+        $crate::__pin_project_internal! {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
@@ -1544,7 +1711,7 @@ macro_rules! __pin_project_internal {
         $vis:vis $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
     } => {
-        $crate::__pin_project_internal! {@generics;
+        $crate::__pin_project_internal! {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
@@ -1553,7 +1720,7 @@ macro_rules! __pin_project_internal {
             $($tt)*
         }
     };
-    (@generics;
+    (
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
@@ -1575,11 +1742,7 @@ macro_rules! __pin_project_internal {
                 $(: $where_clause_lifetime_bound:lifetime)?
             ),* $(,)?
         )?
-        // for some reason these brackets prevent me from forwarding the entire token tree
-        // so i have to deconstract and pass
         {
-            // I believe we need at least *1* token tree, i.e. at least one field on the struct or variant on an enum
-            // TODO(mike): is this what caused the compiler-UI test errors? also check the updated Little Book of Macros
             $($tt:tt)+
         }
         $(impl $($pinned_drop:tt)*)?
