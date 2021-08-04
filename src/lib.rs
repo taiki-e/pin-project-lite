@@ -346,7 +346,8 @@ macro_rules! __pin_project_internal {
     ) => {
         $crate::__pin_project_internal! { @reconstruct;
             [$(#[$attrs])* $vis $struct_ty_ident $ident]
-            [$($def_generics)*] [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            [$($def_generics)*] [$($impl_generics)*]
+            [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $($body_data)*
             }
@@ -384,7 +385,8 @@ macro_rules! __pin_project_internal {
             [$(#[$attrs])* $vis $struct_ty_ident $ident]
             [$($proj_mut_ident)?] [$($proj_ref_ident)?] [$($proj_replace_ident)?]
             [$proj_vis]
-            [$($def_generics)*] [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            [$($def_generics)*] [$($impl_generics)*]
+            [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $($body_data)*
             }
@@ -636,7 +638,8 @@ macro_rules! __pin_project_internal {
 
     (@reconstruct;
         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
-        [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
+        [$($def_generics:tt)*] [$($impl_generics:tt)*]
+        [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         {
             $(
                 $(#[$pin:ident])?
@@ -658,7 +661,8 @@ macro_rules! __pin_project_internal {
     // reconstruct original enum type
     (@reconstruct;
         [$(#[$attrs:meta])* $vis:vis enum $ident:ident]
-        [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
+        [$($def_generics:tt)*] [$($impl_generics:tt)*]
+        [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         {
             $(
                 $(#[$variant_attrs:meta])*
