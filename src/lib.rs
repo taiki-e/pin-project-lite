@@ -389,7 +389,6 @@ macro_rules! __pin_project_internal {
             [make_proj_field_replace]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
-            [$(impl $($pinned_drop)*)?]
             {
                 $(
                     $(#[$pin])?
@@ -763,7 +762,6 @@ macro_rules! __pin_project_internal {
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        []
         {
             $(
                 $(#[$pin:ident])?
