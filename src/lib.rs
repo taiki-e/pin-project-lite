@@ -387,7 +387,6 @@ macro_rules! __pin_project_internal {
             [$($proj_replace_ident)?]
             [$proj_vis struct]
             [make_proj_field_replace]
-            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $(
@@ -597,7 +596,6 @@ macro_rules! __pin_project_internal {
             [$($proj_replace_ident)?]
             [$proj_vis enum]
             [make_proj_field_replace]
-            [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
                 $(
@@ -771,7 +769,6 @@ macro_rules! __pin_project_internal {
         [$proj_ty_ident:ident]
         [$proj_vis:vis struct]
         [$make_proj_field:ident]
-        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         {
             $(
@@ -832,7 +829,6 @@ macro_rules! __pin_project_internal {
         [$proj_ty_ident:ident]
         [$proj_vis:vis enum]
         [$make_proj_field:ident]
-        [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         {
             $(
