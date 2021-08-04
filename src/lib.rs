@@ -310,6 +310,12 @@ macro_rules! pin_project {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __pin_project_internal {
+    //
+    // ignore make_proj_ty without a named field
+    (@$struct_ty_ident:ident=>make_proj_ty;
+        [] // no identity given, so we ignore the projection
+        $($field:tt)*
+    ) => {};
     // =============================================================================================
     // struct:main
     (@struct=>internal;
@@ -738,14 +744,6 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@struct=>make_proj_ty;
-        []
-        [$proj_vis:vis]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($field:tt)*
-    ) => {};
     (@struct=>make_proj_replace_ty=>named;
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
@@ -829,15 +827,6 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@enum=>make_proj_ty;
-        []
-        [$proj_vis:vis]
-        [$make_proj_field:ident]
-        [$ident:ident]
-        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
-        $($variant:tt)*
-    ) => {};
-
     (@enum=>make_proj_replace_ty;
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
