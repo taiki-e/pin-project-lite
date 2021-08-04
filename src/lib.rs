@@ -338,7 +338,7 @@ macro_rules! __pin_project_internal {
             ),+
         }
 
-        $crate::__pin_project_internal! { @struct=>make_proj_ty=>named;
+        $crate::__pin_project_internal! { @struct=>make_proj_ty;
             [$($proj_mut_ident)?]
             [$proj_vis]
             [make_proj_field_mut]
@@ -351,7 +351,7 @@ macro_rules! __pin_project_internal {
                 ),+
             }
         }
-        $crate::__pin_project_internal! { @struct=>make_proj_ty=>named;
+        $crate::__pin_project_internal! { @struct=>make_proj_ty;
             [$($proj_ref_ident)?]
             [$proj_vis]
             [make_proj_field_ref]
@@ -695,7 +695,7 @@ macro_rules! __pin_project_internal {
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         $($field:tt)*
     ) => {
-        $crate::__pin_project_internal! { @struct=>make_proj_ty=>named;
+        $crate::__pin_project_internal! { @struct=>make_proj_ty;
             [$proj_ty_ident]
             [$proj_vis]
             [$make_proj_field]
@@ -704,7 +704,7 @@ macro_rules! __pin_project_internal {
             $($field)*
         }
     };
-    (@struct=>make_proj_ty=>named;
+    (@struct=>make_proj_ty;
         [$proj_ty_ident:ident]
         [$proj_vis:vis]
         [$make_proj_field:ident]
@@ -738,7 +738,7 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@struct=>make_proj_ty=>named;
+    (@struct=>make_proj_ty;
         []
         [$proj_vis:vis]
         [$make_proj_field:ident]
