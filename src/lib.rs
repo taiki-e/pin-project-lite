@@ -370,7 +370,7 @@ macro_rules! __pin_project_internal {
                 ),+
             }
         }
-        $crate::__pin_project_internal! { @struct=>make_proj_replace_ty=>named;
+        $crate::__pin_project_internal! { @struct=>make_proj_replace_ty;
             [$proj_vis]
             [$($proj_replace_ident)?]
             [make_proj_field_replace]
@@ -744,7 +744,7 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@struct=>make_proj_replace_ty=>named;
+    (@struct=>make_proj_replace_ty;
         [$proj_vis:vis]
         [$proj_ty_ident:ident]
         [$make_proj_field:ident]
@@ -774,7 +774,7 @@ macro_rules! __pin_project_internal {
             ),+
         }
     };
-    (@struct=>make_proj_replace_ty=>named;
+    (@struct=>make_proj_replace_ty;
         [$proj_vis:vis]
         []
         [$make_proj_field:ident]
