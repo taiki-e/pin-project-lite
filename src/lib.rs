@@ -340,10 +340,7 @@ macro_rules! __pin_project_internal {
         [$($def_generics:tt)*]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         {
-            $(
-                $(#[$pin:ident])?
-                $field_vis:vis $field:ident: $field_ty:ty
-            ),+ $(,)?
+            $($body_data:tt)*
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
@@ -351,9 +348,7 @@ macro_rules! __pin_project_internal {
             [$(#[$attrs])* $vis struct $ident]
             [$($def_generics)*] [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
-                $(
-                    $field_vis $field: $field_ty
-                ),+
+                $($body_data)*
             }
         }
 
@@ -363,10 +358,7 @@ macro_rules! __pin_project_internal {
             [make_proj_field_mut]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
+                $($body_data)*
             }
         }
         $crate::__pin_project_internal! { @make_proj_ty;
@@ -375,10 +367,7 @@ macro_rules! __pin_project_internal {
             [make_proj_field_ref]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
+                $($body_data)*
             }
         }
         $crate::__pin_project_internal! { @make_proj_replace_ty;
@@ -387,10 +376,7 @@ macro_rules! __pin_project_internal {
             [make_proj_field_replace]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
+                $($body_data)*
             }
         }
 
@@ -400,10 +386,7 @@ macro_rules! __pin_project_internal {
             [$proj_vis]
             [$($def_generics)*] [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
             {
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
+                $($body_data)*
             }
             $(impl $($pinned_drop)*)?
         }
@@ -819,7 +802,7 @@ macro_rules! __pin_project_internal {
             $(
                 $(#[$pin:ident])?
                 $field_vis:vis $field:ident: $field_ty:ty
-            ),+
+            ),+ $(,)?
         }
     ) => {
         $crate::__pin_project_internal!{@make_proj_ty;
@@ -844,7 +827,7 @@ macro_rules! __pin_project_internal {
             $(
                 $(#[$pin:ident])?
                 $field_vis:vis $field:ident: $field_ty:ty
-            ),+
+            ),+ $(,)?
         }
     ) => {
         $crate::__pin_project_internal!{@make_proj_replace_ty;
