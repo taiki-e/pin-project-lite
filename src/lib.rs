@@ -311,7 +311,7 @@ macro_rules! pin_project {
 #[macro_export]
 macro_rules! __pin_project_internal {
     // macro helpers
-    // ignores make_proj_ty without a projection identity
+    // ignores any projection without a projection identity
     (@$struct_ty_ident:ident=>make_proj_ty;
         [] // no identity given, so we ignore the projection
         $($field:tt)*
@@ -320,6 +320,10 @@ macro_rules! __pin_project_internal {
     (@$struct_ty_ident:ident=>make_proj_replace_ty;
         [] // no identity given, so we ignore the projection
         $($field:tt)*
+    ) => {};
+    (@$struct_ty_ident:ident=>make_proj_method;
+        []
+        $($variant:tt)*
     ) => {};
     (@$struct_ty_ident:ident=>make_proj_replace_method;
         []
@@ -1025,14 +1029,6 @@ macro_rules! __pin_project_internal {
             }
         }
     };
-    (@enum=>make_proj_method;
-        []
-        [$proj_vis:vis]
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$($ty_generics:tt)*]
-        $($variant:tt)*
-    ) => {};
-
     (@enum=>make_proj_replace_method;
         [$proj_ty_ident:ident]
         [$proj_vis:vis]
