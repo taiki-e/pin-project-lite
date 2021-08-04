@@ -347,14 +347,14 @@ macro_rules! __pin_project_internal {
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
-        $(#[$attrs])*
-        $vis struct $ident $($def_generics)*
-        $(where
-            $($where_clause)*)?
-        {
-            $(
-                $field_vis $field: $field_ty
-            ),+
+        $crate::__pin_project_internal! { @reconstruct;
+            [$(#[$attrs])* $vis struct $ident]
+            [$($def_generics)*] [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
+            {
+                $(
+                    $field_vis $field: $field_ty
+                ),+
+            }
         }
 
         $crate::__pin_project_internal! { @make_proj_ty;
@@ -705,6 +705,27 @@ macro_rules! __pin_project_internal {
             // We don't need to check for '#[repr(packed)]',
             // since it does not apply to enums.
         };
+    };
+
+    (@reconstruct;
+        [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
+        [$($def_generics:tt)*] [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
+        {
+            $(
+                $(#[$pin:ident])?
+                $field_vis:vis $field:ident: $field_ty:ty
+            ),+ $(,)?
+        }
+    ) => {
+        $(#[$attrs])*
+        $vis struct $ident $($def_generics)*
+        $(where
+            $($where_clause)*)?
+        {
+            $(
+                $field_vis $field: $field_ty
+            ),+
+        }
     };
 
     // reconstruct original enum type
