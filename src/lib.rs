@@ -717,6 +717,23 @@ macro_rules! __pin_project_internal {
             $($body_data)+
         }
     };
+    (@make_proj_replace_ty;
+        [$proj_vis:vis $struct_ty_ident:ident $proj_ty_ident:ident]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
+        [$($body_data:tt)+]
+    ) => {
+        #[allow(dead_code)] // This lint warns unused fields/variants.
+        #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
+        #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
+        #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
+        #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
+        $proj_vis $struct_ty_ident $proj_ty_ident <$($impl_generics)*>
+        where
+            $($($where_clause)*)?
+        {
+            $($body_data)+
+        }
+    };
     // =============================================================================================
     // struct:make_proj_ty
     // if a proj_ty_ident was given, we do *not* create one with the default
@@ -762,20 +779,16 @@ macro_rules! __pin_project_internal {
             ),+
         }
     ) => {
-        #[allow(dead_code)] // This lint warns unused fields/variants.
-        #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
-        #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
-        #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
-        #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
-        $proj_vis struct $proj_ty_ident <$($impl_generics)*>
-        where
-            $($($where_clause)*)?
-        {
-            $(
-                $field_vis $field: $crate::__pin_project_internal!(@$make_proj_field;
-                    $(#[$pin])? $field_ty
-                )
-            ),+
+        $crate::__pin_project_internal!{@make_proj_replace_ty;
+            [$proj_vis struct $proj_ty_ident]
+            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)* )?]
+            [
+                $(
+                    $field_vis $field: $crate::__pin_project_internal!(@$make_proj_field;
+                        $(#[$pin])? $field_ty
+                    )
+                ),+
+            ]
         }
     };
     // =============================================================================================
@@ -830,24 +843,20 @@ macro_rules! __pin_project_internal {
             ),+
         }
     ) => {
-        #[allow(dead_code)] // This lint warns unused fields/variants.
-        #[allow(single_use_lifetimes)] // https://github.com/rust-lang/rust/issues/55058
-        #[allow(clippy::mut_mut)] // This lint warns `&mut &mut <ty>`. (only needed for project)
-        #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
-        #[allow(clippy::type_repetition_in_bounds)] // https://github.com/rust-lang/rust-clippy/issues/4326
-        $proj_vis enum $proj_ty_ident <$($impl_generics)*>
-        where
-            $($($where_clause)*)?
-        {
-            $(
-                $variant $({
-                    $(
-                        $field: $crate::__pin_project_internal!(@$make_proj_field;
-                            $(#[$pin])? $field_ty
-                        )
-                    ),+
-                })?
-            ),+
+        $crate::__pin_project_internal!{@make_proj_replace_ty;
+            [$proj_vis enum $proj_ty_ident]
+            [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)* )?]
+            [
+                $(
+                    $variant $({
+                        $(
+                            $field: $crate::__pin_project_internal!(@$make_proj_field;
+                                $(#[$pin])? $field_ty
+                            )
+                        ),+
+                    })?
+                ),+
+            ]
         }
     };
     // =============================================================================================
