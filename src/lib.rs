@@ -434,8 +434,8 @@ macro_rules! __pin_project_internal {
                 $($where_clause)*)?
             {
                 $crate::__pin_project_internal! { @struct=>make_proj_method;
+                    [$($proj_mut_ident)? Projection]
                     [$proj_vis]
-                    [$($proj_mut_ident)?][Projection]
                     [project get_unchecked_mut mut]
                     [$($ty_generics)*]
                     {
@@ -446,8 +446,8 @@ macro_rules! __pin_project_internal {
                     }
                 }
                 $crate::__pin_project_internal! { @struct=>make_proj_method;
+                    [$($proj_ref_ident)? ProjectionRef]
                     [$proj_vis]
-                    [$($proj_ref_ident)?][ProjectionRef]
                     [project_ref get_ref]
                     [$($ty_generics)*]
                     {
@@ -901,8 +901,24 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // struct:make_proj_method
     (@struct=>make_proj_method;
+        [$proj_ty_ident:ident $_ignored_default_arg:ident]
         [$proj_vis:vis]
-        [$proj_ty_ident:ident][$_proj_ty_ident:ident]
+        [$method_ident:ident $get_method:ident $($mut:ident)?]
+        [$($ty_generics:tt)*]
+        $($variant:tt)*
+    ) => {
+        $crate::__pin_project_internal! { @struct=>make_proj_method;
+            [$proj_ty_ident]
+            [$proj_vis]
+            [$method_ident $get_method $($mut)?]
+            [$($ty_generics)*]
+            $($variant)*
+        }
+    };
+
+    (@struct=>make_proj_method;
+        [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         {
@@ -925,21 +941,6 @@ macro_rules! __pin_project_internal {
                     ),+
                 }
             }
-        }
-    };
-    (@struct=>make_proj_method;
-        [$proj_vis:vis]
-        [][$proj_ty_ident:ident]
-        [$method_ident:ident $get_method:ident $($mut:ident)?]
-        [$($ty_generics:tt)*]
-        $($variant:tt)*
-    ) => {
-        $crate::__pin_project_internal! { @struct=>make_proj_method;
-            [$proj_vis]
-            [$proj_ty_ident][$proj_ty_ident]
-            [$method_ident $get_method $($mut)?]
-            [$($ty_generics)*]
-            $($variant)*
         }
     };
 
