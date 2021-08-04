@@ -541,8 +541,8 @@ macro_rules! __pin_project_internal {
         }
 
         $crate::__pin_project_internal! { @enum=>make_proj_ty;
-            [$proj_vis]
             [$($proj_mut_ident)?]
+            [$proj_vis]
             [make_proj_field_mut]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
@@ -558,8 +558,8 @@ macro_rules! __pin_project_internal {
             }
         }
         $crate::__pin_project_internal! { @enum=>make_proj_ty;
-            [$proj_vis]
             [$($proj_ref_ident)?]
+            [$proj_vis]
             [make_proj_field_ref]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
@@ -788,8 +788,8 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // enum:make_proj_ty
     (@enum=>make_proj_ty;
-        [$proj_vis:vis]
         [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
@@ -830,8 +830,8 @@ macro_rules! __pin_project_internal {
         }
     };
     (@enum=>make_proj_ty;
-        [$proj_vis:vis]
         []
+        [$proj_vis:vis]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
