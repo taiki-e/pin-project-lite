@@ -647,8 +647,8 @@ macro_rules! __pin_project_internal {
                     }
                 }
                 $crate::__pin_project_internal! { @enum=>make_proj_replace_method;
-                    [$proj_vis]
                     [$($proj_replace_ident)?]
+                    [$proj_vis]
                     [$($ty_generics)*]
                     {
                         $(
@@ -1038,8 +1038,8 @@ macro_rules! __pin_project_internal {
     ) => {};
 
     (@enum=>make_proj_replace_method;
-        [$proj_vis:vis]
         [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$($ty_generics:tt)*]
         {
             $(
@@ -1087,8 +1087,8 @@ macro_rules! __pin_project_internal {
         }
     };
     (@enum=>make_proj_replace_method;
-        [$proj_vis:vis]
         []
+        [$proj_vis:vis]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {};
