@@ -324,7 +324,7 @@ macro_rules! __pin_project_internal {
             $(
                 $(#[$pin:ident])?
                 $field_vis:vis $field:ident: $field_ty:ty
-            ),+
+            ),+ $(,)?
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
@@ -519,9 +519,9 @@ macro_rules! __pin_project_internal {
                     $(
                         $(#[$pin:ident])?
                         $field:ident: $field_ty:ty
-                    ),+
+                    ),+ $(,)?
                 })?
-            ),+
+            ),+ $(,)?
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
@@ -1427,7 +1427,7 @@ macro_rules! __pin_project_internal {
         }
     };
 
-    // this is actually part of a recurssive step that picks off a single non-pin_project_lite attribute
+    // this is actually part of a recursive step that picks off a single non-`pin_project_lite` attribute
     // there could be more to parse
     {
         [$($proj_mut_ident:ident)?]
@@ -1483,14 +1483,13 @@ macro_rules! __pin_project_internal {
             $($tt)*
         }
     };
-    /////////////////////////
-    // PARSE FUNCTION
+    // parse generics
     (
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
         [$($attrs:tt)*]
-        [$vis:vis struct $ident:ident $proj_ty_vis:vis]
+        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ty_vis:vis]
         $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
@@ -1508,19 +1507,16 @@ macro_rules! __pin_project_internal {
             ),* $(,)?
         )?
         {
-            $(
-                $(#[$pin:ident])?
-                $field_vis:vis $field:ident: $field_ty:ty
-            ),+ $(,)?
+            $($body_data:tt)*
         }
         $(impl $($pinned_drop:tt)*)?
     ) => {
-        $crate::__pin_project_internal! { @struct=>internal;
+        $crate::__pin_project_internal! { @$struct_ty_ident=>internal;
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [$proj_ty_vis]
-            [$($attrs)* $vis struct $ident]
+            [$($attrs)* $vis $struct_ty_ident $ident]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
                 $( $generics
@@ -1545,88 +1541,7 @@ macro_rules! __pin_project_internal {
                 $(: $where_clause_lifetime_bound)?
             ),* )?]
             {
-                $(
-                    $(#[$pin])?
-                    $field_vis $field: $field_ty
-                ),+
-            }
-            $(impl $($pinned_drop)*)?
-        }
-    };
-    (
-        [$($proj_mut_ident:ident)?]
-        [$($proj_ref_ident:ident)?]
-        [$($proj_replace_ident:ident)?]
-        [$($attrs:tt)*]
-        [$vis:vis enum $ident:ident $proj_ty_vis:vis]
-        $(<
-            $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
-            $( $generics:ident
-                $(: $generics_bound:path)?
-                $(: ?$generics_unsized_bound:path)?
-                $(: $generics_lifetime_bound:lifetime)?
-                $(= $generics_default:ty)?
-            ),* $(,)?
-        >)?
-        $(where
-            $( $where_clause_ty:ty
-                $(: $where_clause_bound:path)?
-                $(: ?$where_clause_unsized_bound:path)?
-                $(: $where_clause_lifetime_bound:lifetime)?
-            ),* $(,)?
-        )?
-        {
-            $(
-                $(#[$variant_attrs:meta])*
-                $variant:ident $({
-                    $(
-                        $(#[$pin:ident])?
-                        $field:ident: $field_ty:ty
-                    ),+ $(,)?
-                })?
-            ),+ $(,)?
-        }
-        $(impl $($pinned_drop:tt)*)?
-    ) => {
-        $crate::__pin_project_internal! { @enum=>internal;
-            [$($proj_mut_ident)?]
-            [$($proj_ref_ident)?]
-            [$($proj_replace_ident)?]
-            [$proj_ty_vis]
-            [$($attrs)* $vis enum $ident]
-            [$(<
-                $( $lifetime $(: $lifetime_bound)? ,)*
-                $( $generics
-                    $(: $generics_bound)?
-                    $(: ?$generics_unsized_bound)?
-                    $(: $generics_lifetime_bound)?
-                    $(= $generics_default)?
-                ),*
-            >)?]
-            [$(
-                $( $lifetime $(: $lifetime_bound)? ,)*
-                $( $generics
-                    $(: $generics_bound)?
-                    $(: ?$generics_unsized_bound)?
-                    $(: $generics_lifetime_bound)?
-                ),*
-            )?]
-            [$( $( $lifetime ,)* $( $generics ),* )?]
-            [$(where $( $where_clause_ty
-                $(: $where_clause_bound)?
-                $(: ?$where_clause_unsized_bound)?
-                $(: $where_clause_lifetime_bound)?
-            ),* )?]
-            {
-                $(
-                    $(#[$variant_attrs])*
-                    $variant $({
-                        $(
-                            $(#[$pin])?
-                            $field: $field_ty
-                        ),+
-                    })?
-                ),+
+                $($body_data)*
             }
             $(impl $($pinned_drop)*)?
         }
