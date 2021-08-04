@@ -454,8 +454,9 @@ macro_rules! __pin_project_internal {
                     }
                 }
                 $crate::__pin_project_internal! { @struct=>make_proj_replace_method;
+                    [$($proj_replace_ident)?]
                     [$proj_vis]
-                    [$($proj_replace_ident)?][ProjectionReplace]
+                    [ProjectionReplace]
                     [$($ty_generics)*]
                     {
                         $(
@@ -939,8 +940,9 @@ macro_rules! __pin_project_internal {
     };
 
     (@struct=>make_proj_replace_method;
+        [$proj_ty_ident:ident]
         [$proj_vis:vis]
-        [$proj_ty_ident:ident][$_proj_ty_ident:ident]
+        [$_proj_ty_ident:ident]
         [$($ty_generics:tt)*]
         {
             $(
@@ -978,8 +980,9 @@ macro_rules! __pin_project_internal {
         }
     };
     (@struct=>make_proj_replace_method;
+        []
         [$proj_vis:vis]
-        [][$proj_ty_ident:ident]
+        [$proj_ty_ident:ident]
         [$($ty_generics:tt)*]
         $($variant:tt)*
     ) => {
