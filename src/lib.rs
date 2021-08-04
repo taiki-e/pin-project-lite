@@ -310,7 +310,7 @@ macro_rules! pin_project {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __pin_project_internal {
-    //
+    // macro helpers
     // ignores make_proj_ty without a projection identity
     (@$struct_ty_ident:ident=>make_proj_ty;
         [] // no identity given, so we ignore the projection
@@ -319,6 +319,10 @@ macro_rules! __pin_project_internal {
     // ignores make_proj_replace_ty without a projection
     (@$struct_ty_ident:ident=>make_proj_replace_ty;
         [] // no identity given, so we ignore the projection
+        $($field:tt)*
+    ) => {};
+    (@$struct_ty_ident:ident=>make_proj_replace_method;
+        []
         $($field:tt)*
     ) => {};
     // =============================================================================================
@@ -979,15 +983,6 @@ macro_rules! __pin_project_internal {
             }
         }
     };
-    (@struct=>make_proj_replace_method;
-        []
-        [$proj_vis:vis]
-        [$proj_ty_ident:ident]
-        [$($ty_generics:tt)*]
-        $($variant:tt)*
-    ) => {
-    };
-
     // =============================================================================================
     // enum:make_proj_method
     (@enum=>make_proj_method;
@@ -1086,13 +1081,6 @@ macro_rules! __pin_project_internal {
             }
         }
     };
-    (@enum=>make_proj_replace_method;
-        []
-        [$proj_vis:vis]
-        [$($ty_generics:tt)*]
-        $($variant:tt)*
-    ) => {};
-
     // =============================================================================================
     // make_unpin_impl
     (@make_unpin_impl;
