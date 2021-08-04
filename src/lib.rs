@@ -619,8 +619,8 @@ macro_rules! __pin_project_internal {
                 $($where_clause)*)?
             {
                 $crate::__pin_project_internal! { @enum=>make_proj_method;
-                    [$proj_vis]
                     [$($proj_mut_ident)?]
+                    [$proj_vis]
                     [project get_unchecked_mut mut]
                     [$($ty_generics)*]
                     {
@@ -635,8 +635,8 @@ macro_rules! __pin_project_internal {
                     }
                 }
                 $crate::__pin_project_internal! { @enum=>make_proj_method;
-                    [$proj_vis]
                     [$($proj_ref_ident)?]
+                    [$proj_vis]
                     [project_ref get_ref]
                     [$($ty_generics)*]
                     {
@@ -987,8 +987,8 @@ macro_rules! __pin_project_internal {
     // =============================================================================================
     // enum:make_proj_method
     (@enum=>make_proj_method;
-        [$proj_vis:vis]
         [$proj_ty_ident:ident]
+        [$proj_vis:vis]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         {
@@ -1026,8 +1026,8 @@ macro_rules! __pin_project_internal {
         }
     };
     (@enum=>make_proj_method;
-        [$proj_vis:vis]
         []
+        [$proj_vis:vis]
         [$method_ident:ident $get_method:ident $($mut:ident)?]
         [$($ty_generics:tt)*]
         $($variant:tt)*
