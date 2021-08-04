@@ -316,8 +316,8 @@ macro_rules! __pin_project_internal {
         [] // no identity given, so we ignore the projection
         $($field:tt)*
     ) => {};
-    // ignores make_proj_replace_ty without a projection
-    (@$struct_ty_ident:ident=>make_proj_replace_ty;
+    // ignores make_proj_replace_ty without a projection identity
+    (@make_proj_replace_ty;
         [] // no identity given, so we ignore the projection
         $($field:tt)*
     ) => {};
@@ -383,9 +383,9 @@ macro_rules! __pin_project_internal {
                 ),+
             }
         }
-        $crate::__pin_project_internal! { @struct=>make_proj_replace_ty;
+        $crate::__pin_project_internal! { @make_proj_replace_ty;
             [$($proj_replace_ident)?]
-            [$proj_vis]
+            [$proj_vis struct]
             [make_proj_field_replace]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
@@ -593,9 +593,9 @@ macro_rules! __pin_project_internal {
                 ),+
             }
         }
-        $crate::__pin_project_internal! { @enum=>make_proj_replace_ty;
+        $crate::__pin_project_internal! { @make_proj_replace_ty;
             [$($proj_replace_ident)?]
-            [$proj_vis]
+            [$proj_vis enum]
             [make_proj_field_replace]
             [$ident]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
@@ -718,7 +718,8 @@ macro_rules! __pin_project_internal {
         }
     };
     (@make_proj_replace_ty;
-        [$proj_vis:vis $struct_ty_ident:ident $proj_ty_ident:ident]
+        [$proj_ty_ident:ident]
+        [$proj_vis:vis $struct_ty_ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
         [$($body_data:tt)+]
     ) => {
@@ -766,9 +767,9 @@ macro_rules! __pin_project_internal {
             ]
         }
     };
-    (@struct=>make_proj_replace_ty;
+    (@make_proj_replace_ty;
         [$proj_ty_ident:ident]
-        [$proj_vis:vis]
+        [$proj_vis:vis struct]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
@@ -780,7 +781,8 @@ macro_rules! __pin_project_internal {
         }
     ) => {
         $crate::__pin_project_internal!{@make_proj_replace_ty;
-            [$proj_vis struct $proj_ty_ident]
+            [$proj_ty_ident]
+            [$proj_vis struct]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)* )?]
             [
                 $(
@@ -826,9 +828,9 @@ macro_rules! __pin_project_internal {
             ]
         }
     };
-    (@enum=>make_proj_replace_ty;
+    (@make_proj_replace_ty;
         [$proj_ty_ident:ident]
-        [$proj_vis:vis]
+        [$proj_vis:vis enum]
         [$make_proj_field:ident]
         [$ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)* )?]
@@ -844,7 +846,8 @@ macro_rules! __pin_project_internal {
         }
     ) => {
         $crate::__pin_project_internal!{@make_proj_replace_ty;
-            [$proj_vis enum $proj_ty_ident]
+            [$proj_ty_ident]
+            [$proj_vis enum]
             [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)* )?]
             [
                 $(
