@@ -109,8 +109,8 @@
 ///
 /// This macro creates a projection type according to the following rules:
 ///
-/// * For the field that uses `#[pin]` attribute, makes the pinned reference to the field.
-/// * For the other fields, makes the unpinned reference to the field.
+/// - For the field that uses `#[pin]` attribute, makes the pinned reference to the field.
+/// - For the other fields, makes the unpinned reference to the field.
 ///
 /// And the following methods are implemented on the original type:
 ///
@@ -298,12 +298,12 @@ macro_rules! pin_project {
 }
 
 // limitations:
-// * no support for tuple structs and tuple variant (wontfix).
-// * no support for multiple trait/lifetime bounds.
-// * no support for `Self` in where clauses. (wontfix)
-// * no support for overlapping lifetime names. (wontfix)
-// * no interoperability with other field attributes.
-// * no useful error messages. (wontfix)
+// - no support for tuple structs and tuple variant (wontfix).
+// - no support for multiple trait/lifetime bounds.
+// - no support for `Self` in where clauses. (wontfix)
+// - no support for overlapping lifetime names. (wontfix)
+// - no interoperability with other field attributes.
+// - no useful error messages. (wontfix)
 // etc...
 
 // Not public API.

@@ -6,7 +6,7 @@
 // `core`, `core::prelude::*`, etc.
 //
 // Note:
-// * pin-project-lite depends on core's items and is not really usable
+// - pin-project-lite depends on core's items and is not really usable
 //   in a no-core environment.
 
 extern crate core as _core;
