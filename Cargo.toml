@@ -27,4 +27,4 @@ members = [
 macrotest = "1.0.8"
 rustversion = "1"
 static_assertions = "1"
-trybuild = "1"
+trybuild = "1.0.49"
