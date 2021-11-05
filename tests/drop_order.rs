@@ -1,5 +1,4 @@
 #![warn(rust_2018_idioms, single_use_lifetimes)]
-#![allow(clippy::if_then_panic)]
 
 // Refs: https://doc.rust-lang.org/reference/destructors.html
 
