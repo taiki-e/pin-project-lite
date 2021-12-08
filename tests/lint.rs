@@ -176,6 +176,7 @@ mod clippy_redundant_pub_crate {
     }
 }
 
+#[allow(clippy::use_self)]
 pub mod clippy_type_repetition_in_bounds {
     use pin_project_lite::pin_project;
 
