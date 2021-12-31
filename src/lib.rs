@@ -38,7 +38,7 @@
 //!     #[project = EnumProj]
 //!     enum Enum<T, U> {
 //!         Variant { #[pin] pinned: T, unpinned: U },
-//!    }
+//!     }
 //! }
 //!
 //! impl<T, U> Enum<T, U> {
@@ -962,10 +962,7 @@ macro_rules! __pin_project_internal {
 
                 // Destructors will run in reverse order, so next create a guard to overwrite
                 // `self` with the replacement value without calling destructors.
-                let __guard = $crate::__private::UnsafeOverwriteGuard {
-                    target: __self_ptr,
-                    value: $crate::__private::ManuallyDrop::new(replacement),
-                };
+                let __guard = $crate::__private::UnsafeOverwriteGuard::new(__self_ptr, replacement);
 
                 let Self { $($field),* } = &mut *__self_ptr;
 
@@ -1046,10 +1043,7 @@ macro_rules! __pin_project_internal {
 
                 // Destructors will run in reverse order, so next create a guard to overwrite
                 // `self` with the replacement value without calling destructors.
-                let __guard = $crate::__private::UnsafeOverwriteGuard {
-                    target: __self_ptr,
-                    value: $crate::__private::ManuallyDrop::new(replacement),
-                };
+                let __guard = $crate::__private::UnsafeOverwriteGuard::new(__self_ptr, replacement);
 
                 match &mut *__self_ptr {
                     $(
@@ -1277,7 +1271,7 @@ macro_rules! __pin_project_internal {
         #[pin]
         $field:ident
     ) => {
-        $crate::__private::UnsafeDropInPlaceGuard($field)
+        $crate::__private::UnsafeDropInPlaceGuard::new($field)
     };
     (@make_unsafe_drop_in_place_guard;
         $field:ident
@@ -1505,10 +1499,10 @@ macro_rules! __pin_project_internal {
 // Not public API.
 #[doc(hidden)]
 pub mod __private {
+    use core::mem::ManuallyDrop;
     #[doc(hidden)]
     pub use core::{
         marker::{PhantomData, Unpin},
-        mem::ManuallyDrop,
         ops::Drop,
         pin::Pin,
         ptr,
@@ -1522,7 +1516,14 @@ pub mod __private {
 
     // This is an internal helper used to ensure a value is dropped.
     #[doc(hidden)]
-    pub struct UnsafeDropInPlaceGuard<T: ?Sized>(pub *mut T);
+    pub struct UnsafeDropInPlaceGuard<T: ?Sized>(*mut T);
+
+    impl<T: ?Sized> UnsafeDropInPlaceGuard<T> {
+        #[doc(hidden)]
+        pub unsafe fn new(ptr: *mut T) -> Self {
+            Self(ptr)
+        }
+    }
 
     impl<T: ?Sized> Drop for UnsafeDropInPlaceGuard<T> {
         fn drop(&mut self) {
@@ -1536,8 +1537,15 @@ pub mod __private {
     // its destructor being called.
     #[doc(hidden)]
     pub struct UnsafeOverwriteGuard<T> {
-        pub value: ManuallyDrop<T>,
-        pub target: *mut T,
+        target: *mut T,
+        value: ManuallyDrop<T>,
+    }
+
+    impl<T> UnsafeOverwriteGuard<T> {
+        #[doc(hidden)]
+        pub unsafe fn new(target: *mut T, value: T) -> Self {
+            Self { target, value: ManuallyDrop::new(value) }
+        }
     }
 
     impl<T> Drop for UnsafeOverwriteGuard<T> {
