@@ -155,7 +155,7 @@ error: no rules expected the token `[`
    |
    = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: expected `where`, or `{` after struct name, found `:`
+error: expected `{` after struct name, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:57:1
    |
 57 | / pin_project! {
@@ -167,7 +167,7 @@ error: expected `where`, or `{` after struct name, found `:`
 64 | | }
    | | ^
    | | |
-   | |_expected `where`, or `{` after struct name
+   | |_expected `{` after struct name
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -189,7 +189,7 @@ error: expected one of `+`, `,`, or `{`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: expected `where`, or `{` after struct name, found `:`
+error: expected `{` after struct name, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:66:1
    |
 66 | / pin_project! {
@@ -201,7 +201,7 @@ error: expected `where`, or `{` after struct name, found `:`
 73 | | }
    | | ^
    | | |
-   | |_expected `where`, or `{` after struct name
+   | |_expected `{` after struct name
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -223,7 +223,7 @@ error: expected one of `+`, `,`, or `{`, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: expected `where`, or `{` after struct name, found `:`
+error: expected `{` after struct name, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:75:1
    |
 75 | / pin_project! {
@@ -235,7 +235,7 @@ error: expected `where`, or `{` after struct name, found `:`
 82 | | }
    | | ^
    | | |
-   | |_expected `where`, or `{` after struct name
+   | |_expected `{` after struct name
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
