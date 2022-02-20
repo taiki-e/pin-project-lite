@@ -28,31 +28,31 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.2.4] - 2021-01-11
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - Add `project_replace`. ([#43](https://github.com/taiki-e/pin-project-lite/pull/43), thanks @Marwes)
 
 ## [0.2.3] - 2021-01-09
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Suppress `clippy::unknown_clippy_lints` lint in generated code.](https://github.com/taiki-e/pin-project-lite/pull/47)
 
 ## [0.2.2] - 2021-01-09
 
-**NOTE:** This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked.** See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Suppress `clippy::ref_option_ref` lint in generated code.](https://github.com/taiki-e/pin-project-lite/pull/45)
 
 ## [0.2.1] - 2021-01-05
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - Exclude unneeded files from crates.io.
 
 ## [0.2.0] - 2020-11-13
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [`pin_project!` macro now supports enums.](https://github.com/taiki-e/pin-project-lite/pull/28)
 
@@ -109,7 +109,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.1.11] - 2020-10-20
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - Suppress `clippy::redundant_pub_crate` lint in generated code.
 
@@ -117,19 +117,19 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.1.10] - 2020-10-01
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - Suppress `drop_bounds` lint, which will be added to rustc in the future. See [taiki-e/pin-project#272](https://github.com/taiki-e/pin-project/issues/272) for more details.
 
 ## [0.1.9] - 2020-09-29
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Fix trailing comma support in generics.](https://github.com/taiki-e/pin-project-lite/pull/32)
 
 ## [0.1.8] - 2020-09-26
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Fix compatibility of generated code with `forbid(future_incompatible)`.](https://github.com/taiki-e/pin-project-lite/pull/30)
 
@@ -138,7 +138,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.1.7] - 2020-06-04
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Support `?Sized` bounds in where clauses.](https://github.com/taiki-e/pin-project-lite/pull/22)
 
@@ -150,7 +150,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.1.6] - 2020-05-31
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Support lifetime bounds in where clauses.](https://github.com/taiki-e/pin-project-lite/pull/18)
 
@@ -158,37 +158,37 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.1.5] - 2020-05-07
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Support overwriting the name of `core` crate.](https://github.com/taiki-e/pin-project-lite/pull/14)
 
 ## [0.1.4] - 2020-01-20
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Support ?Sized bounds in generic parameters.](https://github.com/taiki-e/pin-project-lite/pull/9)
 
 ## [0.1.3] - 2020-01-20
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [Support lifetime bounds in generic parameters.](https://github.com/taiki-e/pin-project-lite/pull/7)
 
 ## [0.1.2] - 2020-01-05
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - Support recognizing default generic parameters. ([#6](https://github.com/taiki-e/pin-project-lite/pull/6), thanks @kennytm)
 
 ## [0.1.1] - 2019-11-15
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 - [`pin_project!` macro now determines the visibility of the projection type/method is based on the original type.](https://github.com/taiki-e/pin-project-lite/pull/5)
 
 ## [0.1.0] - 2019-10-22
 
-**NOTE:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
+**Note:** This release has been yanked. See [#55](https://github.com/taiki-e/pin-project-lite/pull/55) for details.
 
 Initial release
 
