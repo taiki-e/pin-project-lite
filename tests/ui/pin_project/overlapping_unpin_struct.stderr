@@ -30,4 +30,4 @@ note: required by a bound in `is_unpin`
    |
 16 | fn is_unpin<T: Unpin>() {}
    |                ^^^^^ required by this bound in `is_unpin`
-   = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::__pin_project_make_unpin_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
