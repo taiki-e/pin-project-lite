@@ -9,7 +9,7 @@ error: no rules expected the token `struct`
 8 | | }
   | |_^ no rules expected this token in macro call
   |
-  = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in the macro `$crate::__pin_project_expand` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `struct`
  --> tests/ui/pin_project/invalid.rs:3:1
@@ -22,7 +22,7 @@ error: no rules expected the token `struct`
 8 | | }
   | |_^ no rules expected this token in macro call
   |
-  = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in the macro `$crate::__pin_project_expand` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `struct`
   --> tests/ui/pin_project/invalid.rs:17:1
@@ -36,7 +36,7 @@ error: no rules expected the token `struct`
 23 | | }
    | |_^ no rules expected this token in macro call
    |
-   = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::__pin_project_expand` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `struct`
   --> tests/ui/pin_project/invalid.rs:17:1
@@ -50,7 +50,7 @@ error: no rules expected the token `struct`
 23 | | }
    | |_^ no rules expected this token in macro call
    |
-   = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::__pin_project_expand` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot find attribute `pin` in this scope
   --> tests/ui/pin_project/invalid.rs:11:7

@@ -13,4 +13,4 @@ error[E0119]: conflicting implementations of trait `_::MustNotImplDrop` for type
   | |_first implementation here
   |   conflicting implementation for `Foo<_, _>`
   |
-  = note: this error originates in the macro `$crate::__pin_project_internal` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in the macro `$crate::__pin_project_make_drop_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
