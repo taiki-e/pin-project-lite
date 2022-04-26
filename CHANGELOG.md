@@ -12,7 +12,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [0.2.9] - 2022-04-26
 
-- Improve compile time of `pin_project!` calls. (#71, thanks @nnethercote)
+- Improve compile time of `pin_project!` calls. ([#71](https://github.com/taiki-e/pin-project-lite/pull/71), thanks @nnethercote)
 
 ## [0.2.8] - 2021-12-31
 
