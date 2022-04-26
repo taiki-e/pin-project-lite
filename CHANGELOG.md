@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [0.2.9] - 2022-04-26
+
+- Improve compile time of `pin_project!` calls. (#71, thanks @nnethercote)
+
 ## [0.2.8] - 2021-12-31
 
 - Fix handling of trailing commas in `PinnedDrop` impl. ([#64](https://github.com/taiki-e/pin-project-lite/pull/64), thanks @Michael-J-Ward)
@@ -192,7 +196,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.8...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.9...HEAD
+[0.2.9]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.8...v0.2.9
 [0.2.8]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.7...v0.2.8
 [0.2.7]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.6...v0.2.7
 [0.2.6]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.5...v0.2.6
