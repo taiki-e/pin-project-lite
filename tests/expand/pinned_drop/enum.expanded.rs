@@ -48,10 +48,14 @@ const _: () = {
         ) -> EnumProj<'__pin, T, U> {
             unsafe {
                 match self.get_unchecked_mut() {
-                    Self::Struct { pinned, unpinned } => EnumProj::Struct {
-                        pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
-                        unpinned: unpinned,
-                    },
+                    Self::Struct { pinned, unpinned } => {
+                        EnumProj::Struct {
+                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
+                                pinned,
+                            ),
+                            unpinned: unpinned,
+                        }
+                    }
                     Self::Unit => EnumProj::Unit,
                 }
             }
@@ -61,10 +65,14 @@ const _: () = {
         ) -> EnumProjRef<'__pin, T, U> {
             unsafe {
                 match self.get_ref() {
-                    Self::Struct { pinned, unpinned } => EnumProjRef::Struct {
-                        pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
-                        unpinned: unpinned,
-                    },
+                    Self::Struct { pinned, unpinned } => {
+                        EnumProjRef::Struct {
+                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
+                                pinned,
+                            ),
+                            unpinned: unpinned,
+                        }
+                    }
                     Self::Unit => EnumProjRef::Unit,
                 }
             }
@@ -76,18 +84,21 @@ const _: () = {
         Struct: (T, ::pin_project_lite::__private::AlwaysUnpin<U>),
         Unit: (),
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U> where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin
-    {
-    }
+    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
+    where
+        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+    {}
     impl<T, U> ::pin_project_lite::__private::Drop for Enum<T, U> {
         fn drop(&mut self) {
-            fn __drop_inner<T, U>(this: ::pin_project_lite::__private::Pin<&mut Enum<T, U>>) {
+            fn __drop_inner<T, U>(
+                this: ::pin_project_lite::__private::Pin<&mut Enum<T, U>>,
+            ) {
                 fn __drop_inner() {}
                 let _ = this;
             }
-            let pinned_self: ::pin_project_lite::__private::Pin<&mut Self> =
-                unsafe { ::pin_project_lite::__private::Pin::new_unchecked(self) };
+            let pinned_self: ::pin_project_lite::__private::Pin<&mut Self> = unsafe {
+                ::pin_project_lite::__private::Pin::new_unchecked(self)
+            };
             __drop_inner(pinned_self);
         }
     }

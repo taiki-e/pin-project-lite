@@ -86,7 +86,9 @@ const _: () = {
                 };
                 {
                     (
-                        ::pin_project_lite::__private::UnsafeDropInPlaceGuard::new(pinned),
+                        ::pin_project_lite::__private::UnsafeDropInPlaceGuard::new(
+                            pinned,
+                        ),
                         (),
                     );
                 }
@@ -100,10 +102,10 @@ const _: () = {
         pinned: T,
         unpinned: ::pin_project_lite::__private::AlwaysUnpin<U>,
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U> where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin
-    {
-    }
+    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U>
+    where
+        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+    {}
     trait MustNotImplDrop {}
     #[allow(clippy::drop_bounds, drop_bounds)]
     impl<T: ::pin_project_lite::__private::Drop> MustNotImplDrop for T {}

@@ -47,10 +47,14 @@ const _: () = {
         ) -> EnumProj<'__pin, T, U> {
             unsafe {
                 match self.get_unchecked_mut() {
-                    Self::Struct { pinned, unpinned } => EnumProj::Struct {
-                        pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
-                        unpinned: unpinned,
-                    },
+                    Self::Struct { pinned, unpinned } => {
+                        EnumProj::Struct {
+                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
+                                pinned,
+                            ),
+                            unpinned: unpinned,
+                        }
+                    }
                     Self::Unit => EnumProj::Unit,
                 }
             }
@@ -60,10 +64,14 @@ const _: () = {
         ) -> EnumProjRef<'__pin, T, U> {
             unsafe {
                 match self.get_ref() {
-                    Self::Struct { pinned, unpinned } => EnumProjRef::Struct {
-                        pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
-                        unpinned: unpinned,
-                    },
+                    Self::Struct { pinned, unpinned } => {
+                        EnumProjRef::Struct {
+                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
+                                pinned,
+                            ),
+                            unpinned: unpinned,
+                        }
+                    }
                     Self::Unit => EnumProjRef::Unit,
                 }
             }
@@ -75,10 +83,10 @@ const _: () = {
         Struct: (T, ::pin_project_lite::__private::AlwaysUnpin<U>),
         Unit: (),
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U> where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin
-    {
-    }
+    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
+    where
+        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+    {}
     trait MustNotImplDrop {}
     #[allow(clippy::drop_bounds, drop_bounds)]
     impl<T: ::pin_project_lite::__private::Drop> MustNotImplDrop for T {}

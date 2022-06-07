@@ -68,18 +68,21 @@ const _: () = {
         pinned: T,
         unpinned: ::pin_project_lite::__private::AlwaysUnpin<U>,
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U> where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin
-    {
-    }
+    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U>
+    where
+        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+    {}
     impl<T, U> ::pin_project_lite::__private::Drop for Struct<T, U> {
         fn drop(&mut self) {
-            fn __drop_inner<T, U>(this: ::pin_project_lite::__private::Pin<&mut Struct<T, U>>) {
+            fn __drop_inner<T, U>(
+                this: ::pin_project_lite::__private::Pin<&mut Struct<T, U>>,
+            ) {
                 fn __drop_inner() {}
                 let _ = this;
             }
-            let pinned_self: ::pin_project_lite::__private::Pin<&mut Self> =
-                unsafe { ::pin_project_lite::__private::Pin::new_unchecked(self) };
+            let pinned_self: ::pin_project_lite::__private::Pin<&mut Self> = unsafe {
+                ::pin_project_lite::__private::Pin::new_unchecked(self)
+            };
             __drop_inner(pinned_self);
         }
     }
