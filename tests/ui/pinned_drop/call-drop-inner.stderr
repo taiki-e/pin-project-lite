@@ -2,7 +2,7 @@ error[E0061]: this function takes 0 arguments but 1 argument was supplied
   --> tests/ui/pinned_drop/call-drop-inner.rs:10:13
    |
 10 |             __drop_inner(this);
-   |             ^^^^^^^^^^^^ ---- argument unexpected
+   |             ^^^^^^^^^^^^ ---- argument of type `Pin<&mut S>` unexpected
    |
 note: function defined here
   --> tests/ui/pinned_drop/call-drop-inner.rs:3:1
