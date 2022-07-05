@@ -212,11 +212,11 @@ pub mod clippy_type_repetition_in_bounds {
     }
 }
 
+#[allow(missing_debug_implementations)]
 pub mod clippy_used_underscore_binding {
     use pin_project_lite::pin_project;
 
     pin_project! {
-        #[derive(Debug)]
         pub struct Struct<T, U> {
             #[pin]
             pub _pinned: T,
@@ -227,7 +227,6 @@ pub mod clippy_used_underscore_binding {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
-        #[derive(Debug)]
         pub enum Enum<T, U> {
             Struct {
                 #[pin]
