@@ -33,4 +33,4 @@ note: the implementor must specify the same requirement
 23 | |     }
 24 | | }
    | |_^
-   = note: this error originates in the macro `$crate::__pin_project_make_drop_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::__pin_project_make_drop_impl` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
