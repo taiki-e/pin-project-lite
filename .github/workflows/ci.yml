@@ -47,7 +47,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           components: rust-src
-          targets: thumbv7m-none-eabi
+          target: thumbv7m-none-eabi
       - uses: dtolnay/install@cargo-expand
         if: startsWith(matrix.rust, 'nightly')
       - run: cargo test --all --all-features
