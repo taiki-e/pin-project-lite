@@ -103,7 +103,7 @@
     )
 ))]
 #![warn(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
-#![warn(clippy::pedantic)]
+#![warn(clippy::exhaustive_enums, clippy::exhaustive_structs, clippy::pedantic)]
 
 /// A macro that creates a projection type covering all the fields of struct.
 ///
