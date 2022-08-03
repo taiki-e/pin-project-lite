@@ -103,7 +103,20 @@
     )
 ))]
 #![warn(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
-#![warn(clippy::exhaustive_enums, clippy::exhaustive_structs, clippy::pedantic)]
+#![warn(
+    clippy::pedantic,
+    // lints for public library
+    clippy::alloc_instead_of_core,
+    clippy::exhaustive_enums,
+    clippy::exhaustive_structs,
+    clippy::std_instead_of_alloc,
+    clippy::std_instead_of_core,
+    // lints that help writing unsafe code
+    clippy::default_union_representation,
+    clippy::trailing_empty_array,
+    clippy::transmute_undefined_repr,
+    clippy::undocumented_unsafe_blocks,
+)]
 
 /// A macro that creates a projection type covering all the fields of struct.
 ///
@@ -1528,6 +1541,8 @@ pub mod __private {
 
     impl<T: ?Sized> Drop for UnsafeDropInPlaceGuard<T> {
         fn drop(&mut self) {
+            // SAFETY: the caller of `UnsafeDropInPlaceGuard::new` must guarantee
+            // that `ptr` is valid for drop when this guard is destructed.
             unsafe {
                 ptr::drop_in_place(self.0);
             }
@@ -1551,6 +1566,8 @@ pub mod __private {
 
     impl<T> Drop for UnsafeOverwriteGuard<T> {
         fn drop(&mut self) {
+            // SAFETY: the caller of `UnsafeOverwriteGuard::new` must guarantee
+            // that `target` is valid for writes when this guard is destructed.
             unsafe {
                 ptr::write(self.target, ptr::read(&*self.value));
             }
