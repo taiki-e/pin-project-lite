@@ -1,6 +1,6 @@
 [package]
 name = "pin-project-lite"
-version = "0.2.9" #publish:version
+version = "0.2.9"
 edition = "2018"
 rust-version = "1.37"
 license = "Apache-2.0 OR MIT"
