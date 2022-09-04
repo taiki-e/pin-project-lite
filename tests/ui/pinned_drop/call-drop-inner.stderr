@@ -19,4 +19,4 @@ note: function defined here
 help: remove the extra argument
    |
 10 |             __drop_inner();
-   |             ~~~~~~~~~~~~~~
+   |                         ~~
