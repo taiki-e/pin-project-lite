@@ -3,12 +3,24 @@ error: no rules expected the token `:`
   |
 4 |     struct Generics1<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
   |                                 ^ no rules expected this token in macro call
+  |
+note: while trying to match `>`
+ --> src/lib.rs
+  |
+  |         >)?
+  |         ^
 
 error: no rules expected the token `:`
   --> tests/ui/pin_project/invalid-bounds.rs:10:33
    |
 10 |     struct Generics2<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
    |                                 ^ no rules expected this token in macro call
+   |
+note: while trying to match `>`
+  --> src/lib.rs
+   |
+   |         >)?
+   |         ^
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:15:1
@@ -204,18 +216,36 @@ error: no rules expected the token `Sized`
    |
 34 |     struct Generics6<T: ?Sized : Sized> { //~ ERROR no rules expected the token `Sized`
    |                                  ^^^^^ no rules expected this token in macro call
+   |
+note: while trying to match meta-variable `$generics_lifetime_bound:lifetime`
+  --> src/lib.rs
+   |
+   |                 $(: $generics_lifetime_bound:lifetime)?
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: no rules expected the token `:`
   --> tests/ui/pin_project/invalid-bounds.rs:42:20
    |
 42 |         T: 'static : Sized //~ ERROR no rules expected the token `:`
    |                    ^ no rules expected this token in macro call
+   |
+note: while trying to match `{`
+  --> src/lib.rs
+   |
+   |         {
+   |         ^
 
 error: no rules expected the token `:`
   --> tests/ui/pin_project/invalid-bounds.rs:51:20
    |
 51 |         T: 'static : ?Sized //~ ERROR no rules expected the token `:`
    |                    ^ no rules expected this token in macro call
+   |
+note: while trying to match `{`
+  --> src/lib.rs
+   |
+   |         {
+   |         ^
 
 error: expected `{` after struct name, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:57:1
@@ -426,3 +456,9 @@ error: no rules expected the token `Sized`
    |
 87 |         T: ?Sized : Sized //~ ERROR no rules expected the token `Sized`
    |                     ^^^^^ no rules expected this token in macro call
+   |
+note: while trying to match meta-variable `$where_clause_lifetime_bound:lifetime`
+  --> src/lib.rs
+   |
+   |                 $(: $where_clause_lifetime_bound:lifetime)?
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

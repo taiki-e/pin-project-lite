@@ -6,6 +6,11 @@ error: no rules expected the token `}`
 5 | | }
   | |_^ no rules expected this token in macro call
   |
+note: while trying to match meta-variable `$field_vis:vis`
+ --> src/lib.rs
+  |
+  |                 $field_vis:vis $field:ident: $field_ty:ty
+  |                 ^^^^^^^^^^^^^^
   = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `}`
@@ -16,6 +21,11 @@ error: no rules expected the token `}`
 5 | | }
   | |_^ no rules expected this token in macro call
   |
+note: while trying to match meta-variable `$field_vis:vis`
+ --> src/lib.rs
+  |
+  |                 $field_vis:vis $field:ident: $field_ty:ty
+  |                 ^^^^^^^^^^^^^^
   = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `(`
@@ -23,12 +33,24 @@ error: no rules expected the token `(`
   |
 8 |     struct Struct2(); //~ ERROR no rules expected the token `(`
   |                   ^ no rules expected this token in macro call
+  |
+note: while trying to match `{`
+ --> src/lib.rs
+  |
+  |         {
+  |         ^
 
 error: no rules expected the token `;`
   --> tests/ui/pin_project/unsupported.rs:12:19
    |
 12 |     struct Struct3; //~ ERROR no rules expected the token `;`
    |                   ^ no rules expected this token in macro call
+   |
+note: while trying to match `{`
+  --> src/lib.rs
+   |
+   |         {
+   |         ^
 
 error: no rules expected the token `enum`
   --> tests/ui/pin_project/unsupported.rs:15:1
@@ -40,6 +62,11 @@ error: no rules expected the token `enum`
 19 | | }
    | |_^ no rules expected this token in macro call
    |
+note: while trying to match `struct`
+  --> src/lib.rs
+   |
+   |         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
+   |                                      ^^^^^^
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `enum`
@@ -52,6 +79,11 @@ error: no rules expected the token `enum`
 19 | | }
    | |_^ no rules expected this token in macro call
    |
+note: while trying to match `struct`
+  --> src/lib.rs
+   |
+   |         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
+   |                                      ^^^^^^
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `union`
@@ -64,6 +96,11 @@ error: no rules expected the token `union`
 25 | | }
    | |_^ no rules expected this token in macro call
    |
+note: while trying to match `struct`
+  --> src/lib.rs
+   |
+   |         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
+   |                                      ^^^^^^
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `union`
@@ -76,4 +113,9 @@ error: no rules expected the token `union`
 25 | | }
    | |_^ no rules expected this token in macro call
    |
+note: while trying to match `struct`
+  --> src/lib.rs
+   |
+   |         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
+   |                                      ^^^^^^
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)

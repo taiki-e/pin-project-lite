@@ -9,6 +9,11 @@ error: no rules expected the token `struct`
 8 | | }
   | |_^ no rules expected this token in macro call
   |
+note: while trying to match `enum`
+ --> src/lib.rs
+  |
+  |         [$(#[$attrs:meta])* $vis:vis enum $ident:ident]
+  |                                      ^^^^
   = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `struct`
@@ -22,6 +27,11 @@ error: no rules expected the token `struct`
 8 | | }
   | |_^ no rules expected this token in macro call
   |
+note: while trying to match `enum`
+ --> src/lib.rs
+  |
+  |         [$(#[$attrs:meta])* $vis:vis enum $ident:ident]
+  |                                      ^^^^
   = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `struct`
@@ -36,6 +46,11 @@ error: no rules expected the token `struct`
 23 | | }
    | |_^ no rules expected this token in macro call
    |
+note: while trying to match `enum`
+  --> src/lib.rs
+   |
+   |         [$(#[$attrs:meta])* $vis:vis enum $ident:ident]
+   |                                      ^^^^
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `struct`
@@ -50,6 +65,11 @@ error: no rules expected the token `struct`
 23 | | }
    | |_^ no rules expected this token in macro call
    |
+note: while trying to match `enum`
+  --> src/lib.rs
+   |
+   |         [$(#[$attrs:meta])* $vis:vis enum $ident:ident]
+   |                                      ^^^^
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot find attribute `pin` in this scope
