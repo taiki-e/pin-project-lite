@@ -9,4 +9,5 @@ once
 project
 rustversion
 static
+toml
 trybuild
