@@ -22,6 +22,9 @@ members = [
     "tests/no-std",
 ]
 
+[lib]
+doc-scrape-examples = false
+
 [dev-dependencies]
 macrotest = "1.0.9"
 rustversion = "1"
