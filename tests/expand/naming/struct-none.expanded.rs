@@ -8,6 +8,7 @@ struct Struct<T, U> {
 #[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::used_underscore_binding)]
+#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = {
     #[allow(dead_code)]
     #[allow(single_use_lifetimes)]

@@ -410,6 +410,7 @@ macro_rules! __pin_project_constant {
         #[allow(clippy::unknown_clippy_lints)]
         #[allow(clippy::redundant_pub_crate)] // This lint warns `pub(crate)` field in private struct.
         #[allow(clippy::used_underscore_binding)]
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
         const _: () = {
             $crate::__pin_project_make_proj_ty! {
                 [$($proj_mut_ident)? Projection]
@@ -549,6 +550,7 @@ macro_rules! __pin_project_constant {
         // We allow this lint for compatibility with older compilers.
         #[allow(clippy::unknown_clippy_lints)]
         #[allow(clippy::used_underscore_binding)]
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
         const _: () = {
             impl <$($impl_generics)*> $ident <$($ty_generics)*>
             $(where
