@@ -6,7 +6,6 @@ enum Enum<T, U> {
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::used_underscore_binding)]
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = {
     impl<T, U> Enum<T, U> {}
     #[allow(non_snake_case)]
