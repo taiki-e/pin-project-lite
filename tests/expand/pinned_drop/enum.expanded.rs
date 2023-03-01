@@ -43,6 +43,7 @@ where
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     impl<T, U> Enum<T, U> {
+        #[inline]
         fn project<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
         ) -> EnumProj<'__pin, T, U> {
@@ -60,6 +61,7 @@ const _: () = {
                 }
             }
         }
+        #[inline]
         fn project_ref<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin Self>,
         ) -> EnumProjRef<'__pin, T, U> {

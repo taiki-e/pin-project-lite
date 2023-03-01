@@ -22,6 +22,7 @@ enum EnumProjReplace<T, U> {
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     impl<T, U> Enum<T, U> {
+        #[inline]
         fn project_replace(
             self: ::pin_project_lite::__private::Pin<&mut Self>,
             replacement: Self,

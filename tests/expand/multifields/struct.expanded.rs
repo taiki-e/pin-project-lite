@@ -55,6 +55,7 @@ const _: () = {
         unpinned2: &'__pin (U),
     }
     impl<T, U> Struct<T, U> {
+        #[inline]
         fn project<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
         ) -> Projection<'__pin, T, U> {
@@ -69,6 +70,7 @@ const _: () = {
                 }
             }
         }
+        #[inline]
         fn project_ref<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin Self>,
         ) -> ProjectionRef<'__pin, T, U> {
@@ -82,6 +84,7 @@ const _: () = {
                 }
             }
         }
+        #[inline]
         fn project_replace(
             self: ::pin_project_lite::__private::Pin<&mut Self>,
             replacement: Self,
