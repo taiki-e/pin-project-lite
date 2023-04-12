@@ -17,7 +17,6 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [workspace]
 members = [
-    "tests/doc",
     "tests/no-core",
     "tests/no-std",
 ]

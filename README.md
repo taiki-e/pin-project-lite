@@ -6,6 +6,7 @@
 [![rustc](https://img.shields.io/badge/rustc-1.37+-blue?style=flat-square&logo=rust)](https://www.rust-lang.org)
 [![build status](https://img.shields.io/github/actions/workflow/status/taiki-e/pin-project-lite/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/taiki-e/pin-project-lite/actions)
 
+<!-- tidy:crate-doc:start -->
 A lightweight version of [pin-project] written with declarative macros.
 
 ## Usage
@@ -110,10 +111,13 @@ pin-project supports this by [`UnsafeUnpin`][unsafe-unpin] and [`!Unpin`][not-un
 
 pin-project supports this.
 
-[`pin_project!`]: https://docs.rs/pin-project-lite/0.2/pin_project_lite/macro.pin_project.html
 [not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
 [pin-project]: https://github.com/taiki-e/pin-project
 [unsafe-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unsafeunpin
+
+<!-- tidy:crate-doc:end -->
+
+[`pin_project!`]: https://docs.rs/pin-project-lite/0.2/pin_project_lite/macro.pin_project.html
 
 ## License
 
