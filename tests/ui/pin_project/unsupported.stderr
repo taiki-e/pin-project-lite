@@ -91,7 +91,8 @@ note: while trying to match `struct`
    |
    |         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
    |                                      ^^^^^^
-   = note: captured metavariables except for `$tt`, `$ident` and `$lifetime` cannot be compared to other tokens
+   = note: captured metavariables except for `:tt`, `:ident` and `:lifetime` cannot be compared to other tokens
+   = note: see <https://doc.rust-lang.org/nightly/reference/macros-by-example.html#forwarding-a-matched-fragment> for more information
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: no rules expected the token `union`
@@ -109,5 +110,6 @@ note: while trying to match `struct`
    |
    |         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
    |                                      ^^^^^^
-   = note: captured metavariables except for `$tt`, `$ident` and `$lifetime` cannot be compared to other tokens
+   = note: captured metavariables except for `:tt`, `:ident` and `:lifetime` cannot be compared to other tokens
+   = note: see <https://doc.rust-lang.org/nightly/reference/macros-by-example.html#forwarding-a-matched-fragment> for more information
    = note: this error originates in the macro `$crate::__pin_project_expand` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
