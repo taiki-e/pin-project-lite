@@ -51,6 +51,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    | |_expected one of `+`, `,`, `=`, or `>`
    |   unexpected token
    |
+   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
@@ -114,6 +115,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    | |_expected one of `+`, `,`, `=`, or `>`
    |   unexpected token
    |
+   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
@@ -177,6 +179,7 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    | |_expected one of `+`, `,`, `=`, or `>`
    |   unexpected token
    |
+   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
@@ -279,6 +282,7 @@ error: expected one of `+`, `,`, or `{`, found `:`
    | |_expected one of `+`, `,`, or `{`
    |   unexpected token
    |
+   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `{` after struct name, found `:`
@@ -347,6 +351,7 @@ error: expected one of `+`, `,`, or `{`, found `:`
    | |_expected one of `+`, `,`, or `{`
    |   unexpected token
    |
+   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `{` after struct name, found `:`
@@ -415,6 +420,7 @@ error: expected one of `+`, `,`, or `{`, found `:`
    | |_expected one of `+`, `,`, or `{`
    |   unexpected token
    |
+   = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: expected `{` after struct name, found `:`
