@@ -21,12 +21,11 @@ fn expandtest() {
         return;
     }
 
-    let args = &["--all-features"];
     if is_ci {
-        macrotest::expand_without_refresh_args(PATH, args);
+        macrotest::expand_without_refresh(PATH);
     } else {
         env::set_var("MACROTEST", "overwrite");
-        macrotest::expand_args(PATH, args);
+        macrotest::expand(PATH);
     }
 }
 

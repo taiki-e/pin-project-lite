@@ -16,10 +16,7 @@ enum EnumProj<'__pin, T, U>
 where
     Enum<T, U>: '__pin,
 {
-    Struct {
-        pinned: ::pin_project_lite::__private::Pin<&'__pin mut (T)>,
-        unpinned: &'__pin mut (U),
-    },
+    Struct { pinned: ::core::pin::Pin<&'__pin mut (T)>, unpinned: &'__pin mut (U) },
     Unit,
 }
 #[doc(hidden)]
@@ -34,10 +31,7 @@ enum EnumProjRef<'__pin, T, U>
 where
     Enum<T, U>: '__pin,
 {
-    Struct {
-        pinned: ::pin_project_lite::__private::Pin<&'__pin (T)>,
-        unpinned: &'__pin (U),
-    },
+    Struct { pinned: ::core::pin::Pin<&'__pin (T)>, unpinned: &'__pin (U) },
     Unit,
 }
 #[allow(single_use_lifetimes)]
@@ -48,15 +42,13 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project<'__pin>(
-            self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
+            self: ::core::pin::Pin<&'__pin mut Self>,
         ) -> EnumProj<'__pin, T, U> {
             unsafe {
                 match self.get_unchecked_mut() {
                     Self::Struct { pinned, unpinned } => {
                         EnumProj::Struct {
-                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
-                                pinned,
-                            ),
+                            pinned: ::core::pin::Pin::new_unchecked(pinned),
                             unpinned: unpinned,
                         }
                     }
@@ -67,15 +59,13 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project_ref<'__pin>(
-            self: ::pin_project_lite::__private::Pin<&'__pin Self>,
+            self: ::core::pin::Pin<&'__pin Self>,
         ) -> EnumProjRef<'__pin, T, U> {
             unsafe {
                 match self.get_ref() {
                     Self::Struct { pinned, unpinned } => {
                         EnumProjRef::Struct {
-                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
-                                pinned,
-                            ),
+                            pinned: ::core::pin::Pin::new_unchecked(pinned),
                             unpinned: unpinned,
                         }
                     }
@@ -84,26 +74,26 @@ const _: () = {
             }
         }
     }
+    struct __AlwaysUnpin<T: ?::core::marker::Sized>(::core::marker::PhantomData<T>);
+    impl<T: ?::core::marker::Sized> ::core::marker::Unpin for __AlwaysUnpin<T> {}
     #[allow(non_snake_case)]
     struct __Origin<'__pin, T, U> {
-        __dummy_lifetime: ::pin_project_lite::__private::PhantomData<&'__pin ()>,
-        Struct: (T, ::pin_project_lite::__private::AlwaysUnpin<U>),
+        __dummy_lifetime: ::core::marker::PhantomData<&'__pin ()>,
+        Struct: (T, __AlwaysUnpin<U>),
         Unit: (),
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
+    impl<'__pin, T, U> ::core::marker::Unpin for Enum<T, U>
     where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+        __Origin<'__pin, T, U>: ::core::marker::Unpin,
     {}
-    impl<T, U> ::pin_project_lite::__private::Drop for Enum<T, U> {
+    impl<T, U> ::core::ops::Drop for Enum<T, U> {
         fn drop(&mut self) {
-            fn __drop_inner<T, U>(
-                this: ::pin_project_lite::__private::Pin<&mut Enum<T, U>>,
-            ) {
+            fn __drop_inner<T, U>(this: ::core::pin::Pin<&mut Enum<T, U>>) {
                 fn __drop_inner() {}
                 let _ = this;
             }
-            let pinned_self: ::pin_project_lite::__private::Pin<&mut Self> = unsafe {
-                ::pin_project_lite::__private::Pin::new_unchecked(self)
+            let pinned_self: ::core::pin::Pin<&mut Self> = unsafe {
+                ::core::pin::Pin::new_unchecked(self)
             };
             __drop_inner(pinned_self);
         }

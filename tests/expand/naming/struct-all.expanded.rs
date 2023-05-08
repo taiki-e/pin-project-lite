@@ -15,7 +15,7 @@ struct StructProj<'__pin, T, U>
 where
     Struct<T, U>: '__pin,
 {
-    pinned: ::pin_project_lite::__private::Pin<&'__pin mut (T)>,
+    pinned: ::core::pin::Pin<&'__pin mut (T)>,
     unpinned: &'__pin mut (U),
 }
 #[doc(hidden)]
@@ -30,7 +30,7 @@ struct StructProjRef<'__pin, T, U>
 where
     Struct<T, U>: '__pin,
 {
-    pinned: ::pin_project_lite::__private::Pin<&'__pin (T)>,
+    pinned: ::core::pin::Pin<&'__pin (T)>,
     unpinned: &'__pin (U),
 }
 #[doc(hidden)]
@@ -40,7 +40,7 @@ where
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::type_repetition_in_bounds)]
 struct StructProjReplace<T, U> {
-    pinned: ::pin_project_lite::__private::PhantomData<T>,
+    pinned: ::core::marker::PhantomData<T>,
     unpinned: U,
 }
 #[allow(explicit_outlives_requirements)]
@@ -53,12 +53,12 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project<'__pin>(
-            self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
+            self: ::core::pin::Pin<&'__pin mut Self>,
         ) -> StructProj<'__pin, T, U> {
             unsafe {
                 let Self { pinned, unpinned } = self.get_unchecked_mut();
                 StructProj {
-                    pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
+                    pinned: ::core::pin::Pin::new_unchecked(pinned),
                     unpinned: unpinned,
                 }
             }
@@ -66,12 +66,12 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project_ref<'__pin>(
-            self: ::pin_project_lite::__private::Pin<&'__pin Self>,
+            self: ::core::pin::Pin<&'__pin Self>,
         ) -> StructProjRef<'__pin, T, U> {
             unsafe {
                 let Self { pinned, unpinned } = self.get_ref();
                 StructProjRef {
-                    pinned: ::pin_project_lite::__private::Pin::new_unchecked(pinned),
+                    pinned: ::core::pin::Pin::new_unchecked(pinned),
                     unpinned: unpinned,
                 }
             }
@@ -79,45 +79,67 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project_replace(
-            self: ::pin_project_lite::__private::Pin<&mut Self>,
+            self: ::core::pin::Pin<&mut Self>,
             replacement: Self,
         ) -> StructProjReplace<T, U> {
+            struct __UnsafeDropInPlaceGuard<T: ?::core::marker::Sized>(*mut T);
+            impl<T: ?::core::marker::Sized> ::core::ops::Drop
+            for __UnsafeDropInPlaceGuard<T> {
+                fn drop(&mut self) {
+                    unsafe {
+                        ::core::ptr::drop_in_place(self.0);
+                    }
+                }
+            }
+            struct __UnsafeOverwriteGuard<T> {
+                target: *mut T,
+                value: ::core::mem::ManuallyDrop<T>,
+            }
+            impl<T> __UnsafeOverwriteGuard<T> {
+                unsafe fn new(target: *mut T, value: T) -> Self {
+                    Self {
+                        target,
+                        value: ::core::mem::ManuallyDrop::new(value),
+                    }
+                }
+            }
+            impl<T> ::core::ops::Drop for __UnsafeOverwriteGuard<T> {
+                fn drop(&mut self) {
+                    unsafe {
+                        ::core::ptr::write(self.target, ::core::ptr::read(&*self.value));
+                    }
+                }
+            }
             unsafe {
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
-                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard::new(
-                    __self_ptr,
-                    replacement,
-                );
+                let __guard = __UnsafeOverwriteGuard::new(__self_ptr, replacement);
                 let Self { pinned, unpinned } = &mut *__self_ptr;
                 let result = StructProjReplace {
-                    pinned: ::pin_project_lite::__private::PhantomData,
-                    unpinned: ::pin_project_lite::__private::ptr::read(unpinned),
+                    pinned: ::core::marker::PhantomData,
+                    unpinned: ::core::ptr::read(unpinned),
                 };
                 {
-                    (
-                        ::pin_project_lite::__private::UnsafeDropInPlaceGuard::new(
-                            pinned,
-                        ),
-                        (),
-                    );
+                    (__UnsafeDropInPlaceGuard(pinned), ());
                 }
                 result
             }
         }
     }
+    struct __AlwaysUnpin<T: ?::core::marker::Sized>(::core::marker::PhantomData<T>);
+    impl<T: ?::core::marker::Sized> ::core::marker::Unpin for __AlwaysUnpin<T> {}
     #[allow(non_snake_case)]
     struct __Origin<'__pin, T, U> {
-        __dummy_lifetime: ::pin_project_lite::__private::PhantomData<&'__pin ()>,
+        __dummy_lifetime: ::core::marker::PhantomData<&'__pin ()>,
         pinned: T,
-        unpinned: ::pin_project_lite::__private::AlwaysUnpin<U>,
+        unpinned: __AlwaysUnpin<U>,
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U>
+    impl<'__pin, T, U> ::core::marker::Unpin for Struct<T, U>
     where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+        __Origin<'__pin, T, U>: ::core::marker::Unpin,
     {}
     trait MustNotImplDrop {}
     #[allow(clippy::drop_bounds, drop_bounds)]
-    impl<T: ::pin_project_lite::__private::Drop> MustNotImplDrop for T {}
+    impl<T: ::core::ops::Drop> MustNotImplDrop for T {}
     impl<T, U> MustNotImplDrop for Struct<T, U> {}
     #[forbid(unaligned_references, safe_packed_borrows)]
     fn __assert_not_repr_packed<T, U>(this: &Struct<T, U>) {

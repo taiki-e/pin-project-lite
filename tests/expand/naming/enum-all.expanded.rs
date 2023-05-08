@@ -15,10 +15,7 @@ enum EnumProj<'__pin, T, U>
 where
     Enum<T, U>: '__pin,
 {
-    Struct {
-        pinned: ::pin_project_lite::__private::Pin<&'__pin mut (T)>,
-        unpinned: &'__pin mut (U),
-    },
+    Struct { pinned: ::core::pin::Pin<&'__pin mut (T)>, unpinned: &'__pin mut (U) },
     Unit,
 }
 #[doc(hidden)]
@@ -33,10 +30,7 @@ enum EnumProjRef<'__pin, T, U>
 where
     Enum<T, U>: '__pin,
 {
-    Struct {
-        pinned: ::pin_project_lite::__private::Pin<&'__pin (T)>,
-        unpinned: &'__pin (U),
-    },
+    Struct { pinned: ::core::pin::Pin<&'__pin (T)>, unpinned: &'__pin (U) },
     Unit,
 }
 #[doc(hidden)]
@@ -46,7 +40,7 @@ where
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::type_repetition_in_bounds)]
 enum EnumProjReplace<T, U> {
-    Struct { pinned: ::pin_project_lite::__private::PhantomData<T>, unpinned: U },
+    Struct { pinned: ::core::marker::PhantomData<T>, unpinned: U },
     Unit,
 }
 #[allow(single_use_lifetimes)]
@@ -57,15 +51,13 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project<'__pin>(
-            self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
+            self: ::core::pin::Pin<&'__pin mut Self>,
         ) -> EnumProj<'__pin, T, U> {
             unsafe {
                 match self.get_unchecked_mut() {
                     Self::Struct { pinned, unpinned } => {
                         EnumProj::Struct {
-                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
-                                pinned,
-                            ),
+                            pinned: ::core::pin::Pin::new_unchecked(pinned),
                             unpinned: unpinned,
                         }
                     }
@@ -76,15 +68,13 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project_ref<'__pin>(
-            self: ::pin_project_lite::__private::Pin<&'__pin Self>,
+            self: ::core::pin::Pin<&'__pin Self>,
         ) -> EnumProjRef<'__pin, T, U> {
             unsafe {
                 match self.get_ref() {
                     Self::Struct { pinned, unpinned } => {
                         EnumProjRef::Struct {
-                            pinned: ::pin_project_lite::__private::Pin::new_unchecked(
-                                pinned,
-                            ),
+                            pinned: ::core::pin::Pin::new_unchecked(pinned),
                             unpinned: unpinned,
                         }
                     }
@@ -95,28 +85,48 @@ const _: () = {
         #[doc(hidden)]
         #[inline]
         fn project_replace(
-            self: ::pin_project_lite::__private::Pin<&mut Self>,
+            self: ::core::pin::Pin<&mut Self>,
             replacement: Self,
         ) -> EnumProjReplace<T, U> {
+            struct __UnsafeDropInPlaceGuard<T: ?::core::marker::Sized>(*mut T);
+            impl<T: ?::core::marker::Sized> ::core::ops::Drop
+            for __UnsafeDropInPlaceGuard<T> {
+                fn drop(&mut self) {
+                    unsafe {
+                        ::core::ptr::drop_in_place(self.0);
+                    }
+                }
+            }
+            struct __UnsafeOverwriteGuard<T> {
+                target: *mut T,
+                value: ::core::mem::ManuallyDrop<T>,
+            }
+            impl<T> __UnsafeOverwriteGuard<T> {
+                unsafe fn new(target: *mut T, value: T) -> Self {
+                    Self {
+                        target,
+                        value: ::core::mem::ManuallyDrop::new(value),
+                    }
+                }
+            }
+            impl<T> ::core::ops::Drop for __UnsafeOverwriteGuard<T> {
+                fn drop(&mut self) {
+                    unsafe {
+                        ::core::ptr::write(self.target, ::core::ptr::read(&*self.value));
+                    }
+                }
+            }
             unsafe {
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
-                let __guard = ::pin_project_lite::__private::UnsafeOverwriteGuard::new(
-                    __self_ptr,
-                    replacement,
-                );
+                let __guard = __UnsafeOverwriteGuard::new(__self_ptr, replacement);
                 match &mut *__self_ptr {
                     Self::Struct { pinned, unpinned } => {
                         let result = EnumProjReplace::Struct {
-                            pinned: ::pin_project_lite::__private::PhantomData,
-                            unpinned: ::pin_project_lite::__private::ptr::read(unpinned),
+                            pinned: ::core::marker::PhantomData,
+                            unpinned: ::core::ptr::read(unpinned),
                         };
                         {
-                            (
-                                ::pin_project_lite::__private::UnsafeDropInPlaceGuard::new(
-                                    pinned,
-                                ),
-                                (),
-                            );
+                            (__UnsafeDropInPlaceGuard(pinned), ());
                         }
                         result
                     }
@@ -125,19 +135,21 @@ const _: () = {
             }
         }
     }
+    struct __AlwaysUnpin<T: ?::core::marker::Sized>(::core::marker::PhantomData<T>);
+    impl<T: ?::core::marker::Sized> ::core::marker::Unpin for __AlwaysUnpin<T> {}
     #[allow(non_snake_case)]
     struct __Origin<'__pin, T, U> {
-        __dummy_lifetime: ::pin_project_lite::__private::PhantomData<&'__pin ()>,
-        Struct: (T, ::pin_project_lite::__private::AlwaysUnpin<U>),
+        __dummy_lifetime: ::core::marker::PhantomData<&'__pin ()>,
+        Struct: (T, __AlwaysUnpin<U>),
         Unit: (),
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
+    impl<'__pin, T, U> ::core::marker::Unpin for Enum<T, U>
     where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+        __Origin<'__pin, T, U>: ::core::marker::Unpin,
     {}
     trait MustNotImplDrop {}
     #[allow(clippy::drop_bounds, drop_bounds)]
-    impl<T: ::pin_project_lite::__private::Drop> MustNotImplDrop for T {}
+    impl<T: ::core::ops::Drop> MustNotImplDrop for T {}
     impl<T, U> MustNotImplDrop for Enum<T, U> {}
 };
 fn main() {}

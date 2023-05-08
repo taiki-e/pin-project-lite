@@ -24,6 +24,9 @@ members = [
 [lib]
 doc-scrape-examples = false
 
+[features]
+rustc-dep-of-core = []
+
 [dev-dependencies]
 macrotest = "1.0.9"
 rustversion = "1"

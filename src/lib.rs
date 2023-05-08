@@ -112,7 +112,9 @@ pin-project supports this.
 <!-- tidy:crate-doc:end -->
 */
 
-#![no_std]
+#![cfg_attr(not(feature = "rustc-dep-of-core"), no_std)]
+#![cfg_attr(feature = "rustc-dep-of-core", feature(no_core))]
+#![cfg_attr(feature = "rustc-dep-of-core", no_core)]
 #![doc(test(
     no_crate_inject,
     attr(
@@ -515,6 +517,7 @@ macro_rules! __pin_project_constant {
                 }
             }
 
+            $crate::__pin_project_define_always_unpin!();
             $crate::__pin_project_make_unpin_impl! {
                 [$($proj_not_unpin_mark)?]
                 [$vis $ident]
@@ -642,6 +645,7 @@ macro_rules! __pin_project_constant {
                 }
             }
 
+            $crate::__pin_project_define_always_unpin!();
             $crate::__pin_project_make_unpin_impl! {
                 [$($proj_not_unpin_mark)?]
                 [$vis $ident]
@@ -949,6 +953,57 @@ macro_rules! __pin_project_make_proj_replace_block {
 
 #[doc(hidden)]
 #[macro_export]
+macro_rules! __pin_project_define_unsafe_drop_in_place_guard {
+    () => {
+        struct __UnsafeDropInPlaceGuard<T: ?::core::marker::Sized>(*mut T);
+        impl<T: ?::core::marker::Sized> ::core::ops::Drop for __UnsafeDropInPlaceGuard<T> {
+            fn drop(&mut self) {
+                // SAFETY: the caller of `UnsafeDropInPlaceGuard::new` must guarantee
+                // that `ptr` is valid for drop when this guard is destructed.
+                unsafe {
+                    ::core::ptr::drop_in_place(self.0);
+                }
+            }
+        }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __pin_project_define_unsafe_overwrite_guard {
+    () => {
+        struct __UnsafeOverwriteGuard<T> {
+            target: *mut T,
+            value: ::core::mem::ManuallyDrop<T>,
+        }
+        impl<T> __UnsafeOverwriteGuard<T> {
+            unsafe fn new(target: *mut T, value: T) -> Self {
+                Self { target, value: ::core::mem::ManuallyDrop::new(value) }
+            }
+        }
+        impl<T> ::core::ops::Drop for __UnsafeOverwriteGuard<T> {
+            fn drop(&mut self) {
+                // SAFETY: the caller of `__UnsafeOverwriteGuard::new` must guarantee
+                // that `target` is valid for writes when this guard is destructed.
+                unsafe {
+                    ::core::ptr::write(self.target, ::core::ptr::read(&*self.value));
+                }
+            }
+        }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __pin_project_define_always_unpin {
+    () => {
+        struct __AlwaysUnpin<T: ?::core::marker::Sized>(::core::marker::PhantomData<T>);
+        impl<T: ?::core::marker::Sized> ::core::marker::Unpin for __AlwaysUnpin<T> {}
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
 macro_rules! __pin_project_struct_make_proj_method {
     ([] $($variant:tt)*) => {};
     (
@@ -981,7 +1036,7 @@ macro_rules! __pin_project_struct_make_proj_method {
         #[doc(hidden)] // Workaround for rustc bug: see https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1671540180 for more.
         #[inline]
         $proj_vis fn $method_ident<'__pin>(
-            self: $crate::__private::Pin<&'__pin $($mut)? Self>,
+            self: ::core::pin::Pin<&'__pin $($mut)? Self>,
         ) -> $proj_ty_ident <'__pin, $($ty_generics)*> {
             unsafe {
                 let Self { $($field),* } = self.$get_method();
@@ -1016,15 +1071,17 @@ macro_rules! __pin_project_struct_make_proj_replace_method {
         #[doc(hidden)] // Workaround for rustc bug: see https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1671540180 for more.
         #[inline]
         $proj_vis fn project_replace(
-            self: $crate::__private::Pin<&mut Self>,
+            self: ::core::pin::Pin<&mut Self>,
             replacement: Self,
         ) -> $proj_ty_ident <$($ty_generics)*> {
+            $crate::__pin_project_define_unsafe_drop_in_place_guard!();
+            $crate::__pin_project_define_unsafe_overwrite_guard!();
             unsafe {
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
 
                 // Destructors will run in reverse order, so next create a guard to overwrite
                 // `self` with the replacement value without calling destructors.
-                let __guard = $crate::__private::UnsafeOverwriteGuard::new(__self_ptr, replacement);
+                let __guard = __UnsafeOverwriteGuard::new(__self_ptr, replacement);
 
                 let Self { $($field),* } = &mut *__self_ptr;
 
@@ -1065,7 +1122,7 @@ macro_rules! __pin_project_enum_make_proj_method {
         #[doc(hidden)] // Workaround for rustc bug: see https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1671540180 for more.
         #[inline]
         $proj_vis fn $method_ident<'__pin>(
-            self: $crate::__private::Pin<&'__pin $($mut)? Self>,
+            self: ::core::pin::Pin<&'__pin $($mut)? Self>,
         ) -> $proj_ty_ident <'__pin, $($ty_generics)*> {
             unsafe {
                 match self.$get_method() {
@@ -1110,15 +1167,17 @@ macro_rules! __pin_project_enum_make_proj_replace_method {
         #[doc(hidden)] // Workaround for rustc bug: see https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1671540180 for more.
         #[inline]
         $proj_vis fn project_replace(
-            self: $crate::__private::Pin<&mut Self>,
+            self: ::core::pin::Pin<&mut Self>,
             replacement: Self,
         ) -> $proj_ty_ident <$($ty_generics)*> {
+            $crate::__pin_project_define_unsafe_drop_in_place_guard!();
+            $crate::__pin_project_define_unsafe_overwrite_guard!();
             unsafe {
                 let __self_ptr: *mut Self = self.get_unchecked_mut();
 
                 // Destructors will run in reverse order, so next create a guard to overwrite
                 // `self` with the replacement value without calling destructors.
-                let __guard = $crate::__private::UnsafeOverwriteGuard::new(__self_ptr, replacement);
+                let __guard = __UnsafeOverwriteGuard::new(__self_ptr, replacement);
 
                 match &mut *__self_ptr {
                     $(
@@ -1176,19 +1235,23 @@ macro_rules! __pin_project_make_unpin_impl {
         // regardless of the privacy of the types of their fields.
         //
         // See also https://github.com/taiki-e/pin-project/pull/53.
-        #[allow(non_snake_case)]
-        $vis struct __Origin <'__pin, $($impl_generics)*>
-        $(where
-            $($where_clause)*)?
-        {
-            __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
-            $($field)*
+        $crate::__pin_project_add_unstable_attribute! {
+            #[allow(non_snake_case)]
+            $vis struct __Origin <'__pin, $($impl_generics)*>
+            $(where
+                $($where_clause)*)?
+            {
+                __dummy_lifetime: ::core::marker::PhantomData<&'__pin ()>,
+                $($field)*
+            }
         }
-        impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
-        where
-            __Origin <'__pin, $($ty_generics)*>: $crate::__private::Unpin
-            $(, $($where_clause)*)?
-        {
+        $crate::__pin_project_add_unstable_attribute! {
+            impl <'__pin, $($impl_generics)*> ::core::marker::Unpin for $ident <$($ty_generics)*>
+            where
+                __Origin <'__pin, $($ty_generics)*>: ::core::marker::Unpin
+                $(, $($where_clause)*)?
+            {
+            }
         }
     };
     (
@@ -1208,6 +1271,29 @@ macro_rules! __pin_project_make_unpin_impl {
         {
         }
     }
+}
+
+#[cfg(not(feature = "rustc-dep-of-core"))]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __pin_project_add_unstable_attribute {
+    (
+        $($tt:tt)*
+    ) => {
+        $($tt)*
+    };
+}
+#[cfg(feature = "rustc-dep-of-core")]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __pin_project_add_unstable_attribute {
+    (
+        $($tt:tt)*
+    ) => {
+        // TODO: should use unstable/stable attribute used in input struct/enum
+        #[unstable(feature = "core_intrinsics", issue = "none")]
+        $($tt)*
+    };
 }
 
 #[doc(hidden)]
@@ -1247,7 +1333,7 @@ macro_rules! __pin_project_make_drop_impl {
                 $(: ?$generics_unsized_bound)?
                 $(: $generics_lifetime_bound)?
             ),*
-        >)? $crate::__private::Drop for $self_ty
+        >)? ::core::ops::Drop for $self_ty
         $(where
             $( $where_clause_ty
                 $(: $where_clause_bound)?
@@ -1276,7 +1362,7 @@ macro_rules! __pin_project_make_drop_impl {
                         $(: $generics_lifetime_bound)?
                     ),*
                 >)? (
-                    $($arg)+: $crate::__private::Pin<&mut $self_ty>,
+                    $($arg)+: ::core::pin::Pin<&mut $self_ty>,
                 )
                 $(where
                     $( $where_clause_ty
@@ -1293,8 +1379,8 @@ macro_rules! __pin_project_make_drop_impl {
 
                 // Safety - we're in 'drop', so we know that 'self' will
                 // never move again.
-                let pinned_self: $crate::__private::Pin<&mut Self>
-                    = unsafe { $crate::__private::Pin::new_unchecked(self) };
+                let pinned_self: ::core::pin::Pin<&mut Self>
+                    = unsafe { ::core::pin::Pin::new_unchecked(self) };
                 // We call `__drop_inner` only once. Since `__DropInner::__drop_inner`
                 // is not accessible by the users, it is never called again.
                 __drop_inner(pinned_self);
@@ -1316,7 +1402,7 @@ macro_rules! __pin_project_make_drop_impl {
         // This will result in a compilation error, which is exactly what we want.
         trait MustNotImplDrop {}
         #[allow(clippy::drop_bounds, drop_bounds)]
-        impl<T: $crate::__private::Drop> MustNotImplDrop for T {}
+        impl<T: ::core::ops::Drop> MustNotImplDrop for T {}
         impl <$($impl_generics)*> MustNotImplDrop for $ident <$($ty_generics)*>
         $(where
             $($where_clause)*)?
@@ -1332,7 +1418,7 @@ macro_rules! __pin_project_make_unpin_bound {
         $field_ty
     };
     ($field_ty:ty) => {
-        $crate::__private::AlwaysUnpin<$field_ty>
+        __AlwaysUnpin<$field_ty>
     };
 }
 
@@ -1340,7 +1426,7 @@ macro_rules! __pin_project_make_unpin_bound {
 #[macro_export]
 macro_rules! __pin_project_make_unsafe_field_proj {
     (#[pin] $field:ident) => {
-        $crate::__private::Pin::new_unchecked($field)
+        ::core::pin::Pin::new_unchecked($field)
     };
     ($field:ident) => {
         $field
@@ -1351,10 +1437,10 @@ macro_rules! __pin_project_make_unsafe_field_proj {
 #[macro_export]
 macro_rules! __pin_project_make_replace_field_proj {
     (#[pin] $field:ident) => {
-        $crate::__private::PhantomData
+        ::core::marker::PhantomData
     };
     ($field:ident) => {
-        $crate::__private::ptr::read($field)
+        ::core::ptr::read($field)
     };
 }
 
@@ -1362,7 +1448,7 @@ macro_rules! __pin_project_make_replace_field_proj {
 #[macro_export]
 macro_rules! __pin_project_make_unsafe_drop_in_place_guard {
     (#[pin] $field:ident) => {
-        $crate::__private::UnsafeDropInPlaceGuard::new($field)
+        __UnsafeDropInPlaceGuard($field)
     };
     ($field:ident) => {
         ()
@@ -1373,7 +1459,7 @@ macro_rules! __pin_project_make_unsafe_drop_in_place_guard {
 #[macro_export]
 macro_rules! __pin_project_make_proj_field_mut {
     (#[pin] $field_ty:ty) => {
-        $crate::__private::Pin<&'__pin mut ($field_ty)>
+        ::core::pin::Pin<&'__pin mut ($field_ty)>
     };
     ($field_ty:ty) => {
         &'__pin mut ($field_ty)
@@ -1384,7 +1470,7 @@ macro_rules! __pin_project_make_proj_field_mut {
 #[macro_export]
 macro_rules! __pin_project_make_proj_field_ref {
     (#[pin] $field_ty:ty) => {
-        $crate::__private::Pin<&'__pin ($field_ty)>
+        ::core::pin::Pin<&'__pin ($field_ty)>
     };
     ($field_ty:ty) => {
         &'__pin ($field_ty)
@@ -1395,7 +1481,7 @@ macro_rules! __pin_project_make_proj_field_ref {
 #[macro_export]
 macro_rules! __pin_project_make_proj_field_replace {
     (#[pin] $field_ty:ty) => {
-        $crate::__private::PhantomData<$field_ty>
+        ::core::marker::PhantomData<$field_ty>
     };
     ($field_ty:ty) => {
         $field_ty
@@ -1615,68 +1701,4 @@ macro_rules! __pin_project_parse_generics {
             $($(#[$drop_impl_attrs])* impl $($pinned_drop)*)?
         }
     };
-}
-
-#[doc(hidden)]
-pub mod __private {
-    use core::mem::ManuallyDrop;
-    #[doc(hidden)]
-    pub use core::{
-        marker::{PhantomData, Unpin},
-        ops::Drop,
-        pin::Pin,
-        ptr,
-    };
-
-    // This is an internal helper struct used by `pin_project!`.
-    #[doc(hidden)]
-    pub struct AlwaysUnpin<T: ?Sized>(PhantomData<T>);
-
-    impl<T: ?Sized> Unpin for AlwaysUnpin<T> {}
-
-    // This is an internal helper used to ensure a value is dropped.
-    #[doc(hidden)]
-    pub struct UnsafeDropInPlaceGuard<T: ?Sized>(*mut T);
-
-    impl<T: ?Sized> UnsafeDropInPlaceGuard<T> {
-        #[doc(hidden)]
-        pub unsafe fn new(ptr: *mut T) -> Self {
-            Self(ptr)
-        }
-    }
-
-    impl<T: ?Sized> Drop for UnsafeDropInPlaceGuard<T> {
-        fn drop(&mut self) {
-            // SAFETY: the caller of `UnsafeDropInPlaceGuard::new` must guarantee
-            // that `ptr` is valid for drop when this guard is destructed.
-            unsafe {
-                ptr::drop_in_place(self.0);
-            }
-        }
-    }
-
-    // This is an internal helper used to ensure a value is overwritten without
-    // its destructor being called.
-    #[doc(hidden)]
-    pub struct UnsafeOverwriteGuard<T> {
-        target: *mut T,
-        value: ManuallyDrop<T>,
-    }
-
-    impl<T> UnsafeOverwriteGuard<T> {
-        #[doc(hidden)]
-        pub unsafe fn new(target: *mut T, value: T) -> Self {
-            Self { target, value: ManuallyDrop::new(value) }
-        }
-    }
-
-    impl<T> Drop for UnsafeOverwriteGuard<T> {
-        fn drop(&mut self) {
-            // SAFETY: the caller of `UnsafeOverwriteGuard::new` must guarantee
-            // that `target` is valid for writes when this guard is destructed.
-            unsafe {
-                ptr::write(self.target, ptr::read(&*self.value));
-            }
-        }
-    }
 }
