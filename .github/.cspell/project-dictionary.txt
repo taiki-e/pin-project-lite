@@ -1,8 +1,6 @@
 compiletest
 expandtest
-idents
 metavariables
 prettyplease
 reborrow
-structs
 wontfix
