@@ -954,6 +954,7 @@ macro_rules! __pin_project_struct_make_proj_method {
             ),+
         }
     ) => {
+        #[inline]
         $proj_vis fn $method_ident<'__pin>(
             self: $crate::__private::Pin<&'__pin $($mut)? Self>,
         ) -> $proj_ty_ident <'__pin, $($ty_generics)*> {
@@ -987,6 +988,7 @@ macro_rules! __pin_project_struct_make_proj_replace_method {
             ),+
         }
     ) => {
+        #[inline]
         $proj_vis fn project_replace(
             self: $crate::__private::Pin<&mut Self>,
             replacement: Self,
@@ -1034,6 +1036,7 @@ macro_rules! __pin_project_enum_make_proj_method {
             ),+
         }
     ) => {
+        #[inline]
         $proj_vis fn $method_ident<'__pin>(
             self: $crate::__private::Pin<&'__pin $($mut)? Self>,
         ) -> $proj_ty_ident <'__pin, $($ty_generics)*> {
@@ -1077,6 +1080,7 @@ macro_rules! __pin_project_enum_make_proj_replace_method {
             ),+
         }
     ) => {
+        #[inline]
         $proj_vis fn project_replace(
             self: $crate::__private::Pin<&mut Self>,
             replacement: Self,
