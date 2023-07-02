@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Inline project methods. ([#74](https://github.com/taiki-e/pin-project-lite/pull/74), thanks @EFanZh)
+
 ## [0.2.9] - 2022-04-26
 
 - Improve compile time of `pin_project!` calls. ([#71](https://github.com/taiki-e/pin-project-lite/pull/71), thanks @nnethercote)
