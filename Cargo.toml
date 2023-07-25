@@ -6,7 +6,7 @@ rust-version = "1.37"
 license = "Apache-2.0 OR MIT"
 repository = "https://github.com/taiki-e/pin-project-lite"
 keywords = ["pin", "macros"]
-categories = ["no-std", "rust-patterns"]
+categories = ["no-std", "no-std::no-alloc", "rust-patterns"]
 exclude = ["/.*", "/tools", "/DEVELOPMENT.md"]
 description = """
 A lightweight version of pin-project written with declarative macros.
