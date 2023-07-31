@@ -18,6 +18,7 @@
     box_pointers,
     deprecated_in_future,
     fuzzy_provenance_casts,
+    invalid_reference_casting,
     let_underscore_drop,
     lossy_provenance_casts,
     macro_use_extern_crate,
