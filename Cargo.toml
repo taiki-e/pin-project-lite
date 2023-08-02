@@ -28,14 +28,7 @@ doc-scrape-examples = false
 macrotest = "1.0.9"
 rustversion = "1"
 static_assertions = "1"
-trybuild = "=1.0.67"
-
-# For test on MSRV.
-once_cell = "=1.14"
-proc-macro2 = "=1.0.65"
-quote = "=1.0.30"
-serde = "=1.0.156"
-toml = "=0.5.9"
+trybuild = "1.0.67"
 
 [patch.crates-io]
 prettyplease = { git = "https://github.com/taiki-e/prettyplease.git", branch = "dev" } # lower MSRV

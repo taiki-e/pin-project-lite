@@ -73,6 +73,15 @@ jobs:
         with:
           tool: cargo-expand
         if: startsWith(matrix.rust, 'nightly')
+      - name: Downgrade dependencies for test on MSRV
+        run: |
+          cargo update -p trybuild --precise 1.0.67
+          cargo update -p once_cell --precise 1.14.0
+          cargo update -p toml --precise 0.5.9
+          cargo update -p serde --precise 1.0.156
+          cargo update -p quote --precise 1.0.30
+          cargo update -p proc-macro2 --precise 1.0.65
+        if: matrix.rust == '1.37'
       - run: cargo test --all --all-features
       - run: cargo careful test --all --all-features
         env:
