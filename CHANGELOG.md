@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add support for `#[project(!Unpin)]`. This is equivalent to pin-project's [!Unpin](https://docs.rs/pin-project/latest/pin_project/attr.pin_project.html#unpin) option. ([#76](https://github.com/taiki-e/pin-project-lite/pull/76), thanks @matheus-consoli)
+
 ## [0.2.10] - 2023-07-02
 
 - Inline project methods. ([#74](https://github.com/taiki-e/pin-project-lite/pull/74), thanks @EFanZh)
