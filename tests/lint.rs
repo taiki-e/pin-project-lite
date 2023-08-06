@@ -71,6 +71,7 @@ pub mod box_pointers {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum {
             Struct {
@@ -102,6 +103,7 @@ pub mod explicit_outlives_requirements {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum<'a, T, U>
         where
@@ -124,6 +126,7 @@ pub mod variant_size_differences {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         #[allow(missing_debug_implementations, missing_copy_implementations)] // https://github.com/rust-lang/rust/pull/74060
         #[allow(variant_size_differences)] // for the type itself
         #[allow(clippy::large_enum_variant)] // for the type itself
@@ -149,6 +152,7 @@ pub mod clippy_mut_mut {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum<'a, T, U> {
             Struct {
@@ -177,6 +181,7 @@ mod clippy_redundant_pub_crate {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum<T, U> {
             Struct {
@@ -208,6 +213,7 @@ pub mod clippy_type_repetition_in_bounds {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum<T, U>
         where
@@ -238,6 +244,7 @@ pub mod clippy_used_underscore_binding {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         pub enum Enum<T, U> {
             Struct {
                 #[pin]
@@ -262,6 +269,7 @@ pub mod clippy_ref_option_ref {
     pin_project! {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
+        #[project(!Unpin)]
         pub enum Enum<'a> {
             Struct {
                 #[pin]

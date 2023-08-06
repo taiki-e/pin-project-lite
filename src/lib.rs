@@ -295,8 +295,22 @@ pin-project supports this.
 ///
 /// # `!Unpin`
 ///
-/// If you want to ensure that [`Unpin`] is not implemented, use `#[pin]`
-/// attribute for a [`PhantomPinned`] field.
+/// If you want to make sure `Unpin` is not implemented, use the `#[project(!Unpin)]`
+/// attribute.
+///
+/// ```
+/// use pin_project_lite::pin_project;
+///
+/// pin_project! {
+///      #[project(!Unpin)]
+///      struct Struct<T> {
+///          #[pin]
+///          field: T,
+///      }
+/// }
+/// ```
+///
+/// This is equivalent to using `#[pin]` attribute for a [`PhantomPinned`] field.
 ///
 /// ```rust
 /// use std::marker::PhantomPinned;
@@ -306,13 +320,14 @@ pin-project supports this.
 /// pin_project! {
 ///     struct Struct<T> {
 ///         field: T,
-///         #[pin] // <------ This `#[pin]` is required to make `Struct` to `!Unpin`.
+///         #[pin]
 ///         _pin: PhantomPinned,
 ///     }
 /// }
 /// ```
 ///
-/// Note that using [`PhantomPinned`] without `#[pin]` attribute has no effect.
+/// Note that using [`PhantomPinned`] without `#[pin]` or `#[project(!Unpin)]`
+/// attribute has no effect.
 ///
 /// [`PhantomPinned`]: core::marker::PhantomPinned
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
@@ -322,7 +337,7 @@ pin-project supports this.
 macro_rules! pin_project {
     ($($tt:tt)*) => {
         $crate::__pin_project_internal! {
-            [][][][]
+            [][][][][]
             $($tt)*
         }
     };
@@ -344,6 +359,7 @@ macro_rules! __pin_project_expand {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$($proj_not_unpin_mark:ident)?]
         [$proj_vis:vis]
         [$(#[$attrs:meta])* $vis:vis $struct_ty_ident:ident $ident:ident]
         [$($def_generics:tt)*]
@@ -393,6 +409,7 @@ macro_rules! __pin_project_expand {
         $crate::__pin_project_constant! {
             [$(#[$attrs])* $vis $struct_ty_ident $ident]
             [$($proj_mut_ident)?] [$($proj_ref_ident)?] [$($proj_replace_ident)?]
+            [$($proj_not_unpin_mark)?]
             [$proj_vis]
             [$($def_generics)*] [$($impl_generics)*]
             [$($ty_generics)*] [$(where $($where_clause)*)?]
@@ -410,6 +427,7 @@ macro_rules! __pin_project_constant {
     (
         [$(#[$attrs:meta])* $vis:vis struct $ident:ident]
         [$($proj_mut_ident:ident)?] [$($proj_ref_ident:ident)?] [$($proj_replace_ident:ident)?]
+        [$($proj_not_unpin_mark:ident)?]
         [$proj_vis:vis]
         [$($def_generics:tt)*]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
@@ -497,6 +515,7 @@ macro_rules! __pin_project_constant {
             }
 
             $crate::__pin_project_make_unpin_impl! {
+                [$($proj_not_unpin_mark)?]
                 [$vis $ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
                 $(
@@ -546,6 +565,7 @@ macro_rules! __pin_project_constant {
     (
         [$(#[$attrs:meta])* $vis:vis enum $ident:ident]
         [$($proj_mut_ident:ident)?] [$($proj_ref_ident:ident)?] [$($proj_replace_ident:ident)?]
+        [$($proj_not_unpin_mark:ident)?]
         [$proj_vis:vis]
         [$($def_generics:tt)*]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
@@ -622,6 +642,7 @@ macro_rules! __pin_project_constant {
             }
 
             $crate::__pin_project_make_unpin_impl! {
+                [$($proj_not_unpin_mark)?]
                 [$vis $ident]
                 [$($impl_generics)*] [$($ty_generics)*] [$(where $($where_clause)*)?]
                 $(
@@ -1118,6 +1139,7 @@ macro_rules! __pin_project_enum_make_proj_replace_method {
 #[macro_export]
 macro_rules! __pin_project_make_unpin_impl {
     (
+        []
         [$vis:vis $ident:ident]
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         $($field:tt)*
@@ -1162,6 +1184,23 @@ macro_rules! __pin_project_make_unpin_impl {
         {
         }
     };
+    (
+        [$proj_not_unpin_mark:ident]
+        [$vis:vis $ident:ident]
+        [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
+        $($field:tt)*
+    ) => {
+        #[doc(hidden)]
+        impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
+        where
+            (
+                ::core::marker::PhantomData<&'__pin ()>,
+                ::core::marker::PhantomPinned,
+            ): $crate::__private::Unpin
+            $(, $($where_clause)*)?
+        {
+        }
+    }
 }
 
 #[doc(hidden)]
@@ -1360,6 +1399,7 @@ macro_rules! __pin_project_internal {
         []
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
 
         #[project = $proj_mut_ident:ident]
@@ -1369,6 +1409,7 @@ macro_rules! __pin_project_internal {
             [$proj_mut_ident]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
+            [$( ! $proj_not_unpin_mark)?]
             [$($attrs)*]
             $($tt)*
         }
@@ -1378,6 +1419,7 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         []
         [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
 
         #[project_ref = $proj_ref_ident:ident]
@@ -1387,6 +1429,7 @@ macro_rules! __pin_project_internal {
             [$($proj_mut_ident)?]
             [$proj_ref_ident]
             [$($proj_replace_ident)?]
+            [$( ! $proj_not_unpin_mark)?]
             [$($attrs)*]
             $($tt)*
         }
@@ -1396,6 +1439,7 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         []
+        [$( ! $proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
 
         #[project_replace = $proj_replace_ident:ident]
@@ -1405,6 +1449,27 @@ macro_rules! __pin_project_internal {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$proj_replace_ident]
+            [$( ! $proj_not_unpin_mark)?]
+            [$($attrs)*]
+            $($tt)*
+        }
+    };
+    // parsing !Unpin
+    (
+        [$($proj_mut_ident:ident)?]
+        [$($proj_ref_ident:ident)?]
+        [$($proj_replace_ident:ident)?]
+        []
+        [$($attrs:tt)*]
+
+        #[project( ! $proj_not_unpin_mark:ident)]
+        $($tt:tt)*
+    ) => {
+        $crate::__pin_project_internal! {
+            [$($proj_mut_ident)?]
+            [$($proj_ref_ident)?]
+            [$($proj_replace_ident)?]
+            [ ! $proj_not_unpin_mark]
             [$($attrs)*]
             $($tt)*
         }
@@ -1415,6 +1480,7 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
 
         #[$($attr:tt)*]
@@ -1424,6 +1490,7 @@ macro_rules! __pin_project_internal {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
+            [$( ! $proj_not_unpin_mark)?]
             [$($attrs)* #[$($attr)*]]
             $($tt)*
         }
@@ -1434,6 +1501,7 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
         pub $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
@@ -1442,6 +1510,7 @@ macro_rules! __pin_project_internal {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
+            [$($proj_not_unpin_mark)?]
             [$($attrs)*]
             [pub $struct_ty_ident $ident pub(crate)]
             $($tt)*
@@ -1451,6 +1520,7 @@ macro_rules! __pin_project_internal {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
         $vis:vis $struct_ty_ident:ident $ident:ident
         $($tt:tt)*
@@ -1459,6 +1529,7 @@ macro_rules! __pin_project_internal {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
+            [$($proj_not_unpin_mark)?]
             [$($attrs)*]
             [$vis $struct_ty_ident $ident $vis]
             $($tt)*
@@ -1473,6 +1544,7 @@ macro_rules! __pin_project_parse_generics {
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
         [$($proj_replace_ident:ident)?]
+        [$($proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
         [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ty_vis:vis]
         $(<
@@ -1500,6 +1572,7 @@ macro_rules! __pin_project_parse_generics {
             [$($proj_mut_ident)?]
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
+            [$($proj_not_unpin_mark)?]
             [$proj_ty_vis]
             [$($attrs)* $vis $struct_ty_ident $ident]
             [$(<
