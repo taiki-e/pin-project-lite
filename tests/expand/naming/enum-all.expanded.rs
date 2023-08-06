@@ -46,6 +46,7 @@ enum EnumProjReplace<T, U> {
     Struct { pinned: ::pin_project_lite::__private::PhantomData<T>, unpinned: U },
     Unit,
 }
+#[allow(missing_docs)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::used_underscore_binding)]

@@ -17,6 +17,7 @@ enum EnumProjReplace<T, U> {
     },
     Unit,
 }
+#[allow(missing_docs)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::used_underscore_binding)]

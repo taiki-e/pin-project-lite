@@ -41,6 +41,7 @@ struct StructProjReplace<T, U> {
     unpinned: U,
 }
 #[allow(explicit_outlives_requirements)]
+#[allow(missing_docs)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
 #[allow(clippy::redundant_pub_crate)]
