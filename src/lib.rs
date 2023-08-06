@@ -295,8 +295,22 @@ pin-project supports this.
 ///
 /// # `!Unpin`
 ///
-/// If you want to ensure that [`Unpin`] is not implemented, use `#[pin]`
-/// attribute for a [`PhantomPinned`] field.
+/// If you want to make sure `Unpin` is not implemented, use the `#[project(!Unpin)]`
+/// attribute.
+///
+/// ```
+/// use pin_project_lite::pin_project;
+///
+/// pin_project! {
+///      #[project(!Unpin)]
+///      struct Struct<T> {
+///          #[pin]
+///          field: T,
+///      }
+/// }
+/// ```
+///
+/// This is equivalent to using `#[pin]` attribute for a [`PhantomPinned`] field.
 ///
 /// ```rust
 /// use std::marker::PhantomPinned;
@@ -306,13 +320,14 @@ pin-project supports this.
 /// pin_project! {
 ///     struct Struct<T> {
 ///         field: T,
-///         #[pin] // <------ This `#[pin]` is required to make `Struct` to `!Unpin`.
+///         #[pin]
 ///         _pin: PhantomPinned,
 ///     }
 /// }
 /// ```
 ///
-/// Note that using [`PhantomPinned`] without `#[pin]` attribute has no effect.
+/// Note that using [`PhantomPinned`] without `#[pin]` or `#[project(!Unpin)]`
+/// attribute has no effect.
 ///
 /// [`PhantomPinned`]: core::marker::PhantomPinned
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
