@@ -203,9 +203,10 @@ pin-project supports this.
 /// ```
 ///
 /// The visibility of the projected types and projection methods is based on the
-/// original type. However, if the visibility of the original type is `pub`, the
-/// visibility of the projected types and the projection methods is downgraded
-/// to `pub(crate)`.
+/// original type. However, if the visibility of the original type is `pub` or the
+/// visibility that has been parsed once by caller macro and can no longer be re-parsed by
+/// us (due to [rustc bug](https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1666940521)),
+/// the visibility of the projected types and the projection methods is forced to `pub(crate)`.
 ///
 /// # Safety
 ///
@@ -1503,7 +1504,9 @@ macro_rules! __pin_project_internal {
         }
     };
     // now determine visibility
-    // if public, downgrade
+    // `pub` or the visibility that has been parsed once by caller macro and
+    // can no longer be re-parsed by us (due to rustc bug), is forced to `pub(crate)`.
+    // https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1666940521
     (
         [$($proj_mut_ident:ident)?]
         [$($proj_ref_ident:ident)?]
@@ -1519,7 +1522,45 @@ macro_rules! __pin_project_internal {
             [$($proj_replace_ident)?]
             [$($proj_not_unpin_mark)?]
             [$($attrs)*]
-            [pub $struct_ty_ident $ident pub(crate)]
+            [pub, pub(crate), $struct_ty_ident $ident]
+            $($tt)*
+        }
+    };
+    (
+        [$($proj_mut_ident:ident)?]
+        [$($proj_ref_ident:ident)?]
+        [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
+        [$($attrs:tt)*]
+        pub($($vis_path:tt)*) $struct_ty_ident:ident $ident:ident
+        $($tt:tt)*
+    ) => {
+        $crate::__pin_project_parse_generics! {
+            [$($proj_mut_ident)?]
+            [$($proj_ref_ident)?]
+            [$($proj_replace_ident)?]
+            [$($proj_not_unpin_mark)?]
+            [$($attrs)*]
+            [pub($($vis_path)*), pub($($vis_path)*), $struct_ty_ident $ident]
+            $($tt)*
+        }
+    };
+    (
+        [$($proj_mut_ident:ident)?]
+        [$($proj_ref_ident:ident)?]
+        [$($proj_replace_ident:ident)?]
+        [$( ! $proj_not_unpin_mark:ident)?]
+        [$($attrs:tt)*]
+        $struct_ty_ident:ident $ident:ident
+        $($tt:tt)*
+    ) => {
+        $crate::__pin_project_parse_generics! {
+            [$($proj_mut_ident)?]
+            [$($proj_ref_ident)?]
+            [$($proj_replace_ident)?]
+            [$($proj_not_unpin_mark)?]
+            [$($attrs)*]
+            [,,$struct_ty_ident $ident]
             $($tt)*
         }
     };
@@ -1538,7 +1579,7 @@ macro_rules! __pin_project_internal {
             [$($proj_replace_ident)?]
             [$($proj_not_unpin_mark)?]
             [$($attrs)*]
-            [$vis $struct_ty_ident $ident $vis]
+            [$vis, pub(crate), $struct_ty_ident $ident]
             $($tt)*
         }
     };
@@ -1553,7 +1594,7 @@ macro_rules! __pin_project_parse_generics {
         [$($proj_replace_ident:ident)?]
         [$($proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
-        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_vis:vis]
+        [$vis:vis, $proj_vis:vis, $struct_ty_ident:ident $ident:ident]
         $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
