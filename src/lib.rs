@@ -1547,7 +1547,7 @@ macro_rules! __pin_project_parse_generics {
         [$($proj_replace_ident:ident)?]
         [$($proj_not_unpin_mark:ident)?]
         [$($attrs:tt)*]
-        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_ty_vis:vis]
+        [$vis:vis $struct_ty_ident:ident $ident:ident $proj_vis:vis]
         $(<
             $( $lifetime:lifetime $(: $lifetime_bound:lifetime)? ),* $(,)?
             $( $generics:ident
@@ -1574,7 +1574,7 @@ macro_rules! __pin_project_parse_generics {
             [$($proj_ref_ident)?]
             [$($proj_replace_ident)?]
             [$($proj_not_unpin_mark)?]
-            [$proj_ty_vis]
+            [$proj_vis]
             [$($attrs)* $vis $struct_ty_ident $ident]
             [$(<
                 $( $lifetime $(: $lifetime_bound)? ,)*
