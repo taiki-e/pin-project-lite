@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [0.2.12] - 2023-08-09
+
 - Work around an issue where the projected types/methods appear in the documentation as if they were part of the public API if the visibility is not correctly parsed due to the rustc bug. See [#77](https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1671540180) for details.
 
 ## [0.2.11] - 2023-08-06
@@ -206,7 +208,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.11...HEAD
+[Unreleased]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.12...HEAD
+[0.2.12]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.11...v0.2.12
 [0.2.11]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.10...v0.2.11
 [0.2.10]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.9...v0.2.10
 [0.2.9]: https://github.com/taiki-e/pin-project-lite/compare/v0.2.8...v0.2.9
