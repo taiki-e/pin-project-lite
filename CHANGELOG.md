@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Allow attributes in impl and method of `PinnedDrop` implementation.
+
 ## [0.2.12] - 2023-08-09
 
 - Work around an issue where the projected types/methods appear in the documentation as if they were part of the public API if the visibility is not correctly parsed due to the rustc bug. See [#77](https://github.com/taiki-e/pin-project-lite/issues/77#issuecomment-1671540180) for details.
