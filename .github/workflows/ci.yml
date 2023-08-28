@@ -79,8 +79,9 @@ jobs:
           RUSTDOCFLAGS: ${{ env.RUSTDOCFLAGS }} -Z randomize-layout
           RUSTFLAGS: ${{ env.RUSTFLAGS }} -Z randomize-layout
         if: startsWith(matrix.rust, 'nightly')
+      - run: cargo hack build --workspace --no-private --feature-powerset --no-dev-deps
       - run: cargo build --manifest-path tests/no-std/Cargo.toml --target thumbv6m-none-eabi
-      - run: cargo minimal-versions build --workspace --all-features --ignore-private
+      - run: cargo minimal-versions build --workspace --no-private --all-features
         if: matrix.rust != '1.37'
 
   miri:
