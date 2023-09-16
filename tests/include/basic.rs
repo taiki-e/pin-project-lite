@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 // default pin_project! is completely safe.
 
 ::pin_project_lite::pin_project! {
