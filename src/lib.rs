@@ -122,18 +122,28 @@ pin-project supports this.
         allow(dead_code, unused_variables)
     )
 ))]
-#![warn(rust_2018_idioms, single_use_lifetimes, unreachable_pub)]
 #![warn(
+    rust_2018_idioms,
+    single_use_lifetimes,
+    unreachable_pub,
     clippy::pedantic,
-    // lints for public library
+    // Lints that may help when writing public library.
+    missing_debug_implementations,
+    missing_docs,
     clippy::alloc_instead_of_core,
     clippy::exhaustive_enums,
     clippy::exhaustive_structs,
+    clippy::impl_trait_in_params,
+    // clippy::missing_inline_in_public_items,
     clippy::std_instead_of_alloc,
     clippy::std_instead_of_core,
-    // lints that help writing unsafe code
+    // Lints that may help when writing unsafe code.
+    improper_ctypes,
+    // improper_ctypes_definitions, // requires Rust 1.46
+    // unsafe_op_in_unsafe_fn, // requires Rust 1.52
     clippy::as_ptr_cast_mut,
     clippy::default_union_representation,
+    clippy::inline_asm_x86_att_syntax,
     clippy::trailing_empty_array,
     clippy::transmute_undefined_repr,
     clippy::undocumented_unsafe_blocks,
@@ -1621,6 +1631,8 @@ macro_rules! __pin_project_parse_generics {
 
 #[doc(hidden)]
 pub mod __private {
+    #![allow(missing_debug_implementations)]
+
     use core::mem::ManuallyDrop;
     #[doc(hidden)]
     pub use core::{
