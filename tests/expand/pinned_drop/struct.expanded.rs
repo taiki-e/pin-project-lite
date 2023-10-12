@@ -1,4 +1,3 @@
-use std::pin::Pin;
 use pin_project_lite::pin_project;
 struct Struct<T, U> {
     pinned: T,

@@ -69,10 +69,6 @@ jobs:
       - uses: taiki-e/install-action@cargo-minimal-versions
       - uses: taiki-e/install-action@cargo-careful
         if: startsWith(matrix.rust, 'nightly')
-      - uses: taiki-e/cache-cargo-install-action@v1
-        with:
-          tool: cargo-expand
-        if: startsWith(matrix.rust, 'nightly')
       - run: cargo test --all --all-features
       - run: cargo careful test --all --all-features
         env:

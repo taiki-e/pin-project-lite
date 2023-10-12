@@ -1,6 +1,5 @@
 compiletest
 expandtest
 metavariables
-prettyplease
 reborrow
 wontfix
