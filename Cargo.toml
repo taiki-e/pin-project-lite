@@ -15,6 +15,10 @@ A lightweight version of pin-project written with declarative macros.
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
+[package.metadata.cargo_check_external_types]
+# The following are external types that are allowed to be exposed in our public API.
+allowed_external_types = []
+
 [workspace]
 members = [
     "tests/no-core",
