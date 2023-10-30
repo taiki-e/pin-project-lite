@@ -19,20 +19,55 @@ targets = ["x86_64-unknown-linux-gnu"]
 # The following are external types that are allowed to be exposed in our public API.
 allowed_external_types = []
 
+[lib]
+doc-scrape-examples = false
+
+[dev-dependencies]
+macrotest = { git = "https://github.com/taiki-e/macrotest.git", branch = "dev-old-msrv" } # 2021 edition support + no cargo-expand + adjust overwrite behavior + lower MSRV
+rustversion = "1"
+static_assertions = "1"
+trybuild = { git = "https://github.com/taiki-e/trybuild.git", branch = "dev-old-msrv" } # adjust overwrite behavior + lower MSRV
+
+[lints]
+workspace = true
+
 [workspace]
 members = [
     "tests/no-core",
     "tests/no-std",
 ]
 
-[lib]
-doc-scrape-examples = false
-
-[dev-dependencies]
-macrotest = { git = "https://github.com/taiki-e/macrotest.git", branch = "dev-old-msrv" } # 2021 edition support + lower MSRV + no cargo-expand
-rustversion = "1"
-static_assertions = "1"
-trybuild = "=1.0.67"
-
-# For test on MSRV.
-once_cell = "=1.14"
+# This table is shared by projects under https://github.com/taiki-e.
+# It is not intended for manual editing.
+[workspace.lints.rust]
+improper_ctypes = "warn"
+improper_ctypes_definitions = "warn"
+non_ascii_idents = "warn"
+rust_2018_idioms = "warn"
+single_use_lifetimes = "warn"
+unreachable_pub = "warn"
+# unsafe_op_in_unsafe_fn = "warn" # Set at crate-level instead since https://github.com/rust-lang/rust/pull/100081 is not available on MSRV
+[workspace.lints.clippy]
+all = "warn" # Downgrade deny-by-default lints
+pedantic = "warn"
+as_ptr_cast_mut = "warn"
+default_union_representation = "warn"
+inline_asm_x86_att_syntax = "warn"
+trailing_empty_array = "warn"
+transmute_undefined_repr = "warn"
+undocumented_unsafe_blocks = "warn"
+# Suppress buggy or noisy clippy lints
+borrow_as_ptr = { level = "allow", priority = 1 } # https://github.com/rust-lang/rust-clippy/issues/8286
+doc_markdown = { level = "allow", priority = 1 }
+float_cmp = { level = "allow", priority = 1 } # https://github.com/rust-lang/rust-clippy/issues/7725
+manual_assert = { level = "allow", priority = 1 }
+manual_range_contains = { level = "allow", priority = 1 } # https://github.com/rust-lang/rust-clippy/issues/6455#issuecomment-1225966395
+missing_errors_doc = { level = "allow", priority = 1 }
+module_name_repetitions = { level = "allow", priority = 1 }
+similar_names = { level = "allow", priority = 1 }
+single_match = { level = "allow", priority = 1 }
+single_match_else = { level = "allow", priority = 1 }
+struct_excessive_bools = { level = "allow", priority = 1 }
+too_many_arguments = { level = "allow", priority = 1 }
+too_many_lines = { level = "allow", priority = 1 }
+type_complexity = { level = "allow", priority = 1 }

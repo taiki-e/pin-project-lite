@@ -122,11 +122,8 @@ pin-project supports this.
         allow(dead_code, unused_variables)
     )
 ))]
+// #![warn(unsafe_op_in_unsafe_fn)] // requires Rust 1.52
 #![warn(
-    rust_2018_idioms,
-    single_use_lifetimes,
-    unreachable_pub,
-    clippy::pedantic,
     // Lints that may help when writing public library.
     missing_debug_implementations,
     missing_docs,
@@ -137,16 +134,6 @@ pin-project supports this.
     // clippy::missing_inline_in_public_items,
     clippy::std_instead_of_alloc,
     clippy::std_instead_of_core,
-    // Lints that may help when writing unsafe code.
-    improper_ctypes,
-    // improper_ctypes_definitions, // requires Rust 1.46
-    // unsafe_op_in_unsafe_fn, // requires Rust 1.52
-    clippy::as_ptr_cast_mut,
-    clippy::default_union_representation,
-    clippy::inline_asm_x86_att_syntax,
-    clippy::trailing_empty_array,
-    clippy::transmute_undefined_repr,
-    clippy::undocumented_unsafe_blocks,
 )]
 
 /// A macro that creates a projection type covering all the fields of struct.
