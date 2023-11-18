@@ -86,6 +86,11 @@ error: no rules expected the token `union`
 27 | | }
    | |_^ no rules expected this token in macro call
    |
+  ::: src/lib.rs
+   |
+   |           [$(#[$attrs:meta])* $vis:vis $struct_ty_ident:ident $ident:ident]
+   |                                        ----------------------
+   |
 note: while trying to match `struct`
   --> src/lib.rs
    |
@@ -104,6 +109,11 @@ error: no rules expected the token `union`
 26 | |     }
 27 | | }
    | |_^ no rules expected this token in macro call
+   |
+  ::: src/lib.rs
+   |
+   |           [$(#[$attrs:meta])* $vis:vis $struct_ty_ident:ident $ident:ident]
+   |                                        ----------------------
    |
 note: while trying to match `struct`
   --> src/lib.rs
