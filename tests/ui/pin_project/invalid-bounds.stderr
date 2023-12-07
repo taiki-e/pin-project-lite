@@ -37,6 +37,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:17:1
@@ -53,6 +58,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:17:1
@@ -69,6 +79,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:17:1
@@ -85,6 +100,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:23:1
@@ -101,6 +121,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: ?$generics_unsized_bound>)?
+   |                                                 +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:23:1
@@ -117,6 +142,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: ?$generics_unsized_bound>)?
+   |                                                 +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:23:1
@@ -133,6 +163,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: ?$generics_unsized_bound>)?
+   |                                                 +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:23:1
@@ -149,6 +184,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: ?$generics_unsized_bound>)?
+   |                                                 +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:29:1
@@ -165,6 +205,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:29:1
@@ -181,6 +226,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |
    = note: type ascription syntax has been removed, see issue #101728 <https://github.com/rust-lang/rust/issues/101728>
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:29:1
@@ -197,6 +247,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: expected one of `+`, `,`, `=`, or `>`, found `:`
   --> tests/ui/pin_project/invalid-bounds.rs:29:1
@@ -213,6 +268,11 @@ error: expected one of `+`, `,`, `=`, or `>`, found `:`
    |   in this macro invocation
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: you might have meant to end the type parameters here
+  --> src/lib.rs
+   |
+   |                     $(: $generics_bound>)?
+   |                                        +
 
 error: no rules expected the token `Sized`
   --> tests/ui/pin_project/invalid-bounds.rs:36:34
