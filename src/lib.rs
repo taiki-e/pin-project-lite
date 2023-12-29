@@ -145,7 +145,7 @@ pin-project supports this.
 ///
 /// And the following methods are implemented on the original type:
 ///
-/// ```rust
+/// ```
 /// # use std::pin::Pin;
 /// # type Projection<'a> = &'a ();
 /// # type ProjectionRef<'a> = &'a ();
@@ -159,7 +159,7 @@ pin-project supports this.
 /// you can name the projection type returned from the method. This allows you
 /// to use pattern matching on the projected types.
 ///
-/// ```rust
+/// ```
 /// # use pin_project_lite::pin_project;
 /// # use std::pin::Pin;
 /// pin_project! {
@@ -185,7 +185,7 @@ pin-project supports this.
 /// method which allows the contents of `Pin<&mut Self>` to be replaced while simultaneously moving
 /// out all unpinned fields in `Self`.
 ///
-/// ```rust
+/// ```
 /// # use std::pin::Pin;
 /// # type MyProjReplace = ();
 /// # trait Dox {
@@ -215,7 +215,7 @@ pin-project supports this.
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```
 /// use std::pin::Pin;
 ///
 /// use pin_project_lite::pin_project;
@@ -240,7 +240,7 @@ pin-project supports this.
 /// To use `pin_project!` on enums, you need to name the projection type
 /// returned from the method.
 ///
-/// ```rust
+/// ```
 /// use std::pin::Pin;
 ///
 /// use pin_project_lite::pin_project;
@@ -272,7 +272,7 @@ pin-project supports this.
 /// original [`Pin`] type, it needs to use [`.as_mut()`][`Pin::as_mut`] to avoid
 /// consuming the [`Pin`].
 ///
-/// ```rust
+/// ```
 /// use std::pin::Pin;
 ///
 /// use pin_project_lite::pin_project;
@@ -312,7 +312,7 @@ pin-project supports this.
 ///
 /// This is equivalent to using `#[pin]` attribute for a [`PhantomPinned`] field.
 ///
-/// ```rust
+/// ```
 /// use std::marker::PhantomPinned;
 ///
 /// use pin_project_lite::pin_project;
@@ -1153,7 +1153,7 @@ macro_rules! __pin_project_make_unpin_impl {
         // Automatically create the appropriate conditional `Unpin` implementation.
         //
         // Basically this is equivalent to the following code:
-        // ```rust
+        // ```
         // impl<T, U> Unpin for Struct<T, U> where T: Unpin {}
         // ```
         //
