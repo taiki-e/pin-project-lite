@@ -125,7 +125,6 @@ pin-project supports this.
 // #![warn(unsafe_op_in_unsafe_fn)] // requires Rust 1.52
 #![warn(
     // Lints that may help when writing public library.
-    missing_debug_implementations,
     missing_docs,
     clippy::alloc_instead_of_core,
     clippy::exhaustive_enums,
