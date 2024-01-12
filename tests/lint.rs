@@ -236,6 +236,7 @@ pub mod clippy_used_underscore_binding {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        #[allow(clippy::pub_underscore_fields)]
         pub struct Struct<T, U> {
             #[pin]
             pub _pinned: T,
@@ -261,6 +262,7 @@ pub mod clippy_ref_option_ref {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        #[allow(clippy::pub_underscore_fields)]
         pub struct Struct<'a> {
             #[pin]
             pub _pinned: Option<&'a ()>,
