@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-// Check interoperability with rustc and clippy lints.
+//! Check interoperability with rustc and clippy lints.
 
 #![forbid(unsafe_code)]
 // for old compilers
@@ -28,7 +28,7 @@
     missing_abi,
     missing_copy_implementations,
     missing_debug_implementations,
-    missing_docs,
+    // missing_docs, // TODO: https://github.com/taiki-e/pin-project-lite/issues/3#issuecomment-703534472
     non_ascii_idents,
     noop_method_call,
     private_bounds,
@@ -54,14 +54,17 @@
     clippy::single_char_lifetime_names
 )] // TODO
 
+/// Test for basic cases.
 pub mod basic {
-    include!("include/basic.rs");
+    include!("../include/basic.rs");
 }
 
+/// Test for `box_pointers` lint.
 pub mod box_pointers {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        /// Testing struct.
         #[derive(Debug)]
         pub struct Struct {
             #[pin]
@@ -71,25 +74,30 @@ pub mod box_pointers {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum {
+            /// Struct variant.
             Struct {
                 #[pin]
                 p: Box<isize>,
                 u: Box<isize>,
             },
+            /// Unit variant.
             Unit,
         }
     }
 }
 
+/// Test for `explicit_outlives_requirements` lint.
 pub mod explicit_outlives_requirements {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        /// Testing struct.
         #[derive(Debug)]
         pub struct Struct<'a, T, U>
         where
@@ -103,6 +111,7 @@ pub mod explicit_outlives_requirements {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
@@ -112,20 +121,24 @@ pub mod explicit_outlives_requirements {
             T: ?Sized,
             U: ?Sized,
         {
+            /// Struct variant.
             Struct {
                 #[pin]
                 pinned: &'a mut T,
                 unpinned: &'a mut U,
             },
+            /// Unit variant.
             Unit,
         }
     }
 }
 
+/// Test for `variant_size_differences` and `clippy::large_enum_variant` lints.
 pub mod variant_size_differences {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
@@ -133,16 +146,20 @@ pub mod variant_size_differences {
         #[allow(variant_size_differences)] // for the type itself
         #[allow(clippy::large_enum_variant)] // for the type itself
         pub enum Enum {
+            /// Small variant size.
             V1 { f: u8 },
+            /// Huge variant size.
             V2 { f: [u8; 1024] },
         }
     }
 }
 
+/// Test for `clippy::mut_mut` lint.
 pub mod clippy_mut_mut {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        /// Testing struct.
         #[derive(Debug)]
         pub struct Struct<'a, T, U> {
             #[pin]
@@ -152,27 +169,31 @@ pub mod clippy_mut_mut {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
         #[derive(Debug)]
         pub enum Enum<'a, T, U> {
+            /// Struct variant.
             Struct {
                 #[pin]
                 pinned: &'a mut T,
                 unpinned: &'a mut U,
             },
+            /// Unit variant.
             Unit,
         }
     }
 }
 
+/// Test for `clippy::redundant_pub_crate` lint.
 #[allow(unreachable_pub)]
 mod clippy_redundant_pub_crate {
     use pin_project_lite::pin_project;
 
     pin_project! {
-        #[derive(Debug)]
+        /// Testing struct.
         pub struct Struct<T, U> {
             #[pin]
             pub pinned: T,
@@ -181,27 +202,30 @@ mod clippy_redundant_pub_crate {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
-        #[derive(Debug)]
         pub enum Enum<T, U> {
+            /// Struct variant.
             Struct {
                 #[pin]
                 pinned: T,
                 unpinned: U,
             },
+            /// Unit variant.
             Unit,
         }
     }
 }
 
+/// Test for `clippy::type_repetition_in_bounds` lint.
 #[allow(clippy::use_self)]
 pub mod clippy_type_repetition_in_bounds {
     use pin_project_lite::pin_project;
 
     pin_project! {
-        #[derive(Debug)]
+        /// Testing struct.
         pub struct Struct<T, U>
         where
             Struct<T, U>: Sized,
@@ -213,29 +237,32 @@ pub mod clippy_type_repetition_in_bounds {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
-        #[derive(Debug)]
         pub enum Enum<T, U>
         where
             Enum<T, U>: Sized,
         {
+            /// Struct variant.
             Struct {
                 #[pin]
                 pinned: T,
                 unpinned: U,
             },
+            /// Unit variant.
             Unit,
         }
     }
 }
 
-#[allow(missing_debug_implementations)]
+/// Test for `clippy::used_underscore_binding` lint.
 pub mod clippy_used_underscore_binding {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        /// Testing struct.
         #[allow(clippy::pub_underscore_fields)]
         pub struct Struct<T, U> {
             #[pin]
@@ -245,10 +272,12 @@ pub mod clippy_used_underscore_binding {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
         pub enum Enum<T, U> {
+            /// Variant.
             Struct {
                 #[pin]
                 _pinned: T,
@@ -258,10 +287,12 @@ pub mod clippy_used_underscore_binding {
     }
 }
 
+/// Test for `clippy::ref_option_ref` lint.
 pub mod clippy_ref_option_ref {
     use pin_project_lite::pin_project;
 
     pin_project! {
+        /// Testing struct.
         #[allow(clippy::pub_underscore_fields)]
         pub struct Struct<'a> {
             #[pin]
@@ -271,10 +302,12 @@ pub mod clippy_ref_option_ref {
     }
 
     pin_project! {
+        /// Testing enum.
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
         pub enum Enum<'a> {
+            /// Variant.
             Struct {
                 #[pin]
                 _pinned: Option<&'a ()>,

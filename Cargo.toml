@@ -35,6 +35,7 @@ workspace = true
 members = [
     "tests/no-core",
     "tests/no-std",
+    "tests/lint",
 ]
 
 # This table is shared by projects under github.com/taiki-e.
