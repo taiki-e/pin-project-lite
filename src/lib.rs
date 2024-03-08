@@ -1616,10 +1616,10 @@ macro_rules! __pin_project_parse_generics {
     };
 }
 
+// Not public API.
 #[doc(hidden)]
+#[allow(missing_debug_implementations)]
 pub mod __private {
-    #![allow(missing_debug_implementations)]
-
     use core::mem::ManuallyDrop;
     #[doc(hidden)]
     pub use core::{
