@@ -347,7 +347,7 @@ pin-project supports this.
 ///
 /// Note that the argument to `PinnedDrop::drop` cannot be named `self`.
 ///
-/// `pin_project_lite` implements the actual [`Drop`] trait via PinnedDrop you implemented. To
+/// `pin_project!` implements the actual [`Drop`] trait via PinnedDrop you implemented. To
 /// explicitly drop a type that implements PinnedDrop, use the [drop] function just like dropping a
 /// type that directly implements [Drop].
 ///
