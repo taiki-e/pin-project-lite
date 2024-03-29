@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Document `PinnedDrop`. ([#83](https://github.com/taiki-e/pin-project-lite/pull/83), thanks @jbr)
+
 ## [0.2.13] - 2023-08-25
 
 - Allow attributes in impl and method of `PinnedDrop` implementation.
