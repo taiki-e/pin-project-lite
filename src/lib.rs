@@ -349,7 +349,7 @@ pin-project supports this.
 ///
 /// `pin_project!` implements the actual [`Drop`] trait via PinnedDrop you implemented. To
 /// explicitly drop a type that implements PinnedDrop, use the [drop] function just like dropping a
-/// type that directly implements [Drop].
+/// type that directly implements [`Drop`].
 ///
 /// `PinnedDrop::drop` will never be called more than once, just like [`Drop::drop`].
 ///
