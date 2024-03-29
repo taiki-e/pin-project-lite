@@ -329,6 +329,52 @@ pin-project supports this.
 /// Note that using [`PhantomPinned`] without `#[pin]` or `#[project(!Unpin)]`
 /// attribute has no effect.
 ///
+/// # Pinned Drop
+///
+/// In order to correctly implement pin projections, a type’s [`Drop`] impl must not move out of any
+/// structurally pinned fields. Unfortunately, [`Drop::drop`] takes `&mut Self`, not `Pin<&mut
+/// Self>`.
+///
+/// To implement [`Drop`] for type that has pin, add an `impl PinnedDrop` block at the end of the
+/// [`pin_project`] macro block. PinnedDrop has the following interface:
+///
+/// ```rust
+/// # use std::pin::Pin;
+/// trait PinnedDrop {
+///     fn drop(this: Pin<&mut Self>);
+/// }
+/// ```
+///
+/// Note that the argument to `PinnedDrop::drop` cannot be named `self`.
+///
+/// `pin_project!` implements the actual [`Drop`] trait via PinnedDrop you implemented. To
+/// explicitly drop a type that implements PinnedDrop, use the [drop] function just like dropping a
+/// type that directly implements [`Drop`].
+///
+/// `PinnedDrop::drop` will never be called more than once, just like [`Drop::drop`].
+///
+/// ```rust
+/// use pin_project_lite::pin_project;
+///
+/// pin_project! {
+///     pub struct Struct<'a> {
+///         was_dropped: &'a mut bool,
+///         #[pin]
+///         field: u8,
+///     }
+///
+///     impl PinnedDrop for Struct<'_> {
+///         fn drop(this: Pin<&mut Self>) { // <----- NOTE: this is not `self`
+///             **this.project().was_dropped = true;
+///         }
+///     }
+/// }
+///
+/// let mut was_dropped = false;
+/// drop(Struct { was_dropped: &mut was_dropped, field: 42 });
+/// assert!(was_dropped);
+/// ```
+///
 /// [`PhantomPinned`]: core::marker::PhantomPinned
 /// [`Pin::as_mut`]: core::pin::Pin::as_mut
 /// [`Pin`]: core::pin::Pin
