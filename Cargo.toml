@@ -23,7 +23,7 @@ allowed_external_types = []
 doc-scrape-examples = false
 
 [dev-dependencies]
-macrotest = { git = "https://github.com/taiki-e/macrotest.git", branch = "dev-old-msrv" } # 2021 edition support + no cargo-expand + adjust overwrite behavior + lower MSRV
+macrotest = { git = "https://github.com/taiki-e/macrotest.git", branch = "dev-old-msrv" } # adjust overwrite behavior + no cargo-expand + lower MSRV
 rustversion = "1"
 static_assertions = "1"
 trybuild = { git = "https://github.com/taiki-e/trybuild.git", branch = "dev-old-msrv" } # adjust overwrite behavior + lower MSRV
