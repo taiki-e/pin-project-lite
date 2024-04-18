@@ -13,8 +13,6 @@ Add this to your `Cargo.toml`:
 pin-project-lite = "0.2"
 ```
 
-*Compiler support: requires rustc 1.37+*
-
 ## Examples
 
 [`pin_project!`] macro creates a projection type covering all the fields of
