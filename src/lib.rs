@@ -104,12 +104,13 @@ pin-project supports this by [`UnsafeUnpin`][unsafe-unpin]. (`!Unpin` is support
 
 pin-project supports this.
 
-[not-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unpin
-[not-unpin-lite]: https://docs.rs/pin-project-lite/0.2/pin_project_lite/macro.pin_project.html#unpin
+[not-unpin]: https://docs.rs/pin-project/latest/pin_project/attr.pin_project.html#unpin
 [pin-project]: https://github.com/taiki-e/pin-project
-[unsafe-unpin]: https://docs.rs/pin-project/1/pin_project/attr.pin_project.html#unsafeunpin
+[unsafe-unpin]: https://docs.rs/pin-project/latest/pin_project/attr.pin_project.html#unsafeunpin
 
 <!-- tidy:crate-doc:end -->
+
+[not-unpin-lite]: pin_project#unpin
 */
 
 #![no_std]
