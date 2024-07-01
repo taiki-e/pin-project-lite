@@ -21,7 +21,6 @@
 // unused_crate_dependencies, must_not_suspend: unrelated
 // unsafe_code: checked in forbid_unsafe module
 #![warn(
-    box_pointers,
     deprecated_in_future,
     dereferencing_mut_binding,
     fuzzy_provenance_casts,
@@ -36,6 +35,7 @@
     missing_debug_implementations,
     // missing_docs, // TODO: https://github.com/taiki-e/pin-project-lite/issues/3#issuecomment-703534472
     non_ascii_idents,
+    non_local_definitions,
     noop_method_call,
     private_bounds,
     private_interfaces,
@@ -68,39 +68,6 @@
 /// Test for basic cases.
 pub mod basic {
     include!("../include/basic.rs");
-}
-
-/// Test for `box_pointers` lint.
-pub mod box_pointers {
-    use pin_project_lite::pin_project;
-
-    pin_project! {
-        /// Testing struct.
-        #[derive(Debug)]
-        pub struct Struct {
-            #[pin]
-            pub p: Box<isize>,
-            pub u: Box<isize>,
-        }
-    }
-
-    pin_project! {
-        /// Testing enum.
-        #[project = EnumProj]
-        #[project_ref = EnumProjRef]
-        #[project(!Unpin)]
-        #[derive(Debug)]
-        pub enum Enum {
-            /// Struct variant.
-            Struct {
-                #[pin]
-                p: Box<isize>,
-                u: Box<isize>,
-            },
-            /// Unit variant.
-            Unit,
-        }
-    }
 }
 
 /// Test for `explicit_outlives_requirements` lint.
