@@ -61,10 +61,11 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: taiki-e/checkout-action@v1
-      - name: Install Rust
-        run: rustup toolchain add "${{ matrix.rust }}" --no-self-update --component rust-src && rustup default "${{ matrix.rust }}"
-      - run: rustup toolchain add nightly --no-self-update
-      - run: rustup target add thumbv6m-none-eabi
+      - uses: taiki-e/github-actions/install-rust@main
+        with:
+          toolchain: ${{ matrix.rust }}
+          component: rust-src
+          target: thumbv6m-none-eabi
       - uses: taiki-e/install-action@cargo-hack
       - uses: taiki-e/install-action@cargo-minimal-versions
       - uses: taiki-e/install-action@cargo-careful
@@ -78,6 +79,5 @@ jobs:
       - run: cargo hack build --workspace --no-private --feature-powerset --no-dev-deps
       - run: cargo build --manifest-path tests/no-std/Cargo.toml --target thumbv6m-none-eabi
       - run: cargo minimal-versions build --workspace --no-private --detach-path-deps=skip-exact --all-features
-        if: matrix.rust != '1.37'
       - run: cargo minimal-versions build --workspace --no-private --detach-path-deps=skip-exact --all-features --direct
         if: matrix.rust != '1.37'
