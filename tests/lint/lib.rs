@@ -48,6 +48,7 @@
     trivial_numeric_casts,
     unit_bindings,
     unnameable_types,
+    unqualified_local_imports,
     unreachable_pub,
     unused_import_braces,
     unused_lifetimes,
