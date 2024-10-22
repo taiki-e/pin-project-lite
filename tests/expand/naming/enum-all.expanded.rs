@@ -3,7 +3,6 @@ enum Enum<T, U> {
     Struct { pinned: T, unpinned: U },
     Unit,
 }
-#[doc(hidden)]
 #[allow(dead_code)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
@@ -21,7 +20,6 @@ where
     },
     Unit,
 }
-#[doc(hidden)]
 #[allow(dead_code)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::unknown_clippy_lints)]
@@ -39,7 +37,6 @@ where
     },
     Unit,
 }
-#[doc(hidden)]
 #[allow(dead_code)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::mut_mut)]
@@ -54,7 +51,6 @@ enum EnumProjReplace<T, U> {
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     impl<T, U> Enum<T, U> {
-        #[doc(hidden)]
         #[inline]
         fn project<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
@@ -73,7 +69,6 @@ const _: () = {
                 }
             }
         }
-        #[doc(hidden)]
         #[inline]
         fn project_ref<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin Self>,
@@ -92,7 +87,6 @@ const _: () = {
                 }
             }
         }
-        #[doc(hidden)]
         #[inline]
         fn project_replace(
             self: ::pin_project_lite::__private::Pin<&mut Self>,
