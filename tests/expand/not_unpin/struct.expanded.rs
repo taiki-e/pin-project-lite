@@ -71,8 +71,8 @@ const _: () = {
     impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U>
     where
         (
-            ::core::marker::PhantomData<&'__pin ()>,
-            ::core::marker::PhantomPinned,
+            ::pin_project_lite::__private::PhantomData<&'__pin ()>,
+            ::pin_project_lite::__private::PhantomPinned,
         ): ::pin_project_lite::__private::Unpin,
     {}
     trait MustNotImplDrop {}

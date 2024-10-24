@@ -1246,8 +1246,8 @@ macro_rules! __pin_project_make_unpin_impl {
         impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
         where
             (
-                ::core::marker::PhantomData<&'__pin ()>,
-                ::core::marker::PhantomPinned,
+                $crate::__private::PhantomData<&'__pin ()>,
+                $crate::__private::PhantomPinned,
             ): $crate::__private::Unpin
             $(, $($where_clause)*)?
         {
@@ -1669,7 +1669,7 @@ pub mod __private {
     use core::mem::ManuallyDrop;
     #[doc(hidden)]
     pub use core::{
-        marker::{PhantomData, Unpin},
+        marker::{PhantomData, PhantomPinned, Unpin},
         ops::Drop,
         pin::Pin,
         ptr,
