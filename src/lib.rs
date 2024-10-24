@@ -1221,7 +1221,7 @@ macro_rules! __pin_project_make_unpin_impl {
         //
         // See also https://github.com/taiki-e/pin-project/pull/53.
         #[allow(non_snake_case)]
-        $vis struct __Origin <'__pin, $($impl_generics)*>
+        $vis struct __Origin<'__pin, $($impl_generics)*>
         $(where
             $($where_clause)*)?
         {
@@ -1230,7 +1230,8 @@ macro_rules! __pin_project_make_unpin_impl {
         }
         impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
         where
-            __Origin <'__pin, $($ty_generics)*>: $crate::__private::Unpin
+            $crate::__private::PinnedFieldsOf<__Origin<'__pin, $($ty_generics)*>>:
+                $crate::__private::Unpin
             $(, $($where_clause)*)?
         {
         }
@@ -1674,23 +1675,37 @@ pub mod __private {
         ptr,
     };
 
+    // Workaround for issue on unstable negative_impls feature that allows unsound overlapping Unpin
+    // implementations and rustc bug that leaks unstable negative_impls into stable.
+    // See https://github.com/taiki-e/pin-project/issues/340#issuecomment-2432146009 for details.
+    #[doc(hidden)]
+    pub type PinnedFieldsOf<T> =
+        <PinnedFieldsOfHelperStruct<T> as PinnedFieldsOfHelperTrait>::Actual;
+    // We cannot use <Option<T> as IntoIterator>::Item or similar since we should allow ?Sized in T.
+    #[doc(hidden)]
+    pub trait PinnedFieldsOfHelperTrait {
+        type Actual: ?Sized;
+    }
+    #[doc(hidden)]
+    pub struct PinnedFieldsOfHelperStruct<T: ?Sized>(T);
+    impl<T: ?Sized> PinnedFieldsOfHelperTrait for PinnedFieldsOfHelperStruct<T> {
+        type Actual = T;
+    }
+
     // This is an internal helper struct used by `pin_project!`.
     #[doc(hidden)]
     pub struct AlwaysUnpin<T: ?Sized>(PhantomData<T>);
-
     impl<T: ?Sized> Unpin for AlwaysUnpin<T> {}
 
     // This is an internal helper used to ensure a value is dropped.
     #[doc(hidden)]
     pub struct UnsafeDropInPlaceGuard<T: ?Sized>(*mut T);
-
     impl<T: ?Sized> UnsafeDropInPlaceGuard<T> {
         #[doc(hidden)]
         pub unsafe fn new(ptr: *mut T) -> Self {
             Self(ptr)
         }
     }
-
     impl<T: ?Sized> Drop for UnsafeDropInPlaceGuard<T> {
         fn drop(&mut self) {
             // SAFETY: the caller of `UnsafeDropInPlaceGuard::new` must guarantee
@@ -1708,14 +1723,12 @@ pub mod __private {
         target: *mut T,
         value: ManuallyDrop<T>,
     }
-
     impl<T> UnsafeOverwriteGuard<T> {
         #[doc(hidden)]
         pub unsafe fn new(target: *mut T, value: T) -> Self {
             Self { target, value: ManuallyDrop::new(value) }
         }
     }
-
     impl<T> Drop for UnsafeOverwriteGuard<T> {
         fn drop(&mut self) {
             // SAFETY: the caller of `UnsafeOverwriteGuard::new` must guarantee
