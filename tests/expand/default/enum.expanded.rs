@@ -133,7 +133,9 @@ const _: () = {
     }
     impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
     where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+        ::pin_project_lite::__private::PinnedFieldsOf<
+            __Origin<'__pin, T, U>,
+        >: ::pin_project_lite::__private::Unpin,
     {}
     trait MustNotImplDrop {}
     #[allow(clippy::drop_bounds, drop_bounds)]

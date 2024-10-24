@@ -91,7 +91,9 @@ const _: () = {
     }
     impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
     where
-        __Origin<'__pin, T, U>: ::pin_project_lite::__private::Unpin,
+        ::pin_project_lite::__private::PinnedFieldsOf<
+            __Origin<'__pin, T, U>,
+        >: ::pin_project_lite::__private::Unpin,
     {}
     impl<T, U> ::pin_project_lite::__private::Drop for Enum<T, U> {
         fn drop(&mut self) {
