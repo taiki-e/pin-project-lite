@@ -517,7 +517,7 @@ macro_rules! __pin_project_constant {
                 }
             }
 
-            impl <$($impl_generics)*> $ident <$($ty_generics)*>
+            impl<$($impl_generics)*> $ident <$($ty_generics)*>
             $(where
                 $($where_clause)*)?
             {
@@ -633,7 +633,7 @@ macro_rules! __pin_project_constant {
         #[allow(clippy::unknown_clippy_lints)]
         #[allow(clippy::used_underscore_binding)]
         const _: () = {
-            impl <$($impl_generics)*> $ident <$($ty_generics)*>
+            impl<$($impl_generics)*> $ident <$($ty_generics)*>
             $(where
                 $($where_clause)*)?
             {
@@ -1228,9 +1228,9 @@ macro_rules! __pin_project_make_unpin_impl {
             __dummy_lifetime: $crate::__private::PhantomData<&'__pin ()>,
             $($field)*
         }
-        impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
+        impl<$($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
         where
-            $crate::__private::PinnedFieldsOf<__Origin<'__pin, $($ty_generics)*>>:
+            for<'__pin> $crate::__private::PinnedFieldsOf<__Origin<'__pin, $($ty_generics)*>>:
                 $crate::__private::Unpin
             $(, $($where_clause)*)?
         {
@@ -1242,12 +1242,14 @@ macro_rules! __pin_project_make_unpin_impl {
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         $($field:tt)*
     ) => {
+        // TODO: Using `<unsized type>: Sized` here allow emulating real negative_impls...
+        // https://github.com/taiki-e/pin-project/issues/340#issuecomment-2428002670
         #[doc(hidden)]
-        impl <'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
+        impl<$($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
         where
-            (
-                ::core::marker::PhantomData<&'__pin ()>,
-                ::core::marker::PhantomPinned,
+            for<'__pin> (
+                $crate::__private::PhantomData<&'__pin ()>,
+                $crate::__private::PhantomPinned,
             ): $crate::__private::Unpin
             $(, $($where_clause)*)?
         {
@@ -1362,7 +1364,7 @@ macro_rules! __pin_project_make_drop_impl {
         trait MustNotImplDrop {}
         #[allow(clippy::drop_bounds, drop_bounds)]
         impl<T: $crate::__private::Drop> MustNotImplDrop for T {}
-        impl <$($impl_generics)*> MustNotImplDrop for $ident <$($ty_generics)*>
+        impl<$($impl_generics)*> MustNotImplDrop for $ident <$($ty_generics)*>
         $(where
             $($where_clause)*)?
         {
@@ -1669,7 +1671,7 @@ pub mod __private {
     use core::mem::ManuallyDrop;
     #[doc(hidden)]
     pub use core::{
-        marker::{PhantomData, Unpin},
+        marker::{PhantomData, PhantomPinned, Unpin},
         ops::Drop,
         pin::Pin,
         ptr,

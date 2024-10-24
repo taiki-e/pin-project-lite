@@ -111,9 +111,9 @@ const _: () = {
         pinned: T,
         unpinned: ::pin_project_lite::__private::AlwaysUnpin<U>,
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Struct<T, U>
+    impl<T, U> ::pin_project_lite::__private::Unpin for Struct<T, U>
     where
-        ::pin_project_lite::__private::PinnedFieldsOf<
+        for<'__pin> ::pin_project_lite::__private::PinnedFieldsOf<
             __Origin<'__pin, T, U>,
         >: ::pin_project_lite::__private::Unpin,
     {}

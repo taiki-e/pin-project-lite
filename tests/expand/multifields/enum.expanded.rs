@@ -77,9 +77,9 @@ const _: () = {
         ),
         Unit: (),
     }
-    impl<'__pin, T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
+    impl<T, U> ::pin_project_lite::__private::Unpin for Enum<T, U>
     where
-        ::pin_project_lite::__private::PinnedFieldsOf<
+        for<'__pin> ::pin_project_lite::__private::PinnedFieldsOf<
             __Origin<'__pin, T, U>,
         >: ::pin_project_lite::__private::Unpin,
     {}
