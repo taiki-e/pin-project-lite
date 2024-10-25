@@ -1242,6 +1242,8 @@ macro_rules! __pin_project_make_unpin_impl {
         [$($impl_generics:tt)*] [$($ty_generics:tt)*] [$(where $($where_clause:tt)*)?]
         $($field:tt)*
     ) => {
+        // TODO: Using `<unsized type>: Sized` here allow emulating real negative_impls...
+        // https://github.com/taiki-e/pin-project/issues/340#issuecomment-2428002670
         #[doc(hidden)]
         impl<'__pin, $($impl_generics)*> $crate::__private::Unpin for $ident <$($ty_generics)*>
         where
