@@ -1,4 +1,4 @@
-error: no rules expected the token `:`
+error: no rules expected `:`
  --> tests/ui/pin_project/invalid-bounds.rs:6:33
   |
 6 |     struct Generics1<T: 'static : Sized> { //~ ERROR no rules expected the token `:`
@@ -10,7 +10,7 @@ note: while trying to match `>`
   |         >)?
   |         ^
 
-error: no rules expected the token `:`
+error: no rules expected `:`
   --> tests/ui/pin_project/invalid-bounds.rs:12:33
    |
 12 |     struct Generics2<T: 'static : ?Sized> { //~ ERROR no rules expected the token `:`
@@ -274,7 +274,7 @@ help: you might have meant to end the type parameters here
    |                     $(: $generics_bound>)?
    |                                        +
 
-error: no rules expected the token `Sized`
+error: no rules expected `Sized`
   --> tests/ui/pin_project/invalid-bounds.rs:36:34
    |
 36 |     struct Generics6<T: ?Sized : Sized> { //~ ERROR no rules expected the token `Sized`
@@ -286,7 +286,7 @@ note: while trying to match meta-variable `$generics_lifetime_bound:lifetime`
    |                 $(: $generics_lifetime_bound:lifetime)?
    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-error: no rules expected the token `:`
+error: no rules expected `:`
   --> tests/ui/pin_project/invalid-bounds.rs:44:20
    |
 44 |         T: 'static : Sized //~ ERROR no rules expected the token `:`
@@ -298,7 +298,7 @@ note: while trying to match `{`
    |         {
    |         ^
 
-error: no rules expected the token `:`
+error: no rules expected `:`
   --> tests/ui/pin_project/invalid-bounds.rs:53:20
    |
 53 |         T: 'static : ?Sized //~ ERROR no rules expected the token `:`
@@ -517,7 +517,7 @@ error: expected `{` after struct name, found `:`
    |
    = note: this error originates in the macro `$crate::__pin_project_parse_generics` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: no rules expected the token `Sized`
+error: no rules expected `Sized`
   --> tests/ui/pin_project/invalid-bounds.rs:89:21
    |
 89 |         T: ?Sized : Sized //~ ERROR no rules expected the token `Sized`
