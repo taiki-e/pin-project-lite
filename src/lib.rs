@@ -1356,7 +1356,7 @@ macro_rules! __pin_project_make_drop_impl {
         //
         // There are two possible cases:
         // 1. The user type does not implement Drop. In this case,
-        // the first blanked impl will not apply to it. This code
+        // the first blanket impl will not apply to it. This code
         // will compile, as there is only one impl of MustNotImplDrop for the user type
         // 2. The user type does impl Drop. This will make the blanket impl applicable,
         // which will then conflict with the explicit MustNotImplDrop impl below.
