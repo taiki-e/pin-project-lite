@@ -3,7 +3,6 @@ enum Enum<T, U> {
     Struct { pinned1: T, pinned2: T, unpinned1: U, unpinned2: U },
     Unit,
 }
-#[doc(hidden)]
 #[allow(dead_code)]
 #[allow(single_use_lifetimes)]
 #[allow(clippy::mut_mut)]
@@ -23,7 +22,6 @@ enum EnumProjReplace<T, U> {
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
     impl<T, U> Enum<T, U> {
-        #[doc(hidden)]
         #[inline]
         fn project_replace(
             self: ::pin_project_lite::__private::Pin<&mut Self>,
