@@ -6,7 +6,6 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Foo<_, _>`
 7  | |     struct Foo<T, U> {
 8  | |         #[pin]
 ...  |
-11 | |     }
 12 | | }
    | |_^ conflicting implementation for `Foo<_, _>`
 13 |
@@ -24,7 +23,6 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Bar<_, _>`
 18 | |     struct Bar<T, U> {
 19 | |         #[pin]
 ...  |
-22 | |     }
 23 | | }
    | |_^ conflicting implementation for `Bar<_, _>`
 24 |
@@ -42,7 +40,6 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Baz<_, _>`
 29 | |     struct Baz<T, U> {
 30 | |         #[pin]
 ...  |
-33 | |     }
 34 | | }
    | |_^ conflicting implementation for `Baz<_, _>`
 35 |

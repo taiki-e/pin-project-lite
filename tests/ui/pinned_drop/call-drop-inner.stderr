@@ -12,7 +12,6 @@ note: function defined here
 7  | |         #[pin]
 8  | |         field: u8,
 ...  |
-14 | |     }
 15 | | }
    | |_^
    = note: this error originates in the macro `$crate::__pin_project_make_drop_impl` which comes from the expansion of the macro `pin_project` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -5,8 +5,7 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Foo<MyPhant
 6  | |     struct Foo<Pinned, Unpinned> {
 7  | |         #[pin]
 8  | |         pinned: Pinned,
-9  | |         unpinned: Unpinned,
-10 | |     }
+...  |
 11 | | }
    | |_^ conflicting implementation for `Foo<MyPhantomPinned, ()>`
 ...

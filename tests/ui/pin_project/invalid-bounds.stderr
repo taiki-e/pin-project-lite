@@ -318,7 +318,6 @@ error: expected `{` after struct name, found `:`
 61 | |     where
 62 | |         T: Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-65 | |     }
 66 | | }
    | | ^
    | | |
@@ -335,7 +334,6 @@ error: expected one of `+`, `,`, or `{`, found `:`
 61 | |     where
 62 | |         T: Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-65 | |     }
 66 | | }
    | | ^
    | | |
@@ -353,7 +351,6 @@ error: expected `{` after struct name, found `:`
 61 | |     where
 62 | |         T: Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-65 | |     }
 66 | | }
    | | ^
    | | |
@@ -370,7 +367,6 @@ error: expected `{` after struct name, found `:`
 61 | |     where
 62 | |         T: Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-65 | |     }
 66 | | }
    | | ^
    | | |
@@ -387,7 +383,6 @@ error: expected `{` after struct name, found `:`
 70 | |     where
 71 | |         T: ?Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-74 | |     }
 75 | | }
    | | ^
    | | |
@@ -404,7 +399,6 @@ error: expected one of `+`, `,`, or `{`, found `:`
 70 | |     where
 71 | |         T: ?Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-74 | |     }
 75 | | }
    | | ^
    | | |
@@ -422,7 +416,6 @@ error: expected `{` after struct name, found `:`
 70 | |     where
 71 | |         T: ?Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-74 | |     }
 75 | | }
    | | ^
    | | |
@@ -439,7 +432,6 @@ error: expected `{` after struct name, found `:`
 70 | |     where
 71 | |         T: ?Sized : 'static //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-74 | |     }
 75 | | }
    | | ^
    | | |
@@ -456,7 +448,6 @@ error: expected `{` after struct name, found `:`
 79 | |     where
 80 | |         T: Sized : ?Sized //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-83 | |     }
 84 | | }
    | | ^
    | | |
@@ -473,7 +464,6 @@ error: expected one of `+`, `,`, or `{`, found `:`
 79 | |     where
 80 | |         T: Sized : ?Sized //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-83 | |     }
 84 | | }
    | | ^
    | | |
@@ -491,7 +481,6 @@ error: expected `{` after struct name, found `:`
 79 | |     where
 80 | |         T: Sized : ?Sized //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-83 | |     }
 84 | | }
    | | ^
    | | |
@@ -508,7 +497,6 @@ error: expected `{` after struct name, found `:`
 79 | |     where
 80 | |         T: Sized : ?Sized //~ ERROR expected `where`, or `{` after struct name, found `:`
 ...  |
-83 | |     }
 84 | | }
    | | ^
    | | |

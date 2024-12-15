@@ -5,8 +5,7 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Foo<_, _>`
 8  | |     struct Foo<T, U> {
 9  | |         #[pin]
 10 | |         future: T,
-11 | |         field: U,
-12 | |     }
+...  |
 13 | | }
    | |_^ conflicting implementation for `Foo<_, _>`
 ...
@@ -22,8 +21,7 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Bar<_, _>`
 21 | |     struct Bar<T, U> {
 22 | |         #[pin]
 23 | |         future: T,
-24 | |         field: U,
-25 | |     }
+...  |
 26 | | }
    | |_^ conflicting implementation for `Bar<_, _>`
 ...
@@ -39,8 +37,7 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Baz<_, _>`
 32 | |     struct Baz<T, U> {
 33 | |         #[pin]
 34 | |         future: T,
-35 | |         field: U,
-36 | |     }
+...  |
 37 | | }
    | |_^ conflicting implementation for `Baz<_, _>`
 ...
@@ -57,7 +54,6 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Qux<_, _>`
 44 | |     struct Qux<T, U> {
 45 | |         #[pin]
 ...  |
-48 | |     }
 49 | | }
    | |_^ conflicting implementation for `Qux<_, _>`
 ...
@@ -75,7 +71,6 @@ error[E0119]: conflicting implementations of trait `Unpin` for type `Fred<_, _>`
 56 | |     struct Fred<T, U> {
 57 | |         #[pin]
 ...  |
-60 | |     }
 61 | | }
    | |_^ conflicting implementation for `Fred<_, _>`
 ...
