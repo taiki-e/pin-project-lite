@@ -9,7 +9,6 @@ pub struct Struct<T, U> {
 #[allow(clippy::redundant_pub_crate)]
 #[allow(clippy::used_underscore_binding)]
 const _: () = {
-    #[doc(hidden)]
     #[allow(dead_code)]
     #[allow(single_use_lifetimes)]
     #[allow(clippy::unknown_clippy_lints)]
@@ -24,7 +23,6 @@ const _: () = {
         pub pinned: ::pin_project_lite::__private::Pin<&'__pin mut (T)>,
         pub unpinned: &'__pin mut (U),
     }
-    #[doc(hidden)]
     #[allow(dead_code)]
     #[allow(single_use_lifetimes)]
     #[allow(clippy::unknown_clippy_lints)]
@@ -40,7 +38,6 @@ const _: () = {
         pub unpinned: &'__pin (U),
     }
     impl<T, U> Struct<T, U> {
-        #[doc(hidden)]
         #[inline]
         pub(crate) fn project<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin mut Self>,
@@ -53,7 +50,6 @@ const _: () = {
                 }
             }
         }
-        #[doc(hidden)]
         #[inline]
         pub(crate) fn project_ref<'__pin>(
             self: ::pin_project_lite::__private::Pin<&'__pin Self>,
