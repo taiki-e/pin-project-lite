@@ -3,8 +3,7 @@
 //! Check interoperability with rustc and clippy lints.
 
 #![forbid(unsafe_code)]
-// for old compilers
-#![allow(unknown_lints)]
+#![allow(unknown_lints)] // for old compilers
 #![warn(nonstandard_style, rust_2018_idioms, unused, deprecated_safe)]
 // Note: This does not guarantee compatibility with forbidding these lints in the future.
 // If rustc adds a new lint, we may not be able to keep this.
@@ -15,7 +14,7 @@
     rust_2024_compatibility
 )]
 // lints forbidden as a part of future_incompatible, rust_2018_compatibility, rust_2021_compatibility, rust_2024_compatibility are not included in the list below.
-// elided_lifetimes_in_paths, explicit_outlives_requirements, unused_extern_crates:  as a part of rust_2018_idioms
+// elided_lifetimes_in_paths, explicit_outlives_requirements, unused_extern_crates: included as a part of rust_2018_idioms
 // non_exhaustive_omitted_patterns, multiple_supertrait_upcastable: unstable
 // unstable_features: no way to generate #![feature(..)] by macros, expect for unstable inner attribute. and this lint is deprecated: https://doc.rust-lang.org/rustc/lints/listing/allowed-by-default.html#unstable-features
 // unused_crate_dependencies, must_not_suspend: unrelated
@@ -35,7 +34,7 @@
     missing_copy_implementations,
     missing_debug_implementations,
     // missing_docs, // TODO: https://github.com/taiki-e/pin-project-lite/issues/3#issuecomment-703534472
-    non_ascii_idents,
+    non_ascii_idents, // TODO: add test case
     non_local_definitions,
     noop_method_call,
     private_bounds,
@@ -60,13 +59,8 @@
 #![allow(
     clippy::allow_attributes,
     clippy::allow_attributes_without_reason,
-    clippy::arbitrary_source_item_ordering,
-    clippy::exhaustive_enums,
-    clippy::exhaustive_structs,
-    clippy::min_ident_chars,
-    clippy::single_char_lifetime_names
+    clippy::arbitrary_source_item_ordering
 )] // TODO
-#![allow(clippy::lint_groups_priority)] // https://github.com/rust-lang/rust-clippy/issues/12920
 
 /// Test for basic cases.
 pub mod basic {
@@ -79,6 +73,7 @@ pub mod explicit_outlives_requirements {
 
     pin_project! {
         /// Testing struct.
+        #[allow(clippy::exhaustive_structs, clippy::single_char_lifetime_names)] // for the type itself
         #[derive(Debug)]
         pub struct Struct<'a, T, U>
         where
@@ -96,6 +91,7 @@ pub mod explicit_outlives_requirements {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
+        #[allow(clippy::exhaustive_enums, clippy::single_char_lifetime_names)] // for the type itself
         #[derive(Debug)]
         pub enum Enum<'a, T, U>
         where
@@ -124,8 +120,7 @@ pub mod variant_size_differences {
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
         #[allow(missing_debug_implementations, missing_copy_implementations)] // https://github.com/rust-lang/rust/pull/74060
-        #[allow(variant_size_differences)] // for the type itself
-        #[allow(clippy::large_enum_variant)] // for the type itself
+        #[allow(variant_size_differences, clippy::exhaustive_enums, clippy::large_enum_variant, clippy::min_ident_chars)] // for the type itself
         pub enum Enum {
             /// Small variant size.
             V1 { f: u8 },
@@ -141,6 +136,7 @@ pub mod clippy_mut_mut {
 
     pin_project! {
         /// Testing struct.
+        #[allow(clippy::exhaustive_structs, clippy::single_char_lifetime_names)] // for the type itself
         #[derive(Debug)]
         pub struct Struct<'a, T, U> {
             #[pin]
@@ -154,6 +150,7 @@ pub mod clippy_mut_mut {
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
+        #[allow(clippy::exhaustive_enums, clippy::single_char_lifetime_names)] // for the type itself
         #[derive(Debug)]
         pub enum Enum<'a, T, U> {
             /// Struct variant.
@@ -207,6 +204,7 @@ pub mod clippy_type_repetition_in_bounds {
 
     pin_project! {
         /// Testing struct.
+        #[allow(clippy::exhaustive_structs)] // for the type itself
         pub struct Struct<T, U>
         where
             Struct<T, U>: Sized,
@@ -219,6 +217,7 @@ pub mod clippy_type_repetition_in_bounds {
 
     pin_project! {
         /// Testing enum.
+        #[allow(clippy::exhaustive_enums)] // for the type itself
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
@@ -244,7 +243,7 @@ pub mod clippy_used_underscore_binding {
 
     pin_project! {
         /// Testing struct.
-        #[allow(clippy::pub_underscore_fields)]
+        #[allow(clippy::exhaustive_structs, clippy::pub_underscore_fields)] // for the type itself
         pub struct Struct<T, U> {
             #[pin]
             pub _pinned: T,
@@ -254,6 +253,7 @@ pub mod clippy_used_underscore_binding {
 
     pin_project! {
         /// Testing enum.
+        #[allow(clippy::exhaustive_enums)] // for the type itself
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
@@ -274,7 +274,7 @@ pub mod clippy_ref_option_ref {
 
     pin_project! {
         /// Testing struct.
-        #[allow(clippy::pub_underscore_fields)]
+        #[allow(clippy::exhaustive_structs, clippy::pub_underscore_fields, clippy::single_char_lifetime_names)] // for the type itself
         pub struct Struct<'a> {
             #[pin]
             pub _pinned: Option<&'a ()>,
@@ -284,6 +284,7 @@ pub mod clippy_ref_option_ref {
 
     pin_project! {
         /// Testing enum.
+        #[allow(clippy::exhaustive_enums, clippy::single_char_lifetime_names)] // for the type itself
         #[project = EnumProj]
         #[project_ref = EnumProjRef]
         #[project(!Unpin)]
