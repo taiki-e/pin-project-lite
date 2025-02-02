@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 /*!
-<!-- tidy:crate-doc:start -->
+<!-- Note: Document from sync-markdown-to-rustdoc:start through sync-markdown-to-rustdoc:end
+     is synchronized from README.md. Any changes to that range are not preserved. -->
+<!-- tidy:sync-markdown-to-rustdoc:start -->
+
 A lightweight version of [pin-project] written with declarative macros.
 
 ## Usage
@@ -18,7 +21,7 @@ pin-project-lite = "0.2"
 [`pin_project!`] macro creates a projection type covering all the fields of
 struct.
 
-```rust
+```
 use std::pin::Pin;
 
 use pin_project_lite::pin_project;
@@ -43,7 +46,7 @@ impl<T, U> Struct<T, U> {
 To use [`pin_project!`] on enums, you need to name the projection type
 returned from the method.
 
-```rust
+```
 use std::pin::Pin;
 
 use pin_project_lite::pin_project;
@@ -108,7 +111,7 @@ pin-project supports this.
 [pin-project]: https://github.com/taiki-e/pin-project
 [unsafe-unpin]: https://docs.rs/pin-project/latest/pin_project/attr.pin_project.html#unsafeunpin
 
-<!-- tidy:crate-doc:end -->
+<!-- tidy:sync-markdown-to-rustdoc:end -->
 
 [not-unpin-lite]: pin_project#unpin
 */
@@ -337,7 +340,7 @@ pin-project supports this.
 /// To implement [`Drop`] for type that has pin, add an `impl PinnedDrop` block at the end of the
 /// [`pin_project`] macro block. PinnedDrop has the following interface:
 ///
-/// ```rust
+/// ```
 /// # use std::pin::Pin;
 /// trait PinnedDrop {
 ///     fn drop(this: Pin<&mut Self>);
@@ -352,7 +355,7 @@ pin-project supports this.
 ///
 /// `PinnedDrop::drop` will never be called more than once, just like [`Drop::drop`].
 ///
-/// ```rust
+/// ```
 /// use pin_project_lite::pin_project;
 ///
 /// pin_project! {
