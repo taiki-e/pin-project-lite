@@ -5,7 +5,7 @@
 #[macro_use]
 mod auxiliary;
 
-use core::{
+use std::{
     marker::{PhantomData, PhantomPinned},
     pin::Pin,
 };
