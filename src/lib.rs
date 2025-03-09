@@ -334,8 +334,7 @@ pin-project supports this.
 /// # Pinned Drop
 ///
 /// In order to correctly implement pin projections, a type’s [`Drop`] impl must not move out of any
-/// structurally pinned fields. Unfortunately, [`Drop::drop`] takes `&mut Self`, not `Pin<&mut
-/// Self>`.
+/// structurally pinned fields. Unfortunately, [`Drop::drop`] takes `&mut Self`, not `Pin<&mut Self>`.
 ///
 /// To implement [`Drop`] for type that has pin, add an `impl PinnedDrop` block at the end of the
 /// [`pin_project`] macro block. PinnedDrop has the following interface:
