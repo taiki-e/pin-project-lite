@@ -1,10 +1,10 @@
 error[E0793]: reference to packed field is unaligned
   --> tests/ui/pin_project/packed.rs:5:1
    |
-5  | / pin_project! { //~ ERROR reference to packed field is unaligned
-6  | |     #[repr(packed, C)]
-7  | |     struct Packed {
-8  | |         #[pin]
+ 5 | / pin_project! { //~ ERROR reference to packed field is unaligned
+ 6 | |     #[repr(packed, C)]
+ 7 | |     struct Packed {
+ 8 | |         #[pin]
 ...  |
 11 | | }
    | |_^
@@ -17,10 +17,10 @@ error[E0793]: reference to packed field is unaligned
 error[E0793]: reference to packed field is unaligned
   --> tests/ui/pin_project/packed.rs:5:1
    |
-5  | / pin_project! { //~ ERROR reference to packed field is unaligned
-6  | |     #[repr(packed, C)]
-7  | |     struct Packed {
-8  | |         #[pin]
+ 5 | / pin_project! { //~ ERROR reference to packed field is unaligned
+ 6 | |     #[repr(packed, C)]
+ 7 | |     struct Packed {
+ 8 | |         #[pin]
 ...  |
 11 | | }
    | |_^
@@ -33,10 +33,10 @@ error[E0793]: reference to packed field is unaligned
 error[E0793]: reference to packed field is unaligned
   --> tests/ui/pin_project/packed.rs:5:1
    |
-5  | / pin_project! { //~ ERROR reference to packed field is unaligned
-6  | |     #[repr(packed, C)]
-7  | |     struct Packed {
-8  | |         #[pin]
+ 5 | / pin_project! { //~ ERROR reference to packed field is unaligned
+ 6 | |     #[repr(packed, C)]
+ 7 | |     struct Packed {
+ 8 | |         #[pin]
 ...  |
 11 | | }
    | |_^
