@@ -1,3 +1,4 @@
 compiletest
 expandtest
+multifields
 reborrow
