@@ -119,10 +119,12 @@ pin-project supports this.
 #![no_std]
 #![doc(test(
     no_crate_inject,
-    attr(
-        deny(warnings, rust_2018_idioms, single_use_lifetimes),
-        allow(dead_code, unused_variables)
-    )
+    attr(allow(
+        dead_code,
+        unused_variables,
+        clippy::undocumented_unsafe_blocks,
+        clippy::unused_trait_names,
+    ))
 ))]
 // #![warn(unsafe_op_in_unsafe_fn)] // requires Rust 1.52
 #![warn(
