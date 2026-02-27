@@ -135,9 +135,9 @@ pin-project supports this.
     clippy::exhaustive_enums,
     clippy::exhaustive_structs,
     clippy::impl_trait_in_params,
-    // clippy::missing_inline_in_public_items,
     clippy::std_instead_of_alloc,
     clippy::std_instead_of_core,
+    // clippy::missing_inline_in_public_items,
 )]
 
 /// A macro that creates a projection type covering all the fields of struct.
