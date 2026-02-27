@@ -1,6 +1,6 @@
 [package]
 name = "pin-project-lite"
-version = "0.2.16" #publish:version
+version = "0.2.17" #publish:version
 edition = "2018"
 # NB: Sync with rust-version field in other Cargo.toml files, msrv badge in README.md, and test job in .github/workflows/ci.yml
 rust-version = "1.37" # For underscore consts
