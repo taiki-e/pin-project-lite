@@ -12,6 +12,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Enable [release immutability](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/immutable-releases).
+
 ## [0.2.16] - 2025-01-06
 
 - Suppress `clippy::absolute_paths`, `clippy::min_ident_chars`, and `clippy::single_char_lifetime_names` lints in generated code.
