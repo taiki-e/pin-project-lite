@@ -600,6 +600,8 @@ macro_rules! __pin_project_constant {
             // Note:
             // - Lint-based tricks aren't perfect, but they're much better than nothing:
             //   https://github.com/taiki-e/pin-project-lite/issues/26
+            //   Since Rust 1.69, unaligned_references is a hard error, so this issue only
+            //   affects projects that using only very old compilers.
             //
             // - Enable both unaligned_references and safe_packed_borrows lints
             //   because unaligned_references lint does not exist in older compilers:
