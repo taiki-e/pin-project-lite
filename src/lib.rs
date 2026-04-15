@@ -1335,7 +1335,7 @@ macro_rules! __pin_project_make_drop_impl {
             $(#[$drop_fn_attrs])*
             fn drop(&mut self) {
                 // Implementing `__DropInner::__drop_inner` is safe, but calling it is not safe.
-                // This is because destructors can be called multiple times in safe code and
+                // This is because if calling it is safe destructors can be called multiple times in safe code and
                 // [double dropping is unsound](https://github.com/rust-lang/rust/pull/62360).
                 //
                 // `__drop_inner` is defined as a safe method, but this is fine since
