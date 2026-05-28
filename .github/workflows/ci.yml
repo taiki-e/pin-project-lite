@@ -27,3 +27,4 @@ jobs:
     with:
       rust: 1.37,stable,beta,nightly
       additional-no-std-crates: tests/no-std
+      miri-args: --exclude no-core
