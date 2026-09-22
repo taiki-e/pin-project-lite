@@ -15,7 +15,7 @@ note: required because it appears within the type `_::__Origin<'_, PhantomPinned
 10 | |         inner: T,
 11 | |     }
 12 | | }
-   | |_^
+   | |_^ required by this field
 note: required for `Foo<PhantomPinned>` to implement `Unpin`
   --> tests/ui/pin_project/overlapping_unpin_struct.rs:7:1
    |
