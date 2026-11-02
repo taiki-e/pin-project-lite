@@ -11,7 +11,8 @@
     future_incompatible,
     rust_2018_compatibility,
     rust_2021_compatibility,
-    rust_2024_compatibility
+    rust_2024_compatibility,
+    edition_future_compatibility
 )]
 // lints forbidden as a part of future_incompatible, rust_2018_compatibility, rust_2021_compatibility, rust_2024_compatibility are not included in the list below.
 // elided_lifetimes_in_paths, explicit_outlives_requirements, unused_extern_crates: included as a part of rust_2018_idioms
