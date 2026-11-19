@@ -12,6 +12,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix `Drop` impl check with always unsized type. ([#96](https://github.com/taiki-e/pin-project-lite/pull/96), thanks @wyfo)
+
 ## [0.2.17] - 2026-02-27
 
 - Enable [release immutability](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/immutable-releases).
