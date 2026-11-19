@@ -141,7 +141,7 @@ const _: () = {
     trait MustNotImplDrop {}
     #[allow(clippy::drop_bounds, drop_bounds)]
     impl<
-        T: ::pin_project_lite::__private::Drop + ?::pin_project_lite::__private::Sized,
+        T: ?::pin_project_lite::__private::Sized + ::pin_project_lite::__private::Drop,
     > MustNotImplDrop for T {}
     impl<T, U> MustNotImplDrop for Struct<T, U> {}
     #[forbid(unaligned_references, safe_packed_borrows)]
